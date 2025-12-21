@@ -1,9 +1,9 @@
 ---
-title: TM.OX
+title: TMOX
 description: Selected work.. Design portfolio
-website: http://tm.oxenfree.net
+website: http://tmox.net
 sections:
-  - TM.OX
+  - TMOX
   - Selected Work
   - Contact
 subhead1: "Born of print and advertising:"

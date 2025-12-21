@@ -8,92 +8,96 @@ import Images from "../../components/Images.astro";
 import FadeOnce from "../../components/FadeOnce.astro";
 
 export async function getStaticPaths() {
-  const collection = await getCollection("work");
-  return collection.map((page) => ({
-    params: { slug: page.slug },
-    props: { page },
-  }));
+    const collection = await getCollection("work");
+    return collection.map((page) => ({
+        params: { slug: page.slug },
+        props: { page },
+    }));
 }
 export async function getStaticProps({ params }: any) {
-  const project = await getCollection("work");
-  const page = project.find((p) => p.slug === params.slug);
-  return { props: { page } };
+    const project = await getCollection("work");
+    const page = project.find((p) => p.slug === params.slug);
+    return { props: { page } };
 }
 const { page } = Astro.props;
 const data = page.data;
 ---
 
-<Layout title={`TM.OX - ${data.title}`}>
-  <p class="section-title">TM.OX</p>
-  <div class="sm:-mt-2 min-h-screen">
-    <!-- Nav -->
-    <TabNav>
-      <a
-        slot="prev"
-        href={`/work/${data.url.prev}`}
-        class="z-50 p-2 rounded-full shadow-md bg-secondary sm:p-1"
-      >
-        <Icon name="ion:md-arrow-dropleft-circle" class="icon" />
-      </a>
-      <a
-        slot="next"
-        href={`/work/${data.url.next}`}
-        class="z-50 p-2 rounded-full shadow-md bg-secondary sm:p-1"
-      >
-        <Icon name="ion:md-arrow-dropright-circle" class="icon" />
-      </a>
-    </TabNav>
-    <!-- Details -->
-    <FadeOnce origin="origin-top-left">
-      <div class="mt-9 sm:mt-2">
-        <p>Client:<strong class="ml-1">{data.client}</strong></p>
-        {
-          data.client !== "Various" && (
-            <p>
-              Website:
-              <a href={data.link} target="_blank">
-                <strong class="ml-1">{data.website}</strong>
-              </a>
-            </p>
-          )
-        }
-        <p>Type:<strong class="ml-1">{data.type}</strong></p>
-        <div class="flex flex-wrap">
-          <p class="mr-1 w-fit">Tools:</p>
-          {
-            data.tools.flatMap((tools: any) => (
-              <a href={tools.link} target="_blank" class="flex justify-center">
-                <Image
-                  src={tools.icon}
-                  alt={tools.name}
-                  class="my-auto mr-1 w-auto h-3 rounded-none"
-                />
-                <p>
-                  <strong class="mr-1">{tools.name}</strong>
-                </p>
-              </a>
-            ))
-          }
+<Layout title={`TMOX - ${data.title}`}>
+    <p class="section-title">TMOX</p>
+    <div class="sm:-mt-2 min-h-screen">
+        <!-- Nav -->
+        <TabNav>
+            <a
+                slot="prev"
+                href={`/work/${data.url.prev}`}
+                class="z-50 p-2 rounded-full shadow-md bg-secondary sm:p-1"
+            >
+                <Icon name="ion:md-arrow-dropleft-circle" class="icon" />
+            </a>
+            <a
+                slot="next"
+                href={`/work/${data.url.next}`}
+                class="z-50 p-2 rounded-full shadow-md bg-secondary sm:p-1"
+            >
+                <Icon name="ion:md-arrow-dropright-circle" class="icon" />
+            </a>
+        </TabNav>
+        <!-- Details -->
+        <FadeOnce origin="origin-top-left">
+            <div class="mt-9 sm:mt-2">
+                <p>Client:<strong class="ml-1">{data.client}</strong></p>
+                {
+                    data.client !== "Various" && (
+                        <p>
+                            Website:
+                            <a href={data.link} target="_blank">
+                                <strong class="ml-1">{data.website}</strong>
+                            </a>
+                        </p>
+                    )
+                }
+                <p>Type:<strong class="ml-1">{data.type}</strong></p>
+                <div class="flex flex-wrap">
+                    <p class="mr-1 w-fit">Tools:</p>
+                    {
+                        data.tools.flatMap((tools: any) => (
+                            <a
+                                href={tools.link}
+                                target="_blank"
+                                class="flex justify-center"
+                            >
+                                <Image
+                                    src={tools.icon}
+                                    alt={tools.name}
+                                    class="my-auto mr-1 w-auto h-3 rounded-none"
+                                />
+                                <p>
+                                    <strong class="mr-1">{tools.name}</strong>
+                                </p>
+                            </a>
+                        ))
+                    }
+                </div>
+                <h2 class="mt-2 text-left lg:text-base">
+                    {data.description}
+                </h2>
+            </div>
+        </FadeOnce>
+        <!-- Images -->
+        <div class="grid grid-cols-2 gap-3 mt-4 sm:grid-cols-12 sm:gap-4">
+            {
+                data.images.flatMap((image: any) => (
+                    <Images
+                        src={image.src}
+                        alt={image.alt}
+                        id={image.id}
+                        prev={image.prev}
+                        next={image.next}
+                        cls={image.class}
+                    />
+                ))
+            }
         </div>
-        <h2 class="mt-2 text-left lg:text-base">
-          {data.description}
-        </h2>
-      </div>
-    </FadeOnce>
-    <!-- Images -->
-    <div class="grid grid-cols-2 gap-3 mt-4 sm:grid-cols-12 sm:gap-4">
-      {
-        data.images.flatMap((image: any) => (
-          <Images
-            src={image.src}
-            alt={image.alt}
-            id={image.id}
-            prev={image.prev}
-            next={image.next}
-            cls={image.class}
-          />
-        ))
-      }
     </div>
-  </div>
 </Layout>

@@ -2,7 +2,7 @@
 import "../styles/global.css";
 // import { GoogleAnalytics } from "astro-google-analytics";
 
-const { title, description = "TM.OX" } = Astro.props;
+const { title, description = "TMOX" } = Astro.props;
 ---
 
 <!-- Global Metadata -->
@@ -28,20 +28,20 @@ const { title, description = "TM.OX" } = Astro.props;
 
 <!-- Google tag (gtag.js) -->
 <script
-  type="text/partytown"
-  async
-  src="https://www.googletagmanager.com/gtag/js?id=G-V24HSVJPKE"></script>
+    type="text/partytown"
+    async
+    src="https://www.googletagmanager.com/gtag/js?id=G-V24HSVJPKE"></script>
 <script type="text/partytown">
-  window.dataLayer = window.dataLayer || [];
-  function gtag() {
-    dataLayer.push(arguments);
-  }
-  gtag("js", new Date());
+    window.dataLayer = window.dataLayer || [];
+    function gtag() {
+        dataLayer.push(arguments);
+    }
+    gtag("js", new Date());
 
-  gtag("config", "G-V24HSVJPKE");
+    gtag("config", "G-V24HSVJPKE");
 </script>
 
 <script
-  defer
-  src="https://cdn.jsdelivr.net/npm/@alpinejs/intersect@3.x.x/dist/cdn.min.js"
+    defer
+    src="https://cdn.jsdelivr.net/npm/@alpinejs/intersect@3.x.x/dist/cdn.min.js"
 ></script>
