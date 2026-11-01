@@ -10,11 +10,11 @@ const { line } = Astro.props as { line: string };
       <a href="/" class="inline-flex items-center gap-3" aria-label="TMOX, home">
         <Logo class="size-[22px] text-accent" knock="var(--color-sunk)" />
         <span
-          class="font-sans text-[15px] font-extrabold tracking-[0.06em] text-hi"
+          class="font-sans text-sm font-extrabold tracking-wordmark text-hi"
           aria-hidden="true">TMOX</span
         >
       </a>
-      <p class="mt-3 text-sm text-muted max-w-[32ch]">{line}</p>
+      <p class="mt-3 text-sm text-muted max-w-measure-narrow">{line}</p>
     </div>
     <div class="md:col-span-3">
       <p class="meta text-dim">Pages</p>
@@ -26,11 +26,11 @@ const { line } = Astro.props as { line: string };
     </div>
     <div class="md:col-span-5">
       <p class="meta text-dim">Colophon</p>
-      <p class="mt-3 text-sm text-muted max-w-[48ch]">
+      <p class="mt-3 text-sm text-muted max-w-measure">
         Set in Plus Jakarta Sans. Built with Astro and
         Tailwind CSS, hosted on Netlify.
       </p>
-      <p class="mt-2 hidden md:block text-sm text-muted max-w-[48ch]">
+      <p class="mt-2 hidden md:block text-sm text-muted max-w-measure">
         Keyboard: j and k move between sections on the home page, gg goes to the top, G to the bottom.
       </p>
     </div>

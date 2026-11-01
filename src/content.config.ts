@@ -43,6 +43,8 @@ export const collections = {
         paragraphs: z.array(z.string()).min(1),
         clients: z.array(z.string()),
         tools: z.array(z.string()),
+        // Client reviews shown under About. Quote verbatim (ellipsis for cuts); attribute by project type only.
+        reviews: z.array(z.object({ quote: z.string(), source: z.string() })).optional(),
       }),
       contact: z.object({
         title: z.string(),

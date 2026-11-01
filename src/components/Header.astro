@@ -30,7 +30,7 @@ const current = (id: string) =>
   <a href="/" aria-label="TMOX, home" class="flex items-center gap-3 min-h-11">
     <Logo class="size-[22px] text-accent" />
     <span
-      class="font-sans text-[15px] font-extrabold tracking-[0.06em] text-hi"
+      class="font-sans text-sm font-extrabold tracking-wordmark text-hi"
       aria-hidden="true">TMOX</span
     >
   </a>
@@ -57,9 +57,17 @@ const current = (id: string) =>
 </header>
 
 <script>
-  // Solid backing under the logo row only once the page has scrolled (see global.css .brand-row).
+  // Solid backing under the logo row (see global.css .brand-row). On the home page it only appears
+  // once the hero is nearly gone, so the dot backdrop is not cut off while it is still on screen;
+  // elsewhere, as soon as the page moves.
   const root = document.documentElement;
-  const mark = () => root.classList.toggle("scrolled", window.scrollY > 4);
+  const hero = document.querySelector<HTMLElement>(".hero");
+  const HERO_LEFT = 240; // px of hero still visible below the top when the backing switches on
+  const mark = () =>
+    root.classList.toggle(
+      "scrolled",
+      hero ? hero.getBoundingClientRect().bottom < HERO_LEFT : window.scrollY > 4,
+    );
   mark();
   addEventListener("scroll", mark, { passive: true });
 

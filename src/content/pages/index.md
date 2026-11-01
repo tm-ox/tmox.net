@@ -1,46 +1,42 @@
 ---
-title: "TMOX — Brand, print and web design"
-description: "Freelance designer for logos and identities, catalogues and brochures, and websites and app interfaces. Trained in print, mostly on screen now."
+title: "TMOX | Brand, print and web design"
+description: "Freelance designer for brand identity, print and document design, and websites and app interfaces. Twenty years in studios, agencies and on my own."
 hero:
-  kicker: "Freelance design · Brand / Print / Web"
-  title: "Logos, print and websites, set with care."
-  accent: "set with care."
-  lead: "I design logos and identities, catalogues and brochures, and websites and app screens, and I build the websites too."
-  availability: "Taking new projects · Replies within one working day, UTC+7"
+  kicker: "Freelance designer · Brand, print, web"
+  title: "Logos, print and websites from one designer."
+  accent: "one designer."
+  lead: "I design identities, documents and interfaces, and I build the websites too. You deal with one person, from the first sketch to the file that goes to print or the page that goes live."
+  availability: "Taking new projects · Replies within one working day (UTC+7)"
 services:
   - id: brand
-    title: "Brand & identity"
-    intro: "Logos and the kit that goes with them, from a single mark to a full system for a venue."
+    title: "Brand identity"
+    intro: "A mark, the way it is used, and everything it ends up on. From a single logo to a full system for a venue, a label or a company."
     deliverables:
-      - "Logos and logo variants"
-      - "Custom display lettering"
-      - "Business and membership cards"
-      - "Social media templates"
+      - "Logos and marks"
+      - "Lettering and type"
+      - "Guidelines and templates"
     proof: [logos, oxen, triplegoal]
   - id: print
-    title: "Print & brochures"
-    intro: "Catalogues, brochures, flyers and training material, laid out in InDesign or Affinity and delivered ready for the printer."
+    title: "Print and documents"
+    intro: "Anything read on paper or as a PDF: catalogues, brochures, reports, flyers, training material. I set the pages and prepare the files for the printer."
     deliverables:
-      - "Product catalogues"
-      - "Brochures and capability statements"
-      - "Flyers and event posters"
-      - "Training cards"
-      - "Signage and placards"
+      - "Document design"
+      - "Marketing print"
+      - "Print-ready production"
     proof: [ntr, redsky, print]
   - id: web
-    title: "Web & UI"
-    intro: "Interfaces designed in Figma or Penpot, and websites built in Astro, Nuxt or Next, with a CMS when you want to edit content yourself."
+    title: "Web and UI"
+    intro: "Interfaces designed first, then built. I design in Figma or Penpot and build in Astro, Nuxt or Next, with a CMS when you want to edit the content yourself."
     deliverables:
       - "UI design for desktop and mobile"
-      - "UI style sheets"
-      - "Website builds: Astro, Nuxt, Next, Tailwind CSS"
-      - "CMS setup: Nuxt Content, Netlify CMS"
+      - "Style sheets and design systems"
+      - "Websites and CMS setup"
     proof: [saj, triplegoal, fredst]
 about:
   title: "Print first. Screen now."
   paragraphs:
-    - "I started in print and advertising, in art direction and production. That’s where the habits come from: type set with care, files checked before they go out, layouts that survive the trip to the printer."
-    - "These days most of my work is on screen: interfaces in Figma and Penpot, and websites built in code. The habits came along. I’ve designed for clients in Australia and Indonesia, from a landscape architecture firm and a mortgage broker to a bar & kitchen in Yogyakarta."
+    - "I started in print and advertising, as a graphic designer and then an art director, and that is where my habits come from: type set with care, files checked before they go out, layouts that survive the trip to the printer."
+    - "Most of my work is on screen now, in Figma, Penpot and code, and the habits came with me. I have worked in studios and agencies and for myself, and I am comfortable alongside agencies and development teams, on a single project or over a longer engagement."
   clients:
     - TripleGoal
     - Share A Jet
@@ -58,10 +54,17 @@ about:
     - Penpot
     - Astro, Svelte, Nuxt, Next
     - Tailwind CSS
+  reviews:
+    - quote: "…the best UX designer I’ve worked with in the past 10 years. His work is always top tier, he is very responsive and perfectly detail oriented."
+      source: "Client, UX and report design"
+    - quote: "Very happy with the beautiful work on our booklet … easy to deal with and responsive, highly recommend him!"
+      source: "Client, catalogue design"
+    - quote: "…amazing, very high quality design output and fast."
+      source: "Client, ebook design"
 contact:
-  title: "Get in touch"
-  lead: "Tell me what you need and send it through the form below."
-  note: "Replies within one working day, UTC+7."
+  title: "Start a project"
+  lead: "Tell me what you need and when you need it, and add any links or references you already have."
+  note: "Replies within one working day (UTC+7)."
 footer:
   line: "Freelance design for brand, print and web."
 ---

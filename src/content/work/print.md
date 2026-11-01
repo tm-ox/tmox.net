@@ -7,7 +7,8 @@ client: "Various"
 type: "Print design"
 discipline: [print]
 # year: (owner to supply)
-description: "Various print designs."
+description: "Flyers and a capability statement for trades, tourism, events and landscape businesses."
+summary: "Print for small and medium businesses: flyers for a plumbing and gas supplier, an electrical supplier, a caravan park and an Indigenous tours operator, an event flyer, and a capability statement for a landscape maintenance company. Each is double sided where the job needed it, laid out in Illustrator and InDesign and prepared for the printer."
 tools:
   - name: "Adobe Illustrator"
     link: "https://www.adobe.com/products/illustrator.html"

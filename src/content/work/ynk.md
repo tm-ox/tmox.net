@@ -2,14 +2,15 @@
 order: 8
 featured: true
 featuredOrder: 6
-title: "Yes No Klub – Website"
+title: "Yes No Klub"
 client: "Yes No Klub"
 website: "yesnoklub.net"
 link: "https://yesnoklub.net"
 type: "Web design"
 discipline: [web]
 # year: (owner to supply)
-description: "Website for music event organisation Yes No Klub."
+description: "Website for Yes No Klub, an arts and music organisation in Yogyakarta, built in Nuxt with a CMS for updating events."
+summary: "Website for Yes No Klub, an experimental arts and music organisation in Yogyakarta. A dark, image-led site with featured events, an events list, a gallery and an about page, with a mobile layout to match. Built with Nuxt and Nuxt Content, styled with Tailwind CSS, with Alpine.js for interaction and Netlify CMS so the organisers can update events themselves."
 tools:
   - name: "Vue/Nuxt 3"
     link: "https://nuxt.com"

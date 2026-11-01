@@ -7,7 +7,7 @@ link: "https://redsky.com.au"
 type: "Print design"
 discipline: [print]
 # year: (owner to supply)
-description: "Training cards for Australian corporate training firm RedSky."
+description: "Seven training cards for RedSky, a Melbourne learning and growth consultancy, laid out in InDesign."
 tools:
   - name: "Adobe InDesign"
     link: "https://www.adobe.com/products/indesign.html"

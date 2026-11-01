@@ -11,7 +11,7 @@ role: "Logo design"
 deliverables:
   - "18 logos"
 description: "Eighteen logos for shops, labels, galleries, venues and collectives."
-summary: "Eighteen logos, drawn in Illustrator and Inkscape, for shops, labels, venues and collectives: an audio-visual art space, an Australian art gallery, a fashion store, a confectionery company, a leather goods company, two menswear labels, a fine food delicatessen, an internet radio station, an avant-garde musical trio, two music and art collectives, a hairdressing studio, a design studio, a bakery-cafe, a bar & kitchen, a leadership consultancy, and an Aboriginal-owned mark."
+summary: "Eighteen logos, drawn in Illustrator and Inkscape, for shops, labels, venues and collectives: an audio-visual art space, an Australian art gallery, a fashion store, a confectionery company, O'Divine, a fashion leather goods label, two menswear labels, a fine food delicatessen, an internet radio station, an avant-garde musical trio, two music and art collectives, a hairdressing studio, a design studio, a bakery-cafe, a bar & kitchen, a leadership consultancy, and an Aboriginal-owned mark."
 tools:
   - name: "Adobe Illustrator"
     link: "https://www.adobe.com/products/illustrator.html"
@@ -51,8 +51,8 @@ images:
     caption: "Menswear label"
     kind: mark
   - src: ./logos/odivine-e.png
-    alt: "Logo: Leather goods company"
-    caption: "Leather goods company"
+    alt: "Logo: O'Divine, fashion leather goods label"
+    caption: "O'Divine, fashion leather goods label"
     kind: mark
   - src: ./logos/gg.png
     alt: "Logo: Australian art gallery"

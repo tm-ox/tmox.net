@@ -32,6 +32,13 @@
   --color-mat-white: #ffffff;
   --color-backdrop: #0e0e0e;
 
+  /* Line lengths (max-w-measure-*): one narrow, one prose, one for headings */
+  --container-measure-heading: 20ch;
+  --container-measure-narrow: 40ch;
+  --container-measure: 56ch;
+  /* Wordmark letter-spacing */
+  --tracking-wordmark: 0.06em;
+
   --font-sans: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
 
   --text-meta: 0.75rem;
@@ -47,21 +54,12 @@
   --text-lead: clamp(1.1875rem, 1.05rem + 0.55vw, 1.375rem);
   --text-lead--line-height: 1.45;
   --text-lead--letter-spacing: -0.005em;
-  --text-h3: clamp(1.25rem, 1.15rem + 0.4vw, 1.375rem);
-  --text-h3--line-height: 1.25;
-  --text-h3--letter-spacing: -0.01em;
-  --text-h2: clamp(1.75rem, 1.3rem + 1.8vw, 2.5rem);
-  --text-h2--line-height: 1.1;
-  --text-h2--letter-spacing: -0.02em;
+  --text-h2: clamp(1.375rem, 1.05rem + 1.3vw, 2.125rem); /* statements, sub-headings */
+  --text-h2--line-height: 1.3;
+  --text-h2--letter-spacing: -0.015em;
   --text-title: clamp(2.125rem, 1.25rem + 2.9vw, 4rem);
   --text-title--line-height: 0.98;
   --text-title--letter-spacing: -0.035em;
-  --text-h1: clamp(2.25rem, 1.5rem + 3.2vw, 4rem);
-  --text-h1--line-height: 1.02;
-  --text-h1--letter-spacing: -0.025em;
-  --text-display: clamp(2.5rem, 1.6rem + 4.4vw, 5rem);
-  --text-display--line-height: 0.98;
-  --text-display--letter-spacing: -0.03em;
 
   --radius: 8px; /* the one corner radius: controls, nav items, chips, tiles, fields */
   --radius-ctl: var(--radius);
@@ -163,7 +161,7 @@
   .brand-row::before {
     content: "";
     position: absolute;
-    inset: 0 0 -1.25rem;
+    inset: 0 calc(50% - 50vw) -1.25rem; /* full viewport width: the header itself is capped at the page width */
     z-index: -1;
     pointer-events: none;
     background: linear-gradient(to bottom, var(--color-bg) 65%, transparent);
@@ -176,6 +174,12 @@
   }
   [id] {
     scroll-margin-top: calc(var(--brand-pt) + var(--brand-h));
+  }
+  /* html's scroll-padding-top (below) is for keyboard focus; it also applies to anchor jumps and
+     scrollIntoView, so cancel it for the home sections: they land with their top at the logo row. */
+  .hero[id],
+  .sect[id] {
+    scroll-margin-top: calc(-5rem);
   }
   /* Keep keyboard focus clear of the sticky logo row and section title, and of the phone nav pill. */
   html {
@@ -263,7 +267,7 @@
     min-height: 2.75rem;
     padding-inline: 1.25rem;
     border-radius: var(--radius-ctl);
-    font-size: 15px;
+    font-size: var(--text-sm);
     font-weight: 600;
     line-height: 1.2;
     cursor: pointer;
@@ -486,9 +490,9 @@
     width: 100%;
   }
   .statement {
-    font-size: clamp(1.375rem, 1.05rem + 1.3vw, 2.125rem);
-    line-height: 1.3;
-    letter-spacing: -0.015em;
+    font-size: var(--text-h2);
+    line-height: var(--text-h2--line-height);
+    letter-spacing: var(--text-h2--letter-spacing);
     font-weight: 500;
     color: var(--color-hi);
   }
@@ -814,7 +818,7 @@
     white-space: nowrap;
     border-radius: var(--radius);
     border: 1px solid var(--color-line);
-    font-size: 0.8125rem;
+    font-size: var(--text-sm);
     line-height: 1.25;
     font-weight: 500;
     color: var(--color-muted);
@@ -1168,6 +1172,8 @@
       opacity: 0;
       visibility: hidden;
       transition: opacity 0s linear var(--feat-fade), visibility 0s linear var(--feat-fade);
+      /* the image is not a target: hovering or clicking it does nothing, only the index rows act */
+      pointer-events: none;
     }
     .feat .wimg {
       flex: 1;

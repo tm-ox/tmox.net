@@ -69,7 +69,7 @@ const widths = stage ? [240, 480, 800, 1200, 1600, 2400] : [160, 320];
     </div>
     <div class="wrow-text">
       <p class="meta wrow-no" id={`${uid}-n`}>{label ?? `No.${String(data.order).padStart(2, "0")}`}</p>
-      <Tag class="mt-1 block text-h3 font-bold">
+      <Tag class={`mt-1 block font-bold ${stage ? "text-base leading-snug" : "text-lead leading-snug"}`}>
         <span class="index-title" id={`${uid}-t`}>{data.title}</span>
       </Tag>
       <Ticket entry={entry} variant="short" class="mt-1" id={`${uid}-m`} />

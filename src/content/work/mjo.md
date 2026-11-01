@@ -9,7 +9,8 @@ link: "https://www.mjomortgagesolutions.com.au"
 type: "Web design"
 discipline: [web]
 # year: (owner to supply)
-description: "Website for Australian mortgage broker."
+description: "Website for MJO Mortgage Solutions, an Australian mortgage broker, built in Nuxt with a CMS."
+summary: "Website for MJO Mortgage Solutions, an Australian mortgage broker. A landing page, a solutions page, cards for the services on offer and a contact page, each with a matching mobile layout. Built with Nuxt and Nuxt Content, styled with Tailwind CSS, with Alpine.js for interaction and Netlify CMS for editing."
 tools:
   - name: "Vue/Nuxt 3"
     link: "https://nuxt.com"

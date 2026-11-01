@@ -11,8 +11,11 @@ if (sections.length) {
   const behavior = (): ScrollBehavior => (calm.matches ? "auto" : "smooth");
 
   // Distance from the viewport top where a section counts as "current" (the sticky logo row).
+  // = where scrollIntoView lands a section (html scroll-padding-top + the section's scroll-margin-top) + slack.
   const probe = () =>
-    parseFloat(getComputedStyle(sections[0]).scrollMarginTop || "0") + 24;
+    (parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop) || 0) +
+    (parseFloat(getComputedStyle(sections[0]).scrollMarginTop) || 0) +
+    24;
   const current = () => {
     const y = probe();
     let idx = 0;

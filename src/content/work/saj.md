@@ -2,8 +2,6 @@
 order: 1
 title: "Share A Jet"
 client: "Share A Jet"
-website: "shareajet.vip"
-link: "https://www.shareajet.vip"
 type: "UI design"
 discipline: [ui]
 # year: (owner to supply)
