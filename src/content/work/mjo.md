@@ -55,8 +55,8 @@ images:
     next: "01"
     class: col-span-2 sm:col-span-12 lg:col-span-7
 url:
-  prev: fredst
-  next: logos
+  prev: ynk
+  next: 01-logos
 ---
 
 - src: ./mjo/mjo-web-mobile-landing.png

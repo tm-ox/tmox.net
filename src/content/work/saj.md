@@ -86,5 +86,5 @@ images:
   #   class: col-span-2 sm:col-span-6 md:col-span-4 lg:col-span-3 lg:col-start-10 lg:row-start-7 lg:row-span-2
 url:
   prev: print
-  next: tg
+  next: fredst
 ---

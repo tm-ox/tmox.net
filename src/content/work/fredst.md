@@ -67,6 +67,6 @@ images:
     next: "01"
     class: sm:col-span-3 lg:col-span-1;
 url:
-  prev: tg
+  prev: saj
   next: ynk
 ---
