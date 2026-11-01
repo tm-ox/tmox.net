@@ -1,5 +1,6 @@
 ---
-order: "08"
+order: 13
+draft: true
 title: Silvagenitus
 client: Silvagenitus
 website: silvagenitus.com
@@ -17,41 +18,20 @@ cover: { src: ./silv/silv-web-about.png, alt: Silvagenitus Website }
 images:
   - src: ./silv/silv-web-home.png
     alt: Home
-    prev: "06"
-    id: "01"
-    next: "02"
-    class: col-span-2 sm:col-span-12
+    size: full
   - src: ./silv/silv-web-about.png
     alt: About
-    prev: "01"
-    id: "02"
-    next: "03"
-    class: col-span-2 sm:col-span-12 lg:col-span-6
+    size: lg
   - src: ./silv/silv-web-shop.png
     alt: Shop
-    prev: "02"
-    id: "03"
-    next: "04"
-    class: col-span-2 sm:col-span-12 lg:col-span-6
+    size: lg
   - src: ./silv/silv-web-mobile-home.png
     alt: Mobile - home
-    prev: "03"
-    id: "04"
-    next: "05"
-    class: col-span-auto sm:col-span-3 lg:col-span-2
+    size: sm
   - src: ./silv/silv-web-mobile-menu.png
     alt: Mobile - menu
-    prev: "04"
-    id: "05"
-    next: "06"
-    class: col-span-auto sm:col-span-3 lg:col-span-2
+    size: sm
   - src: ./silv/silv-web-mobile-shop.png
     alt: Mobile - shop
-    prev: "05"
-    id: "06"
-    next: "01"
-    class: col-span-auto sm:col-span-3 lg:col-span-2
-url:
-  prev: ynk
-  next: vm
+    size: sm
 ---

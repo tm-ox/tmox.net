@@ -41,15 +41,19 @@ export const collections = {
   }),
 
   work: defineCollection({
-    loader: glob({ pattern: "**/[^_]*.md", base: "./src/content/work" }),
+    loader: glob({ pattern: "**/*.md", base: "./src/content/work" }),
     schema: ({ image }) =>
       z.object({
-        order: z.string(),
+        order: z.number(),
+        draft: z.boolean().default(false),
         title: z.string(),
         client: z.string(),
         website: z.string().optional(),
         link: z.string().optional(),
         type: z.string(),
+        year: z.number().optional(),
+        role: z.string().optional(),
+        summary: z.string().optional(),
         tools: z.array(
           z.object({
             icon: image().optional(),
@@ -61,22 +65,16 @@ export const collections = {
         cover: z.object({
           src: image(),
           alt: z.string(),
-
         }),
         images: z.array(
           z.object({
             src: image(),
             alt: z.string(),
-            id: z.string().optional(),
-            prev: z.string().optional(),
-            next: z.string().optional(),
-            class: z.string().optional(),
+            size: z.enum(["sm", "md", "lg", "xl", "full"]).optional(),
+            tall: z.boolean().optional(),
+            align: z.enum(["start", "end"]).optional(),
           })
         ),
-        url: z.object({
-          prev: z.string().optional(),
-          next: z.string().optional(),
-        }),
       }),
   }),
 };

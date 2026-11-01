@@ -1,5 +1,6 @@
 ---
-order: "09"
+order: 12
+draft: true
 title: Velocimeter
 client: Velocimeter
 website: vm-sosmed.netlify.app
@@ -20,35 +21,19 @@ cover: { src: ./vm/vm-web-apr.png, alt: Velocimeter Social Media App }
 images:
   - src: ./vm/vm-web-home.png
     alt: Home
-    prev: "05"
-    id: "01"
-    next: "02"
-    class: col-span-2 sm:col-span-12 lg:col-span-6
+    size: lg
   - src: ./vm/vm-web-menu.png
     alt: Menu
-    prev: "01"
-    id: "02"
-    next: "03"
-    class: col-span-2 sm:col-span-12 lg:col-span-6 lg:row-start-2
+    size: lg
   - src: ./vm/vm-web-apr.png
     alt: APR Template
-    prev: "02"
-    id: "03"
-    next: "04"
-    class: col-span-2 sm:col-span-6 lg:col-span-6 lg:mt-auto
+    size: lg
+    align: end
   - src: ./vm/vm-web-match.png
     alt: Matched Bribe Template
-    prev: "03"
-    id: "04"
-    next: "05"
-    class: col-span-2 sm:col-span-6 lg:col-span-6 lg:row-span-2
+    size: lg
+    tall: true
   - src: ./vm/vm-web-bribe.png
     alt: Partner Bribe Template
-    prev: "04"
-    id: "05"
-    next: "01"
-    class: col-span-2 sm:col-span-12 lg:col-span-6
-url:
-  prev: ynk
-  next: mjo
+    size: lg
 ---

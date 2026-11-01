@@ -1,7 +1,8 @@
 ---
-import { getEntry, getCollection, render } from "astro:content";
+import { getEntry, render } from "astro:content";
 import { Image } from "astro:assets";
 import { Icon } from "astro-icon/components";
+import { getWork } from "../lib/work";
 import Layout from "../layouts/Layout.astro";
 import TabNav from "../components/TabNav.astro";
 import Contact from "../components/Contact.astro";
@@ -13,8 +14,7 @@ if (!page) throw new Error("Missing content entry: pages/index");
 const { Content } = await render(page);
 const data = page.data;
 
-const work = await getCollection("work");
-work.sort((a, b) => Date.parse(a.data.order) - Date.parse(b.data.order));
+const work = await getWork();
 ---
 
 <Layout title={data.title} description={data.description}>

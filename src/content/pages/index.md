@@ -48,9 +48,6 @@ sub2skills:
   - icon: ../assets/tailwind.png
     name: Tailwindcss
     link: https://tailwindcss.com
-  - icon: ../assets/alpine.png
-    name: AlpineJs
-    link: https://alpinejs.dev
 tools:
   - icon: ../assets/astro.png
     name: Astro,
@@ -58,9 +55,6 @@ tools:
   - icon: ../assets/tailwind.png
     name: Tailwindcss,
     link: https://tailwindcss.com
-  - icon: ../assets/alpine.png
-    name: AlpineJs
-    link: https://alpinejs.dev
 ---
 
 # All rounded..

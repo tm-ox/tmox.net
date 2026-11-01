@@ -1,0 +1,135 @@
+---
+import { Image, getImage } from "astro:assets";
+import type { ImageMetadata } from "astro";
+import { Icon } from "astro-icon/components";
+import FadeOnce from "./FadeOnce.astro";
+
+type Size = "sm" | "md" | "lg" | "xl" | "full";
+interface Item {
+  src: ImageMetadata;
+  alt: string;
+  size?: Size;
+  tall?: boolean;
+  align?: "start" | "end";
+}
+const { images } = Astro.props as { images: Item[] };
+
+// Single mapping from layout tokens to grid classes (12-col from sm, 2-col below).
+// Class names are written out in full so Tailwind can see them.
+const SIZE: Record<Size, string> = {
+  sm: "col-span-1 sm:col-span-6 md:col-span-4 lg:col-span-2",
+  md: "col-span-1 sm:col-span-6 lg:col-span-4",
+  lg: "col-span-2 sm:col-span-12 lg:col-span-6",
+  xl: "col-span-2 sm:col-span-12 lg:col-span-8",
+  full: "col-span-2 sm:col-span-12",
+};
+const TALL = "lg:row-span-2";
+const ALIGN = { start: "lg:self-start", end: "lg:self-end" };
+
+// Fallback when `size` is absent: derive from pixel size and aspect ratio.
+function derive({ width, height }: ImageMetadata): Size {
+  if (Math.max(width, height) <= 600) return "sm";
+  const ratio = width / height;
+  if (ratio >= 1.25) return "lg";
+  return "md";
+}
+
+const items = await Promise.all(
+  images.map(async (img) => {
+    const large = await getImage({
+      src: img.src,
+      width: Math.min(1800, img.src.width),
+      format: "webp",
+    });
+    const cls = [
+      SIZE[img.size ?? derive(img.src)],
+      img.tall ? TALL : "",
+      img.align ? ALIGN[img.align] : "",
+    ]
+      .filter(Boolean)
+      .join(" ");
+    return { ...img, large: large.src, cls };
+  })
+);
+---
+
+<ul
+  class="grid grid-cols-2 gap-3 mt-4 sm:grid-cols-12 sm:gap-4"
+  data-gallery
+>
+  {
+    items.map((img) => (
+      <li class={img.cls}>
+        <a
+          href={img.large}
+          data-lightbox
+          class="block"
+          aria-label={`View larger: ${img.alt}`}
+        >
+          <FadeOnce origin="origin-center">
+            <div class="rounded-md shadow-md hover:scale-[0.98] ease-out duration-[1000ms] transition-all">
+              <Image
+                src={img.src}
+                alt={img.alt}
+                class="rounded-b-none bg-secondary"
+              />
+              <div class="box">{img.alt}</div>
+            </div>
+          </FadeOnce>
+        </a>
+      </li>
+    ))
+  }
+</ul>
+
+<dialog
+  id="lightbox"
+  aria-label="Image viewer"
+  class="fixed inset-0 z-50 flex-col gap-4 justify-center items-center p-4 m-0 w-full max-w-none h-full max-h-none border-0 open:flex backdrop-blur-xl bg-background/90 text-primary"
+>
+  <figure class="flex flex-col items-center m-0 min-h-0">
+    <img
+      alt=""
+      class="object-contain h-fit max-h-[75vh] w-max max-w-[95vw]"
+      data-lb-img
+    />
+    <figcaption
+      class="justify-center mt-4 bg-transparent box text-primary"
+      data-lb-caption
+    >
+    </figcaption>
+  </figure>
+  <div
+    class="flex fixed right-1/2 z-50 gap-3 py-2 px-4 h-12 rounded-full shadow-md translate-x-1/2 top-[calc(100%-80px)] bg-secondary sm:top-[30px] sm:right-4 sm:translate-x-0 sm:gap-2 sm:h-9 sm:px-3 sm:py-1"
+  >
+    <button type="button" class="icon" data-lb-prev aria-label="Previous image">
+      <Icon name="ion:md-arrow-dropleft-circle" aria-hidden="true" />
+    </button>
+    <button type="button" class="icon" data-lb-close aria-label="Close image viewer">
+      <Icon name="ion:close-circled" aria-hidden="true" />
+    </button>
+    <button type="button" class="icon" data-lb-next aria-label="Next image">
+      <Icon name="ion:md-arrow-dropright-circle" aria-hidden="true" />
+    </button>
+  </div>
+</dialog>
+
+<style is:global>
+  html:has(#lightbox[open]) {
+    overflow: hidden;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    #lightbox[open] {
+      animation: lb-in 200ms ease-out;
+    }
+    @keyframes lb-in {
+      from {
+        opacity: 0;
+      }
+    }
+  }
+</style>
+
+<script>
+  import "../scripts/lightbox.ts";
+</script>

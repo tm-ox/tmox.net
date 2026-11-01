@@ -1,20 +1,23 @@
 ---
-import { getCollection } from "astro:content";
 import { Image } from "astro:assets";
 import { Icon } from "astro-icon/components";
 import Layout from "../../layouts/Layout.astro";
 import TabNav from "../../components/TabNav.astro";
-import Images from "../../components/Images.astro";
+import Gallery from "../../components/Gallery.astro";
+import { getWork, neighbours } from "../../lib/work";
 import FadeOnce from "../../components/FadeOnce.astro";
 
 export async function getStaticPaths() {
-    const collection = await getCollection("work");
-    return collection.map((page) => ({
-        params: { slug: page.id },
-        props: { page },
-    }));
+    const collection = await getWork();
+    return collection.map((page) => {
+        const { prev, next } = neighbours(collection, page.id);
+        return {
+            params: { slug: page.id },
+            props: { page, prev: prev.id, next: next.id },
+        };
+    });
 }
-const { page } = Astro.props;
+const { page, prev, next } = Astro.props;
 const data = page.data;
 ---
 
@@ -26,7 +29,7 @@ const data = page.data;
         <TabNav>
             <a
                 slot="prev"
-                href={`/work/${data.url.prev}`}
+                href={`/work/${prev}`}
                 class="z-50 p-2 rounded-full shadow-md bg-secondary sm:p-1"
                 aria-label="Previous project"
             >
@@ -38,7 +41,7 @@ const data = page.data;
             </a>
             <a
                 slot="next"
-                href={`/work/${data.url.next}`}
+                href={`/work/${next}`}
                 class="z-50 p-2 rounded-full shadow-md bg-secondary sm:p-1"
                 aria-label="Next project"
             >
@@ -91,19 +94,6 @@ const data = page.data;
             </div>
         </FadeOnce>
         <!-- Images -->
-        <div class="grid grid-cols-2 gap-3 mt-4 sm:grid-cols-12 sm:gap-4">
-            {
-                data.images.flatMap((image: any) => (
-                    <Images
-                        src={image.src}
-                        alt={image.alt}
-                        id={image.id}
-                        prev={image.prev}
-                        next={image.next}
-                        cls={image.class}
-                    />
-                ))
-            }
-        </div>
+        <Gallery images={data.images} />
     </div>
 </Layout>
