@@ -16,15 +16,15 @@ const { title, description } = Astro.props;
   <body class="overflow-x-hidden relative">
     <!-- Background -->
     <div
-      class="fixed -bottom-[700px] right-0 w-[4000px] h-[4000px] border-8 border-primary rounded-full opacity-5 blur-sm animate-blob"
+      class="fixed -bottom-[700px] right-0 w-[4000px] h-[4000px] border-8 border-primary rounded-full opacity-5 blur-xs animate-blob"
     >
     </div>
     <div
-      class="fixed -bottom-[700px] right-12 w-[4000px] h-[4000px] border-8 border-hover rounded-full opacity-10 blur-sm animate-blob animation-delay-2000"
+      class="fixed -bottom-[700px] right-12 w-[4000px] h-[4000px] border-8 border-hover rounded-full opacity-10 blur-xs animate-blob animation-delay-2000"
     >
     </div>
     <div
-      class="fixed -bottom-[700px] right-6 w-[4000px] h-[4000px] border-8 border-hover rounded-full opacity-20 blur-sm animate-blob animation-delay-4000"
+      class="fixed -bottom-[700px] right-6 w-[4000px] h-[4000px] border-8 border-hover rounded-full opacity-20 blur-xs animate-blob animation-delay-4000"
     >
     </div>
     <!-- /Background -->
@@ -35,7 +35,7 @@ const { title, description } = Astro.props;
       <slot />
     </main>
     <footer
-      class="flex flex-wrap gap-1 justify-center items-center pt-2 pb-1 w-screen bg-gradient-to-b from-background via-secondary to-secondary"
+      class="flex flex-wrap gap-1 justify-center items-center pt-2 pb-1 w-screen bg-linear-to-b from-background via-secondary to-secondary"
     >
       <Footer />
     </footer>

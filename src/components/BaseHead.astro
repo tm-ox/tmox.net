@@ -1,17 +1,20 @@
 ---
 import "../styles/global.css";
-// import { GoogleAnalytics } from "astro-google-analytics";
+import { Font } from "astro:assets";
 
 const { title, description = "TMOX" } = Astro.props;
 ---
 
 <!-- Global Metadata -->
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <!-- Primary Meta Tags -->
 <title>{title}</title>
 <meta name="title" content={title} />
 {description && <meta name="description" content={description} />}
+<Font cssVariable="--font-jakarta-sans" preload />
+<link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)} />
+<link rel="sitemap" href="/sitemap-index.xml" />
 <!-- Favicon -->
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
@@ -23,8 +26,6 @@ const { title, description = "TMOX" } = Astro.props;
 <meta property="twitter:card" content="summary" />
 <meta property="twitter:title" content={title} />
 {description && <meta property="twitter:description" content={description} />}
-
-<!-- <GoogleAnalytics id="G-V24HSVJPKE" /> -->
 
 <!-- Google tag (gtag.js) -->
 <script
@@ -41,7 +42,3 @@ const { title, description = "TMOX" } = Astro.props;
     gtag("config", "G-V24HSVJPKE");
 </script>
 
-<script
-    defer
-    src="https://cdn.jsdelivr.net/npm/@alpinejs/intersect@3.x.x/dist/cdn.min.js"
-></script>

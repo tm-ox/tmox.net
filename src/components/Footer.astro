@@ -3,6 +3,7 @@ import { getEntry } from "astro:content";
 import { Image } from "astro:assets";
 
 const page = await getEntry("pages", "index");
+if (!page) throw new Error("Missing content entry: pages/index");
 ---
 
 <p class="mr-1 text-xs w-fit">Made with:</p>

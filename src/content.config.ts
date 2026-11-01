@@ -1,8 +1,11 @@
-import { defineCollection, z } from "astro:content";
+import { defineCollection } from "astro:content";
+import { glob } from "astro/loaders";
+import { z } from "astro/zod";
 
 export const collections = {
 
   pages: defineCollection({
+    loader: glob({ pattern: "**/[^_]*.md", base: "./src/content/pages" }),
     schema: ({ image }) =>
       z.object({
         title: z.string(),
@@ -13,9 +16,7 @@ export const collections = {
         sub1: z.string(),
         sub1skills: z.array(
           z.object({
-            icon: image().refine((img) => img.width >= 20, {
-              message: "Image must be at least 20 pixels wide!",
-            }).optional(),
+            icon: image().optional(),
             name: z.string(),
             link: z.string().optional(),
           })
@@ -24,18 +25,14 @@ export const collections = {
         sub2: z.string(),
         sub2skills: z.array(
           z.object({
-            icon: image().refine((img) => img.width >= 100, {
-              message: "Image must be at least 100 pixels wide!",
-            }).optional(),
+            icon: image().optional(),
             name: z.string(),
             link: z.string().optional(),
           })
         ),
         tools: z.array(
           z.object({
-            icon: image().refine((img) => img.width >= 100, {
-              message: "Image must be at least 100 pixels wide!",
-            }).optional(),
+            icon: image().optional(),
             name: z.string(),
             link: z.string().optional(),
           })
@@ -44,6 +41,7 @@ export const collections = {
   }),
 
   work: defineCollection({
+    loader: glob({ pattern: "**/[^_]*.md", base: "./src/content/work" }),
     schema: ({ image }) =>
       z.object({
         order: z.string(),
@@ -54,26 +52,20 @@ export const collections = {
         type: z.string(),
         tools: z.array(
           z.object({
-            icon: image().refine((img) => img.width >= 100, {
-              message: "Image must be at least 100 pixels wide!",
-            }).optional(),
+            icon: image().optional(),
             name: z.string(),
             link: z.string().optional(),
           })
         ),
         description: z.string().optional(),
         cover: z.object({
-          src: image().refine((img) => img.width >= 300, {
-            message: "Cover image must be at least 300 pixels wide!",
-          }),
+          src: image(),
           alt: z.string(),
 
         }),
         images: z.array(
           z.object({
-            src: image().refine((img) => img.width >= 300, {
-              message: "Image must be at least 300 pixels wide!",
-            }),
+            src: image(),
             alt: z.string(),
             id: z.string().optional(),
             prev: z.string().optional(),

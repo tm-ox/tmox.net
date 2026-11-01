@@ -1,14 +1,15 @@
 ---
-import { getEntry, getCollection } from "astro:content";
+import { getEntry, getCollection, render } from "astro:content";
 import { Image } from "astro:assets";
-import { Icon } from "astro-icon";
+import { Icon } from "astro-icon/components";
 import Layout from "../layouts/Layout.astro";
 import TabNav from "../components/TabNav.astro";
 import Contact from "../components/Contact.astro";
 import Fade from "../components/Fade.astro";
 
 const page = await getEntry("pages", "index");
-const { Content } = await page.render();
+if (!page) throw new Error("Missing content entry: pages/index");
+const { Content } = await render(page);
 const data = page.data;
 
 const work = await getCollection("work");
@@ -83,7 +84,7 @@ work.sort((a, b) => Date.parse(a.data.order) - Date.parse(b.data.order));
                 work.map((work) => (
                     <Fade>
                         <a
-                            href={`/work/${work.slug}`}
+                            href={`/work/${work.id}`}
                             class="rounded-md shadow-md hover:scale-[0.98] ease-out duration-[1000ms] transition-all"
                         >
                             <Image

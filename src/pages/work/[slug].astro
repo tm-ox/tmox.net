@@ -1,7 +1,7 @@
 ---
 import { getCollection } from "astro:content";
 import { Image } from "astro:assets";
-import { Icon } from "astro-icon";
+import { Icon } from "astro-icon/components";
 import Layout from "../../layouts/Layout.astro";
 import TabNav from "../../components/TabNav.astro";
 import Images from "../../components/Images.astro";
@@ -10,14 +10,9 @@ import FadeOnce from "../../components/FadeOnce.astro";
 export async function getStaticPaths() {
     const collection = await getCollection("work");
     return collection.map((page) => ({
-        params: { slug: page.slug },
+        params: { slug: page.id },
         props: { page },
     }));
-}
-export async function getStaticProps({ params }: any) {
-    const project = await getCollection("work");
-    const page = project.find((p) => p.slug === params.slug);
-    return { props: { page } };
 }
 const { page } = Astro.props;
 const data = page.data;
