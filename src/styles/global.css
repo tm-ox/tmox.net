@@ -175,10 +175,11 @@
     --reel-h: min(clamp(6.5rem, 4rem + 9vw, 10.5rem), 16svh); /* project reel card height */
     --reel-pace: 6s; /* reel time per card: larger is slower */
     --rise: 700ms; /* hero entrance duration */
+    --hero-title-measure: 18ch; /* hero headline line length */
     --hero-leading: 1.1; /* hero headline line height (unitless; 1 = tight) */
     --brand-pt: 0rem; /* space above the logo/nav row */
     --brand-h: 3.5rem; /* height of the logo/nav row */
-    --pill-h: 3.25rem; /* nav pill height (2.75rem item + 2 x 0.25rem padding) */
+    --pill-h: calc(var(--ctl-h) + 2 * var(--space-1)); /* nav pill height: item + padding either side */
     /* Work list (Revision 3) */
     --row-thumb: clamp(6rem, 4.5rem + 4vw, 8.5rem); /* cover thumbnail width in work rows */
     --feat-split: 40%; /* home: share of the module taken by the project index; the stage gets the rest */
@@ -200,7 +201,7 @@
       --nav-clear: 0px;
       --brand-pt: 2rem;
       --brand-h: 4rem;
-      --pill-h: 2.75rem; /* from md the nav items are 2.25rem tall: 2.25 + 2 x 0.25rem padding */
+      --pill-h: calc(var(--ctl-h-sm) + 2 * var(--space-1)); /* from md the nav items are --ctl-h-sm tall */
     }
   }
   /* Logo row: sticky, so the logo and the nav pill (fixed on the same centre line) stay put.
@@ -406,7 +407,7 @@
     align-items: center;
     gap: var(--space-0_5);
     padding: var(--space-1);
-    border-radius: calc(var(--radius) + 0.25rem); /* nested: item radius + padding */
+    border-radius: calc(var(--radius) + var(--space-1)); /* nested: item radius + padding */
     background: var(--color-surface);
     box-shadow:
       0 0 0 1px var(--color-line),
@@ -558,6 +559,8 @@
     flex-direction: column;
     min-height: calc(100svh - var(--brand-pt) - var(--brand-h) - var(--nav-clear));
     padding-bottom: var(--space-10);
+    position: relative;
+    isolation: isolate;
   }
   /* Hero backdrop: the same real halftone as the Selected work stage, but of a soft light field
      instead of a photo. ::before is a large glowing blob (the "picture"), ::after the tiled cone
@@ -565,10 +568,6 @@
      glow and vanish at its edges, and #duotone (inline SVG in this page) colours them slate to orange.
      The blob breathes (opacity and scale only). Faint by design: text stays on top.
      Tunables: --hero-ht (pitch), --hero-dots-o (overall strength), --hero-pulse-t (breath period). */
-  .hero {
-    position: relative;
-    isolation: isolate;
-  }
   .hero-dots {
     position: absolute;
     /* reaches up behind the (transparent, at the top of the page) logo row, so the backdrop runs
@@ -631,10 +630,10 @@
   .hero-title {
     font-size: var(--hero-size);
     line-height: var(--hero-leading);
-    letter-spacing: -0.035em;
+    letter-spacing: var(--text-title--letter-spacing);
     font-weight: 800;
     color: var(--color-hi);
-    max-width: 18ch;
+    max-width: var(--hero-title-measure);
   }
   .hero-title .hl {
     color: var(--color-accent);
@@ -1044,8 +1043,8 @@
     position: absolute;
     inset: 0;
     pointer-events: none;
-    background-image: radial-gradient(circle at center, transparent calc(var(--feat-dot, 5px) * 0.3), var(--color-bg) calc(var(--feat-dot, 5px) * 0.34));
-    background-size: var(--feat-dot, 5px) var(--feat-dot, 5px);
+    background-image: radial-gradient(circle at center, transparent calc(var(--feat-dot) * 0.3), var(--color-bg) calc(var(--feat-dot) * 0.34));
+    background-size: var(--feat-dot) var(--feat-dot);
     opacity: var(--feat-dots, 0.4);
   }
 
@@ -1068,7 +1067,7 @@
     }
     .feat[data-screen="halftone"] .wimg:is([data-mode="cover"], [data-mode="contain"]) img,
     .feat[data-screen="halftone"] .wimg[data-mode="sheet"] img {
-      filter: grayscale(1) brightness(0.5) blur(calc(var(--feat-ht, 9px) * 0.55));
+      filter: grayscale(1) brightness(0.5) blur(calc(var(--feat-ht) * 0.55));
     }
     .feat[data-screen="halftone"] .wimg::after {
       content: "";
@@ -1080,9 +1079,9 @@
       background: radial-gradient(
           circle at center,
           #808080 0,
-          #000 calc(var(--feat-ht, 9px) * 0.7071)
+          #000 calc(var(--feat-ht) * 0.7071)
         )
-        0 0 / var(--feat-ht, 9px) var(--feat-ht, 9px);
+        0 0 / var(--feat-ht) var(--feat-ht);
     }
   }
 
@@ -1102,11 +1101,11 @@
     .feat .wmedia::after {
       content: "";
       position: absolute;
-      inset: calc(-1 * var(--feat-dot, 5px)); /* one pitch of overscan for the drift */
+      inset: calc(-1 * var(--feat-dot)); /* one pitch of overscan for the drift */
       z-index: 0; /* above the image, below the description label (z-index 1) */
       pointer-events: none;
-      background-image: radial-gradient(circle at center, transparent calc(var(--feat-dot, 5px) * 0.3), var(--color-bg) calc(var(--feat-dot, 5px) * 0.34));
-      background-size: var(--feat-dot, 5px) var(--feat-dot, 5px);
+      background-image: radial-gradient(circle at center, transparent calc(var(--feat-dot) * 0.3), var(--color-bg) calc(var(--feat-dot) * 0.34));
+      background-size: var(--feat-dot) var(--feat-dot);
       opacity: var(--feat-dots, 0.4);
     }
   }
@@ -1148,7 +1147,7 @@
     }
     @keyframes feat-dots {
       to {
-        transform: translate(var(--feat-dot, 5px), var(--feat-dot, 5px));
+        transform: translate(var(--feat-dot), var(--feat-dot));
       }
     }
   }

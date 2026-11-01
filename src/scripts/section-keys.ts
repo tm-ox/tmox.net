@@ -45,7 +45,7 @@ if (sections.length) {
       // If the current section's top is above the line, k first returns to that top.
       const i = current();
       const top = sections[i].getBoundingClientRect().top;
-      go(top < -4 ? i : i - 1);
+      go(top < probe() - 24 - 4 ? i : i - 1); // probe() - 24 is where a section lands
     } else if (e.key === "G") {
       e.preventDefault();
       scrollTo({ top: document.documentElement.scrollHeight, behavior: behavior() });
