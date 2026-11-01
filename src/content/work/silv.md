@@ -1,6 +1,5 @@
 ---
-order: 12
-draft: true
+order: 16
 title: "Silvagenitus"
 client: "Silvagenitus"
 website: "silvagenitus.com"

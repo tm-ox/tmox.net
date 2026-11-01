@@ -1,5 +1,5 @@
 ---
-const { class: className = "size-logo", knock = "var(--color-bg)" } = Astro.props;
+const { class: className = "size-logo" } = Astro.props;
 ---
 
 <svg
@@ -8,7 +8,7 @@ const { class: className = "size-logo", knock = "var(--color-bg)" } = Astro.prop
   class={className}
   aria-hidden="true"
   focusable="false"
-  ><circle cx="500.45" cy="500.45" r="500.45" fill="currentColor"></circle><path
+  ><defs><radialGradient id="logo-grad" cx="500" cy="494.61" r="459.21" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#1e293b"/><stop offset="0.36" stop-color="#1e293b" stop-opacity="0.96"/><stop offset="0.58" stop-color="#1e293b" stop-opacity="0.82"/><stop offset="0.76" stop-color="#1e293b" stop-opacity="0.57"/><stop offset="0.92" stop-color="#1e293b" stop-opacity="0.23"/><stop offset="1" stop-color="#1e293b" stop-opacity="0"/></radialGradient></defs><circle cx="500.45" cy="500.45" r="500.45" fill="currentColor"></circle><path
     d="M932.22,426.19c-12.49,14.37-26.47,30.76-31.06,36.44l-4.8,4.79A146.56,146.56,0,0,1,689.09,260.15l4.8-4.8c5.67-4.59,27.51-23.3,48.53-41.59L767.47,192c21-18.28,18.67-45-5.21-59.29,0,0-145.47-87.27-262.26-87.27s-262.26,87.27-262.26,87.27c-23.88,14.33-26.23,41-5.21,59.29l25,21.79c21,18.29,42.86,37,48.53,41.59l4.8,4.8A146.56,146.56,0,0,1,103.64,467.42l-4.8-4.79c-4.59-5.68-18.57-22.07-31.06-36.44s-26.92-3.71-32.06,23.67c0,0-4.72,25.11-4.72,64.55,0,213.91,297.45,421.72,297.45,421.72,22.84,16,39.94,6.27,38-21.53l-8.1-116.38c-1.94-27.8-4.15-56.47-4.91-63.73V727.7a146.56,146.56,0,1,1,293.12,0v6.79c-.76,7.26-3,35.93-4.91,63.73l-8.1,116.38c-1.94,27.8,15.16,37.48,38,21.53,0,0,297.45-207.81,297.45-421.72,0-39.44-4.72-64.55-4.72-64.55C959.14,422.48,944.71,411.83,932.22,426.19Z"
-    fill={knock}></path></svg
+    fill="url(#logo-grad)"></path></svg
 >

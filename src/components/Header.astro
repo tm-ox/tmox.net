@@ -5,6 +5,14 @@ import Logo from "./Logo.astro";
 // Brand row (scrolls away) plus the floating nav pill: top right on desktop,
 // bottom centre below md (thumb reach). Labels always show at md+; below md only
 // the current, hovered or focused item shows its label. Styles: global.css "Site nav".
+// `tray`: optional secondary nav for a section's items (project pages): previous and next, plus a
+// centre link back to the section index. Previous and next wrap, so the arrows are never disabled.
+interface Tray {
+  prev: { href: string; title: string };
+  next: { href: string; title: string };
+  index: { href: string; label: string };
+}
+const { tray } = Astro.props as { tray?: Tray };
 const path = Astro.url.pathname;
 const onHome = path === "/";
 const onWork = path.startsWith("/work");
@@ -27,7 +35,7 @@ const current = (id: string) =>
 ---
 
 <header class="page brand-row flex items-center">
-  <a href="/" aria-label="TMOX, home" class="flex items-center gap-3 min-h-11">
+  <a href="/" aria-label="TMOX, home" class="flex items-center gap-3 min-h-11" data-astro-prefetch="hover">
     <Logo class="size-logo text-accent" />
     <span
       class="font-sans text-sm font-extrabold tracking-wordmark text-hi"
@@ -42,6 +50,7 @@ const current = (id: string) =>
             <a
               href={`/#${l.id}`}
               class="nav-item"
+              data-astro-prefetch="hover"
               data-spy={l.id}
               aria-current={current(l.id)}
             >
@@ -53,37 +62,53 @@ const current = (id: string) =>
         ))
       }
     </ul>
+    {
+      tray && (
+        <div class="tray" role="group" aria-label="Browse projects">
+          <a href={tray.prev.href} class="tray-item tray-arrow" data-astro-prefetch="hover" aria-label={`Previous project: ${tray.prev.title}`} title={tray.prev.title}>
+            <Icon name="ion:arrow-back" class="tray-ico" aria-hidden="true" />
+          </a>
+          <a href={tray.index.href} class="tray-item tray-index">{tray.index.label}</a>
+          <a href={tray.next.href} class="tray-item tray-arrow" data-astro-prefetch="hover" aria-label={`Next project: ${tray.next.title}`} title={tray.next.title}>
+            <Icon name="ion:arrow-forward" class="tray-ico" aria-hidden="true" />
+          </a>
+        </div>
+      )
+    }
   </nav>
 </header>
 
 <script>
   // Solid backing under the logo row (see global.css .brand-row). On the home page it only appears
   // once the hero is nearly gone, so the dot backdrop is not cut off while it is still on screen;
-  // elsewhere, as soon as the page moves.
+  // elsewhere, as soon as the page moves. Runs on every page load of the client router; the scroll
+  // listener is bound once and looks the hero up each time, the scroll-spy is rebuilt per page.
   const root = document.documentElement;
-  const hero = document.querySelector<HTMLElement>(".hero");
   const HERO_LEFT = 240; // px of hero still visible below the top when the backing switches on
-  const mark = () =>
+  const mark = () => {
+    const hero = document.querySelector<HTMLElement>(".hero");
     root.classList.toggle(
       "scrolled",
       hero ? hero.getBoundingClientRect().bottom < HERO_LEFT : window.scrollY > 4,
     );
-  mark();
-  addEventListener("scroll", mark, { passive: true });
+  };
 
   // Scroll-spy, home page only: mark the item whose section crosses mid-screen.
   const ids = ["top", "work", "services", "about", "contact"];
-  const sections = ids
-    .map((id) => document.getElementById(id))
-    .filter((el): el is HTMLElement => !!el);
-
-  if (sections.length === ids.length && "IntersectionObserver" in window) {
+  let spy: IntersectionObserver | undefined;
+  const watch = () => {
+    spy?.disconnect();
+    spy = undefined;
+    const sections = ids
+      .map((id) => document.getElementById(id))
+      .filter((el): el is HTMLElement => !!el);
+    if (sections.length !== ids.length || !("IntersectionObserver" in window)) return;
     const links = new Map(
       Array.from(document.querySelectorAll<HTMLElement>(".site-nav [data-spy]")).map(
         (a) => [a.dataset.spy!, a]
       )
     );
-    const io = new IntersectionObserver(
+    spy = new IntersectionObserver(
       (entries) => {
         for (const e of entries) {
           if (!e.isIntersecting) continue;
@@ -95,6 +120,22 @@ const current = (id: string) =>
       },
       { rootMargin: "-45% 0px -45% 0px" }
     );
-    sections.forEach((s) => io.observe(s));
+    sections.forEach((s) => spy!.observe(s));
+  };
+
+  const w = window as unknown as Record<string, boolean>;
+  if (!w.__tmoxHeader) {
+    w.__tmoxHeader = true;
+    addEventListener("scroll", mark, { passive: true });
+    const init = () => {
+      mark();
+      watch();
+    };
+    // The router swaps <html>'s attributes (dropping `scrolled`) before the new page is shown, so
+    // restore it then; the rest starts as soon as the document is parsed (page-load waits for `load`).
+    document.addEventListener("astro:after-swap", mark);
+    if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init, { once: true });
+    else init();
+    document.addEventListener("astro:page-load", init);
   }
 </script>

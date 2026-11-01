@@ -79,7 +79,7 @@ for (const s of data.services)
     <div class="sect-head"><h2 class="sect-title">Selected work</h2></div>
     <div class="sect-body">
       <div class="flex justify-end mb-4">
-        <a href="/work" class="link text-sm inline-flex items-center gap-1 whitespace-nowrap">
+        <a href="/work" class="link text-sm inline-flex items-center gap-1 whitespace-nowrap min-h-11">
           All {work.length} projects
           <Icon name="ion:arrow-forward" class="size-em" aria-hidden="true" />
         </a>
@@ -192,70 +192,102 @@ for (const s of data.services)
   // to the first project). Hovering or focusing a row picks it. With a mouse from 1024px the stage
   // also cycles on its own every CYCLE_MS, pausing while the pointer or focus is inside the module
   // or the tab or module is out of view, and never when the user prefers reduced motion.
+  // Runs on every page load of the client router; everything bound outside the page's own elements
+  // (window, document, media queries, the timer) is collected in `cleanups` and released before the
+  // next page replaces this one.
   const CYCLE_MS = 3200; // time each project stays on the stage
-  const wide = matchMedia("(min-width: 1024px) and (hover: hover)");
-  const calm = matchMedia("(prefers-reduced-motion: reduce)");
+  let cleanups: Array<() => void> = [];
 
-  for (const feat of document.querySelectorAll<HTMLElement>(".feat")) {
-    feat.style.setProperty("--feat-cycle", `${CYCLE_MS}ms`); // CSS ties the dot-screen fade to it
-    const rows = [...feat.querySelectorAll<HTMLElement>(".wrow")];
-    let current = Math.max(0, rows.findIndex((r) => r.classList.contains("is-on")));
-    // Sliding highlight (.feat-hl): placed under the active row; the first placement is instant.
-    const hl = feat.querySelector<HTMLElement>(".feat-hl");
-    const place = () => {
-      const on = rows[current];
-      if (!hl || !on) return;
-      hl.style.setProperty("--hl-y", `${on.offsetTop}px`);
-      hl.style.setProperty("--hl-h", `${on.offsetHeight}px`);
+  const setup = () => {
+    const wide = matchMedia("(min-width: 1024px) and (hover: hover)");
+    const calm = matchMedia("(prefers-reduced-motion: reduce)");
+    const on = <T extends EventTarget>(t: T, type: string, fn: EventListener) => {
+      t.addEventListener(type, fn);
+      cleanups.push(() => t.removeEventListener(type, fn));
     };
-    const pick = (i: number) => {
-      current = i;
-      rows.forEach((r, n) => r.classList.toggle("is-on", n === i));
-      place();
-    };
-    const mode = () => {
-      feat.classList.toggle("has-hl", wide.matches);
-      place();
-    };
-    mode();
-    requestAnimationFrame(() => requestAnimationFrame(() => feat.classList.add("hl-anim")));
-    wide.addEventListener("change", mode);
-    addEventListener("resize", place);
-    document.fonts?.ready.then(place); // row heights can change when the web font swaps in
-    rows.forEach((row, i) => {
-      row.addEventListener("pointerenter", () => pick(i));
-      row.addEventListener("focusin", () => pick(i));
-    });
 
-    let timer: number | undefined;
-    let visible = true;
-    let inside = false;
-    const stop = () => {
-      window.clearInterval(timer);
-      timer = undefined;
-    };
-    const sync = () => {
-      stop();
-      if (wide.matches && !calm.matches && visible && !inside && !document.hidden)
-        timer = window.setInterval(() => pick((current + 1) % rows.length), CYCLE_MS);
-    };
-    // Only the index rows pause the cycle (the stage image is not a target).
-    const list = feat.querySelector<HTMLElement>(".wlist-rows") ?? feat;
-    list.addEventListener("pointerenter", () => ((inside = true), sync()));
-    list.addEventListener("pointerleave", () => ((inside = false), sync()));
-    list.addEventListener("focusin", () => ((inside = true), sync()));
-    list.addEventListener("focusout", (e) => {
-      if (!list.contains(e.relatedTarget as Node | null)) {
-        inside = false;
+    for (const feat of document.querySelectorAll<HTMLElement>(".feat")) {
+      feat.style.setProperty("--feat-cycle", `${CYCLE_MS}ms`); // CSS ties the dot-screen fade to it
+      const rows = [...feat.querySelectorAll<HTMLElement>(".wrow")];
+      let current = Math.max(0, rows.findIndex((r) => r.classList.contains("is-on")));
+      // Sliding highlight (.feat-hl): placed under the active row; the first placement is instant.
+      const hl = feat.querySelector<HTMLElement>(".feat-hl");
+      const place = () => {
+        const row = rows[current];
+        if (!hl || !row) return;
+        hl.style.setProperty("--hl-y", `${row.offsetTop}px`);
+        hl.style.setProperty("--hl-h", `${row.offsetHeight}px`);
+      };
+      const pick = (i: number) => {
+        current = i;
+        rows.forEach((r, n) => r.classList.toggle("is-on", n === i));
+        place();
+      };
+      const mode = () => {
+        feat.classList.toggle("has-hl", wide.matches);
+        place();
+      };
+      mode();
+      requestAnimationFrame(() => requestAnimationFrame(() => feat.classList.add("hl-anim")));
+      on(wide, "change", mode);
+      on(window, "resize", place);
+      document.fonts?.ready.then(place); // row heights can change when the web font swaps in
+      rows.forEach((row, i) => {
+        row.addEventListener("pointerenter", () => pick(i));
+        row.addEventListener("focusin", () => pick(i));
+      });
+
+      let timer: number | undefined;
+      let visible = true;
+      let inside = false;
+      const stop = () => {
+        window.clearInterval(timer);
+        timer = undefined;
+      };
+      const sync = () => {
+        stop();
+        if (wide.matches && !calm.matches && visible && !inside && !document.hidden)
+          timer = window.setInterval(() => pick((current + 1) % rows.length), CYCLE_MS);
+      };
+      cleanups.push(stop);
+      // Only the index rows pause the cycle (the stage image is not a target).
+      const list = feat.querySelector<HTMLElement>(".wlist-rows") ?? feat;
+      list.addEventListener("pointerenter", () => ((inside = true), sync()));
+      list.addEventListener("pointerleave", () => ((inside = false), sync()));
+      list.addEventListener("focusin", () => ((inside = true), sync()));
+      list.addEventListener("focusout", (e) => {
+        if (!list.contains((e as FocusEvent).relatedTarget as Node | null)) {
+          inside = false;
+          sync();
+        }
+      });
+      on(document, "visibilitychange", sync);
+      on(wide, "change", sync);
+      on(calm, "change", sync);
+      const io = new IntersectionObserver((entries) => {
+        visible = entries.some((e) => e.isIntersecting);
         sync();
-      }
-    });
-    document.addEventListener("visibilitychange", sync);
-    wide.addEventListener("change", sync);
-    calm.addEventListener("change", sync);
-    new IntersectionObserver((entries) => {
-      visible = entries.some((e) => e.isIntersecting);
-      sync();
-    }).observe(feat);
+      });
+      io.observe(feat);
+      cleanups.push(() => io.disconnect());
+    }
+  };
+
+  const teardown = () => {
+    cleanups.forEach((fn) => fn());
+    cleanups = [];
+  };
+
+  const w = window as unknown as Record<string, boolean>;
+  if (!w.__tmoxStage) {
+    w.__tmoxStage = true;
+    const boot = () => {
+      teardown();
+      setup(); // safe to repeat: it releases what the previous run bound
+    };
+    if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot, { once: true });
+    else boot();
+    document.addEventListener("astro:page-load", boot);
+    document.addEventListener("astro:before-swap", teardown);
   }
 </script>

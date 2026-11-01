@@ -1,5 +1,5 @@
 ---
-order: 2
+order: 13
 title: "Nags to Riches catalogue"
 client: "Nags to Riches"
 website: "nagstoriches.com.au"
@@ -11,7 +11,7 @@ role: "Catalogue design"
 deliverables:
   - "Front and back cover"
   - "Seven product spreads"
-description: "Product catalogue for an Australian professional equine product company, laid out in InDesign."
+description: "Catalogue for Australian professional equine product company Nags to Riches."
 summary: "Product catalogue for Nags to Riches, an Australian professional equine product company, laid out in InDesign. A photographic front cover, seven spreads and a back cover that points readers to the website. Products are cut out on white with short copy, and every spread carries a coloured footer tab naming its range: coat & skin, mane & tail, plait, band & braid, washing, brushes, rider accessories."
 tools:
   - name: "Adobe InDesign"
@@ -34,24 +34,24 @@ images:
     caption: "Spread: welcome to the range"
     kind: art
   - src: ./ntr/NTR001-Brochure-3.png
-    alt: "Nags to Riches catalogue spread: coat & skin, mane & tail"
-    caption: "Spread: coat & skin, mane & tail"
+    alt: "Nags to Riches catalogue spread: coat and skin, mane and tail"
+    caption: "Spread: coat and skin, mane and tail"
     kind: art
   - src: ./ntr/NTR001-Brochure-4.png
-    alt: "Nags to Riches catalogue spread: plait, band & braid"
-    caption: "Spread: plait, band & braid"
+    alt: "Nags to Riches catalogue spread: plait, band and braid"
+    caption: "Spread: plait, band and braid"
     kind: art
   - src: ./ntr/NTR001-Brochure-5.png
     alt: "Nags to Riches catalogue spread: plait, cut"
     caption: "Spread: plait, cut"
     kind: art
   - src: ./ntr/NTR001-Brochure-6.png
-    alt: "Nags to Riches catalogue spread: washing, makeup & tools"
-    caption: "Spread: washing, makeup & tools"
+    alt: "Nags to Riches catalogue spread: washing, makeup and tools"
+    caption: "Spread: washing, makeup and tools"
     kind: art
   - src: ./ntr/NTR001-Brochure-7.png
-    alt: "Nags to Riches catalogue spread: makeup & tools, brushes"
-    caption: "Spread: makeup & tools, brushes"
+    alt: "Nags to Riches catalogue spread: makeup and tools, brushes"
+    caption: "Spread: makeup and tools, brushes"
     kind: art
   - src: ./ntr/NTR001-Brochure-8.png
     alt: "Nags to Riches catalogue spread: rider accessories, contact"

@@ -71,6 +71,11 @@
   --spacing-em: 1em; /* size-em: icon the size of its text */
   --spacing-em-sm: 0.9em; /* size-em-sm: slightly smaller inline icon */
   --radius-ctl: var(--radius); /* rounded-ctl: controls */
+
+  /* Vertical rhythm between the blocks of a standalone page (utilities mt-block-sm, mt-block, mt-block-lg, pt-block-sm) */
+  --spacing-block-sm: clamp(2rem, 1.6rem + 1vw, 2.5rem); /* close blocks: title area to summary, rule to its heading */
+  --spacing-block: clamp(3rem, 2.4rem + 1.5vw, 4rem); /* a new block: gallery, project navigation */
+  --spacing-block-lg: clamp(4rem, 3rem + 2.5vw, 6rem); /* a new part of the page: the call to action */
 }
 
 @utility z-skip {
@@ -179,11 +184,16 @@
     --hero-leading: 1.1; /* hero headline line height (unitless; 1 = tight) */
     --brand-pt: 0rem; /* space above the logo/nav row */
     --brand-h: 3.5rem; /* height of the logo/nav row */
+    --tray-over: 2rem; /* push a project page's title down by this where the tray would overlap it (md to 1299px) */
+    --tray-h: 2rem; /* tray item height (the main nav items are --ctl-h-sm) */
+    --sep-gap: 0.6em; /* space either side of a separator pipe (about double a plain space) */
+    --sect-gap: clamp(0.75rem, 0.4rem + 1.2vw, 1.5rem); /* space between a screen title and its content (every page and home section) */
+    --page-end: clamp(4rem, 3rem + 4vw, 6rem); /* space under the last content of a standalone page */
     --pill-h: calc(var(--ctl-h) + 2 * var(--space-1)); /* nav pill height: item + padding either side */
     /* Work list (Revision 3) */
     --row-thumb: clamp(6rem, 4.5rem + 4vw, 8.5rem); /* cover thumbnail width in work rows */
     --feat-split: 40%; /* home: share of the module taken by the project index; the stage gets the rest */
-    --feat-ar: 4 / 3; /* home: stage image shape (width / height) */
+    --feat-h: clamp(18rem, calc(100svh - 24rem), 30rem); /* home: module height (index and stage); fits one laptop screen with the title and link row */
     --feat-fade: 600ms; /* home: stage cross-fade between projects (was 200ms) */
     --feat-dots: 0.9; /* home: strength of the dot screen over the duotone (0 = none); was 0.4 */
     --feat-dot: 16px; /* home: plain dot screen pitch; was 5px (fine) */
@@ -283,6 +293,12 @@
     .page {
       --pad: var(--space-12);
     }
+  }
+
+  /* Separator pipe between inline items (ticket line, deliverables). One tune: --sep-gap. */
+  .sep {
+    margin-inline: var(--sep-gap);
+    color: var(--color-dim);
   }
 
   /* Ticket / meta text */
@@ -402,6 +418,156 @@
       right: max(var(--space-12), calc((100% - var(--page-max)) / 2));
     }
   }
+  /* Tray: a drawer attached to the nav pill, as wide as the pill, for moving between a section's items:
+     previous, the index, next. Pill and tray read as one object: the joining corners are squared and
+     one hairline divides them. From md the tray hangs below the pill; on phones the nav is at the
+     bottom of the screen, so it sits on top of the pill. It slides out of the pill on arrival.
+     Tunables: --tray-h. */
+  .site-nav {
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: stretch;
+  }
+  @media (min-width: 768px) {
+    .site-nav {
+      flex-direction: column;
+    }
+  }
+  .tray {
+    position: relative;
+    z-index: -1; /* behind the pill, so the slide-out starts from under it */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-0_5);
+    padding: var(--space-1);
+    border-radius: calc(var(--radius) + var(--space-1));
+    border-top-left-radius: 0; /* below md the tray is above the pill: joined edge is the bottom */
+    border-top-right-radius: 0;
+    background: var(--color-surface);
+    box-shadow:
+      0 0 0 1px var(--color-line),
+      0 10px 28px -10px rgb(0 0 0 / 0.7);
+  }
+  .tray-item {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: var(--tray-h);
+    min-width: var(--tray-h);
+    padding-inline: var(--space-3);
+    border-radius: var(--radius);
+    font-size: var(--text-sm);
+    line-height: var(--text-sm--line-height);
+    color: var(--color-dim);
+    transition: color var(--dur-fast) var(--ease-snap), background-color var(--dur-fast) var(--ease-snap);
+  }
+  .tray-index {
+    flex: 1;
+  }
+  @media (max-width: 767.98px) {
+    .tray-item {
+      min-height: var(--ctl-h); /* phone tap target */
+    }
+    /* Keep content and focus clear of the pill plus the tray stacked above it */
+    html:has(.tray) {
+      --nav-clear: calc(4.75rem + var(--ctl-h) + var(--space-3) + env(safe-area-inset-bottom));
+    }
+  }
+  @media (min-width: 768px) and (max-width: 1299.98px) {
+    html:has(.tray) .sect-title {
+      margin-top: var(--tray-over);
+    }
+  }
+  .tray-item:hover,
+  .tray-item:focus-visible {
+    background: var(--color-raised);
+    color: var(--color-hi);
+  }
+  .tray-ico {
+    width: var(--icon-md);
+    height: var(--icon-md);
+  }
+  /* The pill's joined corners square off when a tray is attached */
+  .site-nav:has(.tray) .site-nav-list {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+  @media (max-width: 767.98px) {
+    .tray {
+      border-radius: calc(var(--radius) + var(--space-1)) calc(var(--radius) + var(--space-1)) 0 0;
+    }
+    .site-nav:has(.tray) .site-nav-list {
+      border-radius: 0 0 calc(var(--radius) + var(--space-1)) calc(var(--radius) + var(--space-1));
+    }
+  }
+  @media (min-width: 768px) {
+    .tray {
+      border-radius: 0 0 calc(var(--radius) + var(--space-1)) calc(var(--radius) + var(--space-1));
+    }
+  }
+  /* Slide out of the pill and back into it. Page changes run through the client router, so the tray
+     is animated as a view transition: it only exists on one side of a navigation when you arrive at
+     or leave a project, and those are the cases that slide (project to project it stays put). The
+     tray's group is clipped along its joined edge, so it only shows once it is below the pill's lower
+     edge (above it on phones): it emerges from behind the pill rather than sliding over it, with no
+     fade. A direct page load shows it without the slide. */
+  @media (prefers-reduced-motion: no-preference) {
+    /* Clip only the joined edge (top; bottom on phones), so the tray cannot show above the pill, but
+       leave room on the other sides for its hairline and shadow. */
+    ::view-transition-group(nav-tray) {
+      clip-path: inset(0 -40px -40px -40px);
+    }
+    /* A tray on both pages (project to project) is the same object: no crossfade, no motion. */
+    ::view-transition-old(nav-tray):not(:only-child) {
+      display: none;
+    }
+    ::view-transition-new(nav-tray):not(:only-child) {
+      animation: none;
+    }
+    ::view-transition-new(nav-tray):only-child {
+      animation: tray-out var(--dur-slow) var(--ease-snap) both;
+    }
+    ::view-transition-old(nav-tray):only-child {
+      animation: tray-back var(--dur-slow) var(--ease-snap) both;
+    }
+    @keyframes tray-out {
+      from {
+        transform: translateY(-100%);
+      }
+    }
+    @keyframes tray-back {
+      to {
+        transform: translateY(-100%);
+      }
+    }
+    @media (max-width: 767.98px) {
+      ::view-transition-group(nav-tray) {
+        clip-path: inset(-40px -40px 0 -40px);
+      }
+      ::view-transition-new(nav-tray):only-child {
+        animation-name: tray-out-up;
+      }
+      ::view-transition-old(nav-tray):only-child {
+        animation-name: tray-back-down;
+      }
+      @keyframes tray-out-up {
+        from {
+            transform: translateY(100%);
+        }
+      }
+      @keyframes tray-back-down {
+        to {
+            transform: translateY(100%);
+        }
+      }
+    }
+  }
+  /* The pill's drop shadow would fall across the tray, so with a tray attached the pill keeps only its
+     hairline; the tray carries the one shadow, beneath the pair. */
+  .site-nav:has(.tray) .site-nav-list {
+    box-shadow: 0 0 0 1px var(--color-line);
+  }
   .site-nav-list {
     display: flex;
     align-items: center;
@@ -507,7 +673,6 @@
      Structure: .sect-head (grows to fill the space above the content; holds the sticky title),
      .sect-body (the content), and an equal spacer after it (.sect::after), so the content is centred. */
   .sect {
-    --sect-gap: clamp(1.25rem, 0.6rem + 2.4vw, 3rem); /* space kept between the title and the content */
     display: flex;
     flex-direction: column;
     padding-bottom: var(--sect-gap);
@@ -521,8 +686,7 @@
     padding-bottom: var(--sect-gap);
   }
   .sect-title {
-    position: sticky;
-    top: calc(var(--brand-pt) + var(--brand-h));
+    position: relative; /* standalone pages: scrolls with the page */
     z-index: var(--z-sticky);
     isolation: isolate;
     margin: 0;
@@ -533,6 +697,10 @@
     font-weight: 800;
     color: var(--color-accent);
   }
+  .sect .sect-title {
+    position: sticky; /* home sections only: pinned under the logo row */
+    top: calc(var(--brand-pt) + var(--brand-h));
+  }
   .sect-title::before {
     content: "";
     position: absolute;
@@ -540,6 +708,15 @@
     z-index: -1;
     pointer-events: none;
     background: var(--color-bg);
+  }
+  /* Standalone pages (/work, a project, 404, sent): the title is an h1.sect-title placed first, so it
+     sits exactly where the home section titles do, directly under the logo row. Content that follows
+     it takes .sect-after; the page itself takes .page-body. One tune each: --sect-gap, --page-end. */
+  .sect-after {
+    margin-top: var(--sect-gap);
+  }
+  .page-body {
+    padding-bottom: var(--page-end);
   }
   .sect-body {
     flex: none;
@@ -1207,11 +1384,11 @@
     .feat-stage::before {
       content: "";
       display: block;
-      aspect-ratio: var(--feat-ar);
+      height: var(--feat-h);
     }
     .feat .wrow-link {
       grid-template-columns: minmax(0, 1fr) auto;
-      padding: var(--space-2) var(--space-5);
+      padding: var(--space-1) var(--space-5);
     }
     /* The cover, lifted onto the stage. Hidden covers stay painted for one fade so the
        incoming one (on top) fades over it, then drop out of hit-testing. */
@@ -1265,17 +1442,19 @@
       line-height: var(--text-sm--line-height);
       font-weight: 600;
     }
-    /* Title and ticket line up with the label text, which sits after the dot. */
-    .feat .wrow-text > :not(.wrow-no) {
+    /* Active marker: a dot centred on the title line (22px = text-base leading-snug), the text
+       indented to clear it. The home stage rows carry no number. */
+    .feat .wrow-text {
+      position: relative;
       padding-left: calc(6px + var(--space-2));
     }
-    .feat .wrow-no::before {
+    .feat .wrow-text::before {
       content: "";
-      display: inline-block;
+      position: absolute;
+      left: 0;
+      top: 8px;
       width: 6px;
       height: 6px;
-      margin-right: var(--space-2);
-      vertical-align: 0.1em;
       border-radius: 50%;
       background: var(--color-accent);
       opacity: 0;
@@ -1311,12 +1490,11 @@
     .feat.has-hl .wrow .wrow-link {
       background: transparent !important;
     }
-    .feat .wrow-no,
     .feat .wrow-arrow,
     .feat .index-title {
       transition: color var(--feat-fade) ease-in-out;
     }
-    .feat .wrow-no::before {
+    .feat .wrow-text::before {
       transition: opacity var(--feat-fade) ease-in-out;
     }
     /* On: the hovered or focused row, else the remembered one. A hovered row beats a focused one. */
@@ -1340,18 +1518,11 @@
     .feat:has(.wrow:hover) .wrow:not(:hover) .wrow-link {
       background: transparent;
     }
-    .feat .wrow:is(:hover, :focus-within) .wrow-no,
-    .feat:not(:has(.wrow:is(:hover, :focus-within))) .wrow.is-on .wrow-no {
-      color: var(--color-hi);
-    }
-    .feat .wrow:is(:hover, :focus-within) .wrow-no::before,
-    .feat:not(:has(.wrow:is(:hover, :focus-within))) .wrow.is-on .wrow-no::before {
+    .feat .wrow:is(:hover, :focus-within) .wrow-text::before,
+    .feat:not(:has(.wrow:is(:hover, :focus-within))) .wrow.is-on .wrow-text::before {
       opacity: 1;
     }
-    .feat:has(.wrow:hover) .wrow:not(:hover) .wrow-no {
-      color: var(--color-dim);
-    }
-    .feat:has(.wrow:hover) .wrow:not(:hover) .wrow-no::before {
+    .feat:has(.wrow:hover) .wrow:not(:hover) .wrow-text::before {
       opacity: 0;
     }
   }
@@ -1551,8 +1722,17 @@
   #lightbox[open] {
     animation: lb-in var(--dur) var(--ease-snap);
   }
-  @view-transition {
-    navigation: auto;
+  /* Page transitions run through the client router (<ClientRouter /> in Layout). The header pieces keep a name of their own, so they stay put through the page crossfade instead of
+     dissolving with the rest of the page (that read as a flash). The tray is named separately: it only
+     exists on some pages and fades in or out on its own. */
+  .brand-row {
+    view-transition-name: brand-row;
+  }
+  .site-nav-list {
+    view-transition-name: site-nav;
+  }
+  .tray {
+    view-transition-name: nav-tray;
   }
   ::view-transition-group(root) {
     animation-duration: var(--dur);

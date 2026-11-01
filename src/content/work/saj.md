@@ -1,5 +1,5 @@
 ---
-order: 1
+order: 14
 title: "Share A Jet"
 client: "Share A Jet"
 type: "UI design"
@@ -10,8 +10,8 @@ deliverables:
   - "Desktop pages"
   - "Mobile pages"
   - "UI style sheet"
-description: "UI design for a private jet charter company, desktop and mobile, designed in Penpot."
-summary: "UI design for Share A Jet, a private jet charter company whose pitch sits in its own headline: fly private for less, dogs welcome. I designed the desktop and mobile pages in Penpot: the home page, the luxury and pet-travel sections, popular routes, the aircraft table, testimonials and footer, plus a style sheet of colours, type, buttons and image treatments."
+description: "UI design for American jet share booking service Share A Jet, desktop and mobile."
+summary: "UI design for Share A Jet, an American jet share booking service. I designed the desktop and mobile pages: the home page, the luxury and pet-travel sections, popular routes, the aircraft table, testimonials and footer, plus a style sheet of colours, type, buttons and image treatments."
 tools:
   - name: "Penpot"
     link: "https://penpot.app"

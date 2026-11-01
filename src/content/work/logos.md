@@ -1,5 +1,5 @@
 ---
-order: 3
+order: 1
 featured: true
 featuredOrder: 1
 title: "Logo design"
@@ -33,7 +33,7 @@ cover:
     - ./logos/imogen.png
 # Home stage image: the O'Divine mark alone, instead of the six-logo sheet (the sheet is still the cover elsewhere).
 feature:
-  src: ./logos/odivine-e.png
+  src: ./logos/lupa.png
   position: "50% 46%"
 rows: [18]
 images:

@@ -4,12 +4,12 @@ import { Icon } from "astro-icon/components";
 import type { Work } from "../lib/work";
 import Ticket from "./Ticket.astro";
 
-// One row of a work list (global.css "Work list"): cover, No. (or a label), title, ticket, arrow.
+// One row of a work list (global.css "Work list"): cover, optional label, title, ticket, arrow.
 // Used by the home "Selected work" stage, the /work index and project prev/next.
 // `stage`: the cover is drawn large in the module's stage (home); elsewhere it is a thumbnail.
 interface Props {
   entry: Work;
-  label?: string; // replaces "No.07", e.g. "Previous"
+  label?: string; // small line above the title, e.g. "Previous"
   as?: "h2" | "h3" | "span";
   stage?: boolean;
   on?: boolean; // the row whose cover the stage shows first
@@ -68,8 +68,8 @@ const widths = stage ? [240, 480, 800, 1200, 1600, 2400] : [160, 320];
       }
     </div>
     <div class="wrow-text">
-      <p class="meta wrow-no" id={`${uid}-n`}>{label ?? `No.${String(data.order).padStart(2, "0")}`}</p>
-      <Tag class={`mt-1 block font-bold ${stage ? "text-base leading-snug" : "text-lead leading-snug"}`}>
+      {label && <p class="meta wrow-no" id={`${uid}-n`}>{label}</p>}
+      <Tag class={`${stage || !label ? "" : "mt-1 "}block font-bold ${stage ? "text-base leading-snug" : "text-lead leading-snug"}`}>
         <span class="index-title" id={`${uid}-t`}>{data.title}</span>
       </Tag>
       <Ticket entry={entry} variant="short" class="mt-1" id={`${uid}-m`} />

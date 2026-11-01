@@ -1,7 +1,7 @@
 ---
 order: 4
 featured: true
-featuredOrder: 4
+featuredOrder: 2
 title: "Oxen Free"
 client: "Oxen Free"
 website: "oxenfree.net"
@@ -17,7 +17,7 @@ deliverables:
   - "Membership card"
   - "Instagram templates"
 description: "Identity, display alphabet and collateral for a bar & kitchen in Yogyakarta."
-summary: "Identity and collateral for Oxen Free, a bar & kitchen in Yogyakarta. A minimal logo and a badge version, a custom display alphabet, a menu, membership cards, and Instagram post and story templates for events, all held to one orange-on-black palette. Made in Illustrator and InDesign."
+summary: "Identity and collateral for Oxen Free, a bar & kitchen in Yogyakarta. A minimal logo and a badge version, a custom display alphabet, a menu, membership cards, and Instagram post and story templates for events, all held to one orange-on-black palette. Made in Illustrator and InDesign. Ongoing management and development of the identity over multiple years, with designs produced weekly for the venue's entertainment program and social media."
 tools:
   - name: "Adobe Illustrator"
     link: "https://www.adobe.com/products/illustrator.html"
@@ -30,6 +30,9 @@ cover:
   position: "50% 50%"
   mat: black
   mobileAspect: "4/3"
+feature:
+  src: ./oxen-free/ox-igfeed-ayash2.png
+  position: "50% 50%"
 rows: [2, 2, 2, 2]
 images:
   - src: ./oxen-free/ox-logo-min.png
@@ -39,7 +42,7 @@ images:
     mat: black
   - src: ./oxen-free/ox-logo-max.png
     alt: "Oxen Free badge logo"
-    caption: "Logo, badge"
+    caption: "Maximal logo"
     kind: art
     mat: black
   - src: ./oxen-free/ox-type.png

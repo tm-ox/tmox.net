@@ -2,12 +2,12 @@ import { getCollection, type CollectionEntry } from "astro:content";
 
 export type Work = CollectionEntry<"work">;
 
-// Published projects sorted by `order`. Drafts are included only outside production builds.
+// Published projects sorted by `order`. Drafts are hidden everywhere; to preview them in the dev
+// server only, start it with SHOW_DRAFTS=1 (e.g. `SHOW_DRAFTS=1 npm run dev`).
+const SHOW_DRAFTS = import.meta.env.DEV && !!process.env.SHOW_DRAFTS;
 export async function getWork() {
-  const all = await getCollection("work", ({ data }) =>
-    import.meta.env.PROD ? !data.draft : true
-  );
-  // `order` drives the sequence, prev/next and the "No." label: it must be unique among published projects.
+  const all = await getCollection("work", ({ data }) => SHOW_DRAFTS || !data.draft);
+  // `order` drives the sequence, and prev/next (never shown): it must be unique among published projects.
   const seen = new Map<number, string>();
   for (const w of all) {
     if (w.data.draft) continue;

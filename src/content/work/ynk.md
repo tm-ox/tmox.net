@@ -1,7 +1,5 @@
 ---
-order: 8
-featured: true
-featuredOrder: 6
+order: 11
 title: "Yes No Klub"
 client: "Yes No Klub"
 website: "yesnoklub.net"

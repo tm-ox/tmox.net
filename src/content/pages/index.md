@@ -3,9 +3,9 @@ title: "TMOX | Brand, print and web design"
 description: "Freelance designer for brand identity, print and document design, and websites and app interfaces. Twenty years in studios, agencies and on my own."
 hero:
   kicker: "Freelance designer · Brand, print, web"
-  title: "Logos, print and websites from one designer."
-  accent: "one designer."
-  lead: "I design identities, documents and interfaces, and I build the websites too. You deal with one person, from the first sketch to the file that goes to print or the page that goes live."
+  title: "Brand, print, UI & UX, crafted with care."
+  accent: "crafted with care."
+  lead: "Designing and building identities, documents and interfaces. You deal with one person, from the first sketch to the file that goes to print or the page that goes live."
   availability: "Taking new projects · Replies within one working day (UTC+7)"
 services:
   - id: brand

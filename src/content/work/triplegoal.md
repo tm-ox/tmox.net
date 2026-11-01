@@ -1,7 +1,7 @@
 ---
-order: 5
+order: 9
 featured: true
-featuredOrder: 5
+featuredOrder: 4
 title: "TripleGoal"
 client: "TripleGoal"
 website: "triplegoal.com"
@@ -14,8 +14,8 @@ deliverables:
   - "Logo, stacked and horizontal"
   - "Platform UI, desktop"
   - "Platform UI, mobile"
-description: "Logo and platform UI for a corporate behaviour management platform, designed in Figma."
-summary: "Logo and platform UI for TripleGoal, a corporate behaviour management platform. In Figma I designed the sign-in, the assessments and evaluations dashboard, the Triple Goal board and the growth matrix, each for desktop and mobile, along with the stacked and horizontal versions of the logo that head every screen."
+description: "Logo, UI/UX and template design for the international leadership development platform TripleGoal."
+summary: "Logo, UI/UX and template design for TripleGoal, an international leadership development platform. The work covered a new brand, application across social media templates, a website refresh and extensive UI/UX design. In Figma I designed the sign-in, the assessments and evaluations dashboard, the Triple Goal board and the growth matrix, each for desktop and mobile, along with the stacked and horizontal versions of the logo that head every screen."
 tools:
   - name: "Figma"
     link: "https://figma.com"
@@ -66,7 +66,7 @@ images:
     kind: mobile
   - src: ./tg/TG-Logo.webp
     alt: "TripleGoal logo, stacked"
-    caption: "Logo, stacked"
+    caption: "Stacked logo"
     kind: mark
   - src: ./tg/TG-Logo-H.webp
     alt: "TripleGoal logo, horizontal"

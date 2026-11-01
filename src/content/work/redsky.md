@@ -1,5 +1,5 @@
 ---
-order: 7
+order: 12
 title: "RedSky"
 client: "RedSky"
 website: "redsky.com.au"
@@ -7,7 +7,8 @@ link: "https://redsky.com.au"
 type: "Print design"
 discipline: [print]
 # year: (owner to supply)
-description: "Seven training cards for RedSky, a Melbourne learning and growth consultancy, laid out in InDesign."
+description: "Training cards for Australian corporate leadership company RedSky, laid out in InDesign."
+summary: "Seven training cards for RedSky, an Australian corporate leadership company, laid out in InDesign."
 tools:
   - name: "Adobe InDesign"
     link: "https://www.adobe.com/products/indesign.html"

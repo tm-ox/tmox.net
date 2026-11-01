@@ -3,8 +3,9 @@ import { getEntry } from "astro:content";
 import BaseHead from "../components/BaseHead.astro";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
+import { ClientRouter } from "astro:transitions";
 
-const { title, description, image, noindex } = Astro.props;
+const { title, description, image, noindex, tray } = Astro.props;
 const site = await getEntry("pages", "index");
 if (!site) throw new Error("Missing content entry: pages/index");
 ---
@@ -12,8 +13,13 @@ if (!site) throw new Error("Missing content entry: pages/index");
 <html lang="en" class="bg-bg text-text font-sans antialiased">
   <head>
     <script is:inline>
-      document.documentElement.classList.add("js");
+      // `js` gates the hidden states of the reveal effects. The router swaps <html>'s attributes on
+      // every navigation, which drops it, so it is put back after each swap.
+      const js = () => document.documentElement.classList.add("js");
+      js();
+      document.addEventListener("astro:after-swap", js);
     </script>
+    <ClientRouter />
     <BaseHead
       title={title}
       description={description}
@@ -27,7 +33,7 @@ if (!site) throw new Error("Missing content entry: pages/index");
       class="sr-only-focusable fixed top-2 left-2 z-skip bg-accent text-on-accent font-semibold text-sm px-3 py-2 rounded-ctl"
       >Skip to content</a
     >
-    <Header />
+    <Header tray={tray} />
     <main id="main">
       <slot />
     </main>
