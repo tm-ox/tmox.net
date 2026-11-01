@@ -1,61 +1,95 @@
-<form
-    name="contact"
-    method="POST"
-    action="/sent"
-    data-netlify="true"
-    data-netlify-honeypot="bot-field"
-    class="flex flex-col mx-auto w-full max-w-2xl"
->
-    <input type="hidden" name="form-name" value="contact" />
-    <div class="flex flex-col">
-        <div
-            class="flex flex-col py-4 px-3 mb-6 rounded-lg shadow-md bg-primary"
-        >
-            <label for="contact-name" class="sr-only">Name</label>
-            <input
-                id="contact-name"
-                type="text"
-                name="name"
-                placeholder="NAME"
-                autocomplete="name"
-                required
-                class="form autofill:bg-primary"
-            />
-            <label for="contact-email" class="sr-only">Email</label>
-            <input
-                id="contact-email"
-                type="email"
-                name="email"
-                placeholder="EMAIL"
-                autocomplete="email"
-                required
-                class="form"
-            />
-            <label for="contact-message" class="sr-only">Message</label>
-            <textarea
-                id="contact-message"
-                name="message"
-                placeholder="MESSAGE"
-                autocomplete="off"
-                required
-                class="pt-3 pb-0 mb-0 form"></textarea>
-            <p class="hidden">
-                <label>Leave this empty: <input name="bot-field" /></label>
-            </p>
-        </div>
-        <button class="submitButton shadow-3xl" type="submit">SUBMIT</button>
-    </div>
-</form>
+---
+import CopyEmail from "./CopyEmail.astro";
 
-<style>
-    @reference "../styles/global.css";
-    textarea {
-        @apply h-32 text-sm;
-    }
-    .form {
-        @apply mb-4 pt-2 md:pb-[10px] px-3 rounded-lg bg-background border-0 focus:border-0 focus:ring-2 focus:ring-inset focus:ring-primary focus:bg-background placeholder:text-primary placeholder:text-xs text-xs sm:text-sm font-medium tracking-wider;
-    }
-    .submitButton {
-        @apply self-center bg-primary text-sm font-bold text-background hover:bg-hover py-1 px-6 rounded-lg shadow-md;
-    }
-</style>
+const { email, title, lead, note } = Astro.props as {
+  email: string;
+  title: string;
+  lead: string;
+  note?: string;
+};
+const needs = [
+  ["logo", "Logo or identity"],
+  ["print", "Print"],
+  ["website", "Website"],
+  ["ui", "App or UI"],
+  ["other", "Something else"],
+];
+---
+
+<section
+  id="contact"
+  class="page py-16 md:py-24 xl:py-32 border-t border-line grid gap-12 md:grid-cols-12 md:gap-x-6"
+>
+  <div class="md:col-span-5">
+    <h2 class="text-h2 font-extrabold text-hi">{title}</h2>
+    <p class="mt-4 text-lead max-w-[40ch]">{lead}</p>
+    <p class="mt-8 flex flex-wrap items-center gap-x-2 gap-y-1">
+      <a href={`mailto:${email}`} class="link font-mono text-h3 text-hi break-all"
+        >{email}</a
+      >
+      <CopyEmail email={email} />
+    </p>
+    {note && <p class="mt-4 meta">{note}</p>}
+  </div>
+  <div class="md:col-span-6 md:col-start-7">
+    <form
+      name="contact"
+      method="POST"
+      action="/sent"
+      data-netlify="true"
+      data-netlify-honeypot="bot-field"
+      class="grid gap-6"
+    >
+      <input type="hidden" name="form-name" value="contact" />
+      <p hidden>
+        <label
+          >Leave this empty
+          <input name="bot-field" tabindex="-1" autocomplete="off" /></label
+        >
+      </p>
+      <div class="field">
+        <label for="c-name">Name</label>
+        <input id="c-name" name="name" autocomplete="name" required />
+      </div>
+      <div class="field">
+        <label for="c-email">Email</label>
+        <input
+          id="c-email"
+          name="email"
+          type="email"
+          autocomplete="email"
+          required
+        />
+      </div>
+      <fieldset class="field">
+        <legend>What do you need?</legend>
+        <div class="flex flex-wrap gap-2">
+          {
+            needs.map(([value, label]) => (
+              <label class="chip">
+                <input type="radio" name="need" value={value} /> {label}
+              </label>
+            ))
+          }
+        </div>
+      </fieldset>
+      <div class="field">
+        <label for="c-job"
+          >Upwork job link <span class="text-dim">(optional)</span></label
+        >
+        <input
+          id="c-job"
+          name="job"
+          type="url"
+          inputmode="url"
+          placeholder="https://www.upwork.com/jobs/…"
+        />
+      </div>
+      <div class="field">
+        <label for="c-msg">Message</label>
+        <textarea id="c-msg" name="message" rows="6" required></textarea>
+      </div>
+      <div><button class="btn-primary" type="submit">Send enquiry</button></div>
+    </form>
+  </div>
+</section>

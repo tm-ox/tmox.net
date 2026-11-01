@@ -1,21 +1,18 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import TabNav from "../components/TabNav.astro";
-import Fade from "../components/Fade.astro";
 ---
 
-<Layout title="TMOX - 404" noindex>
-    <p class="section-title">TMOX</p>
-    <div class="sm:-mt-2">
-        <TabNav />
-        <div class="flex items-center min-h-screen">
-            <Fade origin="sm:origin-top-left">
-                <div class="flex flex-row">
-                    <h1>salah..</h1>
-                    <h2>nothing here</h2>
-                </div>
-                <a href="/">BACK</a>
-            </Fade>
-        </div>
+<Layout title="Page not found · TMOX" noindex>
+  <section class="page py-24 md:py-32">
+    <p class="meta">Error 404</p>
+    <h1 class="mt-4 text-h1 font-extrabold text-hi">This page isn’t here.</h1>
+    <p class="mt-6 text-lead max-w-[48ch]">
+      The link is broken or the page has moved. Everything that’s live is in the
+      work index.
+    </p>
+    <div class="mt-8 flex flex-wrap gap-4">
+      <a class="btn-primary" href="/#work">See the work</a>
+      <a class="btn-secondary" href="/work">All projects</a>
     </div>
+  </section>
 </Layout>

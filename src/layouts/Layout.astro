@@ -1,15 +1,15 @@
 ---
+import { getEntry } from "astro:content";
 import BaseHead from "../components/BaseHead.astro";
-import Logo from "../components/Logo.astro";
+import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 
 const { title, description, image, noindex } = Astro.props;
+const site = await getEntry("pages", "index");
+if (!site) throw new Error("Missing content entry: pages/index");
 ---
 
-<html
-  lang="en"
-  class="tracking-wide bg-background text-primary font-jakarta scroll-smooth"
->
+<html lang="en" class="bg-bg text-text font-sans antialiased">
   <head>
     <script is:inline>
       document.documentElement.classList.add("js");
@@ -21,26 +21,17 @@ const { title, description, image, noindex } = Astro.props;
       noindex={noindex}
     />
   </head>
-  <body class="overflow-x-hidden relative">
+  <body>
     <a
       href="#main"
-      class="sr-only-focusable fixed top-2 left-2 z-[60] px-3 py-1 rounded-md bg-primary text-background text-sm font-bold"
+      class="sr-only-focusable fixed top-2 left-2 z-[60] bg-accent text-on-accent font-semibold text-sm px-3 py-2 rounded-[var(--radius-ctl)]"
       >Skip to content</a
     >
-    <!-- Background -->
-    <div class="bg-rings" aria-hidden="true"></div>
-    <!-- /Background -->
-    <main id="main" class="w-[95%] max-w-screen-xl mx-auto mb-16">
-      <header class="fixed top-[20px] sm:top-[30px] w-fit z-40">
-        <a href="/" aria-label="TMOX, home"><Logo /></a>
-      </header>
+    <Header />
+    <main id="main">
       <slot />
     </main>
-    <footer
-      class="flex flex-wrap gap-1 justify-center items-center pt-2 pb-1 w-screen bg-linear-to-b from-background via-secondary to-secondary"
-    >
-      <Footer />
-    </footer>
+    <Footer email={site.data.email} line={site.data.footer.line} />
     <script>
       import "../scripts/reveal.ts";
     </script>

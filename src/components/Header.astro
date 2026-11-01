@@ -1,0 +1,72 @@
+---
+import Logo from "./Logo.astro";
+
+const onWork = Astro.url.pathname.startsWith("/work");
+const links = [
+  { id: "work", label: "Work", href: "/#work", hide: false },
+  { id: "services", label: "Services", href: "/#services", hide: true },
+  { id: "about", label: "About", href: "/#about", hide: true },
+];
+---
+
+<header class="sticky top-0 z-40 bg-bg border-b border-line">
+  <div class="page flex h-14 items-center justify-between">
+    <a href="/" aria-label="TMOX, home" class="flex items-center gap-2">
+      <Logo class="size-[22px] text-accent" />
+      <span
+        class="font-sans text-[15px] font-extrabold tracking-[0.06em] text-hi"
+        aria-hidden="true">TMOX</span
+      >
+    </a>
+    <nav aria-label="Site">
+      <ul class="flex items-center gap-4 sm:gap-6">
+        {
+          links.map((l) => (
+            <li class={l.hide ? "hidden sm:block" : ""}>
+              <a
+                href={l.href}
+                class="nav-link"
+                data-spy={l.id}
+                aria-current={onWork && l.id === "work" ? "page" : undefined}
+                >{l.label}</a
+              >
+            </li>
+          ))
+        }
+        <li>
+          <a href="/#contact" class="btn-secondary btn-sm" data-spy="contact"
+            >Contact</a
+          >
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<script>
+  // Scroll-spy for the home page only: mark the nav link whose section crosses mid-screen.
+  const sections = ["work", "services", "about", "contact"]
+    .map((id) => document.getElementById(id))
+    .filter((el): el is HTMLElement => !!el);
+
+  if (sections.length && "IntersectionObserver" in window) {
+    const links = new Map(
+      Array.from(document.querySelectorAll<HTMLElement>("[data-spy]")).map(
+        (a) => [a.dataset.spy!, a]
+      )
+    );
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (!e.isIntersecting) continue;
+          links.forEach((a, id) => {
+            if (id === e.target.id) a.setAttribute("aria-current", "true");
+            else a.removeAttribute("aria-current");
+          });
+        }
+      },
+      { rootMargin: "-45% 0px -45% 0px" }
+    );
+    sections.forEach((s) => io.observe(s));
+  }
+</script>

@@ -1,0 +1,68 @@
+---
+import { Image } from "astro:assets";
+import { Icon } from "astro-icon/components";
+import Layout from "../../layouts/Layout.astro";
+import Ticket from "../../components/Ticket.astro";
+import { getWork } from "../../lib/work";
+
+const work = await getWork();
+---
+
+<Layout
+  title="All projects · TMOX"
+  description="Every published project: logos and identities, print, websites and app interfaces."
+>
+  <section class="page pt-10 md:pt-16 pb-16 md:pb-24">
+    <p class="meta">Index</p>
+    <h1 class="mt-3 text-h1 font-extrabold text-hi">All projects</h1>
+    <p class="mt-4 text-lead">Every published job, numbered.</p>
+    <ol class="mt-10 border-t border-line">
+      {
+        work.map((w) => {
+          const c = w.data.cover;
+          const contain = !!c.sheet || c.fit === "contain";
+          return (
+            <li>
+              <a
+                href={`/work/${w.id}`}
+                class="index-row group"
+                data-astro-prefetch="hover"
+              >
+                <div
+                  class="hidden md:block tile-media h-20 w-[120px]"
+                  data-mat={contain ? c.mat : "none"}
+                >
+                  <Image
+                    src={c.src}
+                    alt=""
+                    class={`size-full ${contain ? "object-contain p-[6%]" : "object-cover"}`}
+                    style={contain ? undefined : `object-position:${c.position}`}
+                    widths={[120, 240]}
+                    sizes="120px"
+                    loading="lazy"
+                  />
+                </div>
+                <p class="hidden md:block meta">
+                  No.{String(w.data.order).padStart(2, "0")}
+                </p>
+                <div class="md:contents">
+                  <h2 class="text-h3 font-bold text-hi">
+                    <span class="index-title">{w.data.title}</span>
+                  </h2>
+                  <Ticket entry={w} variant="short" class="mt-1 md:hidden" />
+                </div>
+                <p class="hidden md:block text-sm text-muted">{w.data.client}</p>
+                <p class="hidden md:block meta">{w.data.year ?? ""}</p>
+                <Icon
+                  name="ion:arrow-forward"
+                  class="index-arrow size-5"
+                  aria-hidden="true"
+                />
+              </a>
+            </li>
+          );
+        })
+      }
+    </ol>
+  </section>
+</Layout>

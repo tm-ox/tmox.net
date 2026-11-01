@@ -1,39 +1,48 @@
 ---
-order: 12
+order: 13
 draft: true
-title: Velocimeter
-client: Velocimeter
-website: vm-sosmed.netlify.app
-link: https://vm-sosmed.netlify.app
-type: Web Design
+title: "Velocimeter"
+client: "Velocimeter"
+website: "vm-sosmed.netlify.app"
+link: "https://vm-sosmed.netlify.app"
+type: "Web design"
+discipline: [web]
+# year: (owner to supply)
+description: "Twitter image generator for multichain liquidity protocol Velocimeter."
 tools:
-  - icon: ../assets/astro.png
-    name: Astro,
-    link: https://astro.build
-  - icon: ../assets/tailwind.png
-    name: Tailwindcss,
-    link: https://tailwindcss.com
-  - icon: ../assets/netlify.png
-    name: NetlifyCMS
-    link: https://v1.netlifycms.org
-description: Twitter image generator for multichain liquidity protocol Velocimeter.
-cover: { src: ./vm/vm-web-apr.png, alt: Velocimeter Social Media App }
+  - name: "Astro"
+    link: "https://astro.build"
+  - name: "Tailwind CSS"
+    link: "https://tailwindcss.com"
+  - name: "Netlify CMS"
+    link: "https://v1.netlifycms.org"
+cover:
+  src: ./vm/vm-web-apr.png
+  alt: "Velocimeter social media image generator"
+  fit: cover
+  position: "50% 50%"
+  mat: none
+  mobileAspect: "4/3"
+rows: [1, 1, 3]
 images:
   - src: ./vm/vm-web-home.png
-    alt: Home
-    size: lg
+    alt: "Velocimeter home page"
+    caption: "Home"
+    kind: screen
   - src: ./vm/vm-web-menu.png
-    alt: Menu
-    size: lg
+    alt: "Velocimeter menu"
+    caption: "Menu"
+    kind: screen
   - src: ./vm/vm-web-apr.png
-    alt: APR Template
-    size: lg
-    align: end
+    alt: "Velocimeter APR template"
+    caption: "APR template"
+    kind: screen
   - src: ./vm/vm-web-match.png
-    alt: Matched Bribe Template
-    size: lg
-    tall: true
+    alt: "Velocimeter matched bribe template"
+    caption: "Matched bribe template"
+    kind: screen
   - src: ./vm/vm-web-bribe.png
-    alt: Partner Bribe Template
-    size: lg
+    alt: "Velocimeter partner bribe template"
+    caption: "Partner bribe template"
+    kind: screen
 ---

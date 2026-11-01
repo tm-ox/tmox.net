@@ -1,0 +1,36 @@
+---
+import type { Work } from "../lib/work";
+
+interface Props {
+  entry: Work;
+  variant?: "full" | "short";
+  class?: string;
+}
+const LABEL = { brand: "Brand", print: "Print", web: "Web", ui: "UI" } as const;
+const { entry, variant = "full", class: className = "" } = Astro.props;
+const d = entry.data;
+const no = `No.${String(d.order).padStart(2, "0")}`;
+const disc = d.discipline.map((k) => LABEL[k]).join(" · ");
+const parts =
+  variant === "short"
+    ? [no, disc, d.year]
+    : [no, d.client, d.role ?? d.type, disc, d.year];
+const items = parts
+  .filter((p) => p !== undefined && p !== "")
+  .map((p) => String(p));
+---
+
+<p class={`meta ${className}`}>
+  {
+    items.map((p, i) => (
+      <>
+        {i > 0 && (
+          <span class="text-dim" aria-hidden="true">
+            {" / "}
+          </span>
+        )}
+        <span>{p}</span>
+      </>
+    ))
+  }
+</p>

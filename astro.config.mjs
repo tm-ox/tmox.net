@@ -10,14 +10,28 @@ export default defineConfig({
   fonts: [
     {
       provider: fontProviders.google(),
-      name: "Plus Jakarta Sans",
-      cssVariable: "--font-jakarta-sans",
-      weights: [200, 300, 400, 500, 600, 700, 800],
-      styles: ["normal", "italic"],
+      name: "Schibsted Grotesk",
+      cssVariable: "--font-schibsted",
+      weights: ["400 800"],
+      styles: ["normal"],
+      subsets: ["latin"],
       fallbacks: ["sans-serif"],
     },
+    {
+      provider: fontProviders.google(),
+      name: "IBM Plex Mono",
+      cssVariable: "--font-plex-mono",
+      weights: [400, 500],
+      styles: ["normal"],
+      subsets: ["latin"],
+      fallbacks: ["monospace"],
+    },
   ],
-  prefetch: { prefetchAll: true },
+  redirects: {
+    "/work/01-logos": "/work/logos",
+    "/work/02-tg": "/work/triplegoal",
+  },
+  prefetch: { prefetchAll: false, defaultStrategy: "hover" },
   integrations: [
     icon(),
     sitemap({

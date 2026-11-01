@@ -1,5 +1,5 @@
-// Fade/FadeOnce: toggle `.in` when [data-reveal] enters the viewport.
-// data-reveal="once" stays revealed; any other value reverses on leave.
+// Reveal once: add `.in` when a [data-reveal] element first enters the viewport.
+// Content stays visible without JS or with reduced motion (CSS gates the hidden state).
 const els = document.querySelectorAll<HTMLElement>("[data-reveal]");
 const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -8,13 +8,9 @@ if (!("IntersectionObserver" in window) || reduce) {
 } else {
   const io = new IntersectionObserver((entries) => {
     for (const e of entries) {
-      const el = e.target as HTMLElement;
-      if (e.isIntersecting) {
-        el.classList.add("in");
-        if (el.dataset.reveal === "once") io.unobserve(el);
-      } else if (el.dataset.reveal !== "once") {
-        el.classList.remove("in");
-      }
+      if (!e.isIntersecting) continue;
+      e.target.classList.add("in");
+      io.unobserve(e.target);
     }
   });
   els.forEach((el) => io.observe(el));

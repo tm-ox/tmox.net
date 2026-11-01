@@ -5,19 +5,39 @@ const links = Array.from(
   document.querySelectorAll<HTMLAnchorElement>("[data-lightbox]")
 );
 
+const MAT: Record<string, string> = {
+  dark: "#141414",
+  light: "#e8e8e8",
+  black: "#000000",
+  white: "#ffffff",
+};
+
 if (dialog && links.length && typeof dialog.showModal === "function") {
   const img = dialog.querySelector<HTMLImageElement>("[data-lb-img]")!;
   const caption = dialog.querySelector<HTMLElement>("[data-lb-caption]")!;
+  const count = dialog.querySelector<HTMLElement>("[data-lb-count]")!;
+  const stage = dialog.querySelector<HTMLElement>("[data-lb-stage]")!;
   let index = 0;
   let opener: HTMLElement | null = null;
+
+  const preload = (i: number) => {
+    const a = links[(i + links.length) % links.length];
+    new Image().src = a.href;
+  };
 
   const show = (i: number) => {
     index = (i + links.length) % links.length;
     const a = links[index];
-    const alt = a.querySelector("img")?.alt ?? "";
     img.src = a.href;
-    img.alt = alt;
-    caption.textContent = alt;
+    img.alt = a.querySelector("img")?.alt ?? "";
+    const mat = a.dataset.mat ?? "none";
+    img.style.background = MAT[mat] ?? "";
+    img.style.padding = MAT[mat] ? "6%" : "";
+    caption.textContent = a.dataset.caption ?? img.alt;
+    const num = a.dataset.num ?? String(index + 1).padStart(2, "0");
+    count.textContent = `${num} / ${String(links.length).padStart(2, "0")}`;
+    preload(index - 1);
+    preload(index + 1);
   };
 
   links.forEach((a, i) =>
@@ -40,14 +60,28 @@ if (dialog && links.length && typeof dialog.showModal === "function") {
     .querySelector("[data-lb-next]")!
     .addEventListener("click", () => show(index + 1));
 
-  // Backdrop: the dialog fills the viewport, so a click on itself is outside the content.
+  // Backdrop: the dialog fills the viewport, so a click on itself or the stage gap is outside the image.
   dialog.addEventListener("click", (e) => {
-    if (e.target === dialog) close();
+    if (e.target === dialog || e.target === stage) close();
   });
   dialog.addEventListener("keydown", (e) => {
     if (e.key === "ArrowLeft") show(index - 1);
     else if (e.key === "ArrowRight") show(index + 1);
   });
+
+  // Swipe on the stage.
+  let sx = 0;
+  let sy = 0;
+  stage.addEventListener("pointerdown", (e) => {
+    sx = e.clientX;
+    sy = e.clientY;
+  });
+  stage.addEventListener("pointerup", (e) => {
+    const dx = e.clientX - sx;
+    const dy = e.clientY - sy;
+    if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) show(index + (dx < 0 ? 1 : -1));
+  });
+
   dialog.addEventListener("close", () => {
     img.removeAttribute("src");
     opener?.focus();

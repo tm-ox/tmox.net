@@ -1,37 +1,50 @@
 ---
-order: 13
+order: 12
 draft: true
-title: Silvagenitus
-client: Silvagenitus
-website: silvagenitus.com
-link: https://silvagenitus.com
-type: Web Design
+title: "Silvagenitus"
+client: "Silvagenitus"
+website: "silvagenitus.com"
+link: "https://silvagenitus.com"
+type: "Web design"
+discipline: [web]
+# year: (owner to supply)
+description: "Website for boutique Australian wine producer."
 tools:
-  - icon: ../assets/next.png
-    name: React/Next,
-    link: https://nextjs.org
-  - icon: ../assets/tailwind.png
-    name: Tailwindcss
-    link: https://tailwindcss.com
-description: Website for boutique Australian wine producer.
-cover: { src: ./silv/silv-web-about.png, alt: Silvagenitus Website }
+  - name: "React/Next"
+    link: "https://nextjs.org"
+  - name: "Tailwind CSS"
+    link: "https://tailwindcss.com"
+cover:
+  src: ./silv/silv-web-about.png
+  alt: "Silvagenitus website"
+  fit: cover
+  position: "50% 0%"
+  mat: none
+  mobileAspect: "4/3"
+rows: [1, 2, 3]
 images:
   - src: ./silv/silv-web-home.png
-    alt: Home
-    size: full
+    alt: "Silvagenitus home page, desktop"
+    caption: "Home"
+    kind: screen
   - src: ./silv/silv-web-about.png
-    alt: About
-    size: lg
+    alt: "Silvagenitus about page, desktop"
+    caption: "About"
+    kind: screen
   - src: ./silv/silv-web-shop.png
-    alt: Shop
-    size: lg
+    alt: "Silvagenitus shop page, desktop"
+    caption: "Shop"
+    kind: screen
   - src: ./silv/silv-web-mobile-home.png
-    alt: Mobile - home
-    size: sm
+    alt: "Silvagenitus home page, mobile"
+    caption: "Home, mobile"
+    kind: mobile
   - src: ./silv/silv-web-mobile-menu.png
-    alt: Mobile - menu
-    size: sm
+    alt: "Silvagenitus menu, mobile"
+    caption: "Menu, mobile"
+    kind: mobile
   - src: ./silv/silv-web-mobile-shop.png
-    alt: Mobile - shop
-    size: sm
+    alt: "Silvagenitus shop page, mobile"
+    caption: "Shop, mobile"
+    kind: mobile
 ---
