@@ -36,7 +36,7 @@ const widths = stage ? [240, 480, 800, 1200, 1600, 2400] : [160, 320];
     href={`/work/${entry.id}`}
     class="wrow-link"
     data-astro-prefetch="hover"
-    aria-labelledby={`${uid}-t`}
+    aria-labelledby={label ? `${uid}-n ${uid}-t` : `${uid}-t`}
     aria-describedby={stage ? `${uid}-m ${uid}-d` : `${uid}-m`}
   >
     <div class="wmedia">
@@ -68,7 +68,7 @@ const widths = stage ? [240, 480, 800, 1200, 1600, 2400] : [160, 320];
       }
     </div>
     <div class="wrow-text">
-      <p class="meta wrow-no">{label ?? `No.${String(data.order).padStart(2, "0")}`}</p>
+      <p class="meta wrow-no" id={`${uid}-n`}>{label ?? `No.${String(data.order).padStart(2, "0")}`}</p>
       <Tag class="mt-1 block text-h3 font-bold">
         <span class="index-title" id={`${uid}-t`}>{data.title}</span>
       </Tag>

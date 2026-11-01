@@ -1,6 +1,16 @@
 import { defineCollection } from "astro:content";
 import { glob } from "astro/loaders";
 import { z } from "astro/zod";
+import { readdirSync, readFileSync } from "node:fs";
+
+// Drafts (`draft: true` in frontmatter) are excluded at the loader in production builds, so their
+// images are never processed or published. In dev they load, so they can be previewed.
+const WORK_DIR = "./src/content/work";
+const draftFiles = import.meta.env.PROD
+  ? readdirSync(WORK_DIR)
+      .filter((f) => f.endsWith(".md"))
+      .filter((f) => /^draft:\s*true\s*$/m.test(readFileSync(`${WORK_DIR}/${f}`, "utf8")))
+  : [];
 
 const mat = z.enum(["none", "dark", "light", "black", "white"]);
 const kind = z.enum(["screen", "mobile", "art", "mark", "photo"]);
@@ -44,7 +54,10 @@ export const collections = {
   }),
 
   work: defineCollection({
-    loader: glob({ pattern: "**/*.md", base: "./src/content/work" }),
+    loader: glob({
+      pattern: ["**/*.md", ...draftFiles.map((f) => `!${f}`)],
+      base: WORK_DIR,
+    }),
     schema: ({ image }) =>
       z.object({
         order: z.number().int(),

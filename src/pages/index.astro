@@ -199,6 +199,7 @@ for (const s of data.services)
     requestAnimationFrame(() => requestAnimationFrame(() => feat.classList.add("hl-anim")));
     wide.addEventListener("change", mode);
     addEventListener("resize", place);
+    document.fonts?.ready.then(place); // row heights can change when the web font swaps in
     rows.forEach((row, i) => {
       row.addEventListener("pointerenter", () => pick(i));
       row.addEventListener("focusin", () => pick(i));

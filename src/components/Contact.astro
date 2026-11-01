@@ -38,11 +38,11 @@ const needs = [
         >
       </p>
       <div class="field">
-        <label for="c-name">Name</label>
+        <label for="c-name">Name <span class="text-accent" aria-hidden="true">*</span></label>
         <input id="c-name" name="name" autocomplete="name" required />
       </div>
       <div class="field">
-        <label for="c-email">Email</label>
+        <label for="c-email">Email <span class="text-accent" aria-hidden="true">*</span></label>
         <input
           id="c-email"
           name="email"
@@ -64,7 +64,7 @@ const needs = [
         </div>
       </fieldset>
       <div class="field">
-        <label for="c-msg">Message</label>
+        <label for="c-msg">Message <span class="text-accent" aria-hidden="true">*</span></label>
         <textarea id="c-msg" name="message" rows="6" required></textarea>
       </div>
       <div><button class="btn-primary" type="submit">Send enquiry</button></div>

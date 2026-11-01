@@ -17,6 +17,8 @@ if (dialog && links.length && typeof dialog.showModal === "function") {
   const caption = dialog.querySelector<HTMLElement>("[data-lb-caption]")!;
   const count = dialog.querySelector<HTMLElement>("[data-lb-count]")!;
   const stage = dialog.querySelector<HTMLElement>("[data-lb-stage]")!;
+  const live = dialog.querySelector<HTMLElement>("[data-lb-live]");
+  stage.style.touchAction = "pan-y"; // vertical scroll stays native; horizontal swipes are ours
   let index = 0;
   let opener: HTMLElement | null = null;
 
@@ -36,6 +38,7 @@ if (dialog && links.length && typeof dialog.showModal === "function") {
     caption.textContent = a.dataset.caption ?? img.alt;
     const num = a.dataset.num ?? String(index + 1).padStart(2, "0");
     count.textContent = `${num} / ${String(links.length).padStart(2, "0")}`;
+    if (live) live.textContent = `${count.textContent}. ${caption.textContent}`;
     preload(index - 1);
     preload(index + 1);
   };
@@ -77,6 +80,7 @@ if (dialog && links.length && typeof dialog.showModal === "function") {
     sy = e.clientY;
   });
   stage.addEventListener("pointerup", (e) => {
+    if (e.pointerType === "mouse") return; // swipe is for touch and pen; a mouse drag is not a gesture
     const dx = e.clientX - sx;
     const dy = e.clientY - sy;
     if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) show(index + (dx < 0 ? 1 : -1));

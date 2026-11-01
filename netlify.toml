@@ -2,6 +2,22 @@
   command = "npm run build"
   publish = "dist"
 
+[build.environment]
+  NODE_VERSION = "22"
+
+# Real 301s for the renamed project slugs (Astro also emits meta-refresh stubs; force wins over them).
+[[redirects]]
+  from = "/work/01-logos"
+  to = "/work/logos/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/work/02-tg"
+  to = "/work/triplegoal/"
+  status = 301
+  force = true
+
 [[headers]]
   for = "/_astro/*"
   [headers.values]
@@ -12,5 +28,5 @@
   [headers.values]
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
-    X-Frame-Options = "DENY"
+    X-Frame-Options = "SAMEORIGIN"
     Permissions-Policy = "camera=(), microphone=(), geolocation=()"

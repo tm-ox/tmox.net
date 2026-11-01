@@ -6,7 +6,7 @@ Design portfolio. Astro 7, Tailwind CSS 4, astro-icon (Ion set). Static, hosted 
 
 | Command           | Action                                  |
 | :---------------- | :-------------------------------------- |
-| `npm install`     | Install dependencies (Node >= 22.12)    |
+| `npm install`     | Install dependencies (Node >= 22.23.4)    |
 | `npm run dev`     | Dev server at `localhost:4321`          |
 | `npm run build`   | Static build to `./dist/`               |
 | `npm run preview` | Preview the build                       |

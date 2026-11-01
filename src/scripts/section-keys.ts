@@ -29,15 +29,15 @@ if (sections.length) {
 
   let pendingG = 0;
   addEventListener("keydown", (e) => {
-    if (e.defaultPrevented || e.ctrlKey || e.metaKey || e.altKey) return;
+    if (e.defaultPrevented || e.ctrlKey || e.metaKey || e.altKey || e.repeat) return;
     const t = e.target as HTMLElement | null;
     if (t?.closest("input, textarea, select, [contenteditable]")) return;
     if (document.querySelector("dialog[open]")) return;
 
-    if (e.key === "j" || e.key === "J") {
+    if (e.key === "j") {
       e.preventDefault();
       go(current() + 1);
-    } else if (e.key === "k" || e.key === "K") {
+    } else if (e.key === "k") {
       e.preventDefault();
       // If the current section's top is above the line, k first returns to that top.
       const i = current();

@@ -166,7 +166,8 @@ const rows = counts.map((n) => {
   class="fixed inset-0 m-0 h-dvh w-dvw max-h-none max-w-none border-0 p-0 bg-backdrop/[0.97] text-text open:grid grid-rows-[56px_1fr_64px]"
 >
   <div class="page flex items-center justify-between">
-    <p class="meta text-text" data-lb-count aria-live="polite"></p>
+    <p class="meta text-text" data-lb-count></p>
+    <p class="sr-only" role="status" aria-live="polite" data-lb-live></p>
     <button
       type="button"
       class="btn-ghost btn-sm"
