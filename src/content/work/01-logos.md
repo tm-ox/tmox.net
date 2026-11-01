@@ -125,5 +125,5 @@ images:
     class: col-span-1 sm:col-span-6 md:col-span-4 lg:col-span-2
 url:
   prev: mjo
-  next: oxen
+  next: 02-tg
 ---
