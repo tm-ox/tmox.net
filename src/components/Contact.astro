@@ -1,18 +1,16 @@
 ---
-import CopyEmail from "./CopyEmail.astro";
 
-const { email, title, lead, note } = Astro.props as {
-  email: string;
+const { title, lead, note } = Astro.props as {
   title: string;
   lead: string;
   note?: string;
 };
 const needs = [
-  ["logo", "Logo or identity"],
+  ["logo", "Logo"],
   ["print", "Print"],
   ["website", "Website"],
   ["ui", "App or UI"],
-  ["other", "Something else"],
+  ["other", "Other"],
 ];
 ---
 
@@ -21,14 +19,8 @@ const needs = [
   class="page py-16 md:py-24 xl:py-32 border-t border-line grid gap-12 md:grid-cols-12 md:gap-x-6"
 >
   <div class="md:col-span-5">
-    <h2 class="text-h2 font-extrabold text-hi">{title}</h2>
+    <h2 class="text-h2 font-extrabold text-accent">{title}</h2>
     <p class="mt-4 text-lead max-w-[40ch]">{lead}</p>
-    <p class="mt-8 flex flex-wrap items-center gap-x-2 gap-y-1">
-      <a href={`mailto:${email}`} class="link font-mono text-h3 text-hi break-all"
-        >{email}</a
-      >
-      <CopyEmail email={email} />
-    </p>
     {note && <p class="mt-4 meta">{note}</p>}
   </div>
   <div class="md:col-span-6 md:col-start-7">
@@ -63,7 +55,7 @@ const needs = [
       </div>
       <fieldset class="field">
         <legend>What do you need?</legend>
-        <div class="flex flex-wrap gap-2">
+        <div class="chips">
           {
             needs.map(([value, label]) => (
               <label class="chip">
@@ -73,18 +65,6 @@ const needs = [
           }
         </div>
       </fieldset>
-      <div class="field">
-        <label for="c-job"
-          >Upwork job link <span class="text-dim">(optional)</span></label
-        >
-        <input
-          id="c-job"
-          name="job"
-          type="url"
-          inputmode="url"
-          placeholder="https://www.upwork.com/jobs/…"
-        />
-      </div>
       <div class="field">
         <label for="c-msg">Message</label>
         <textarea id="c-msg" name="message" rows="6" required></textarea>

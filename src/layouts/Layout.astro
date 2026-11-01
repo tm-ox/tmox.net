@@ -31,7 +31,7 @@ if (!site) throw new Error("Missing content entry: pages/index");
     <main id="main">
       <slot />
     </main>
-    <Footer email={site.data.email} line={site.data.footer.line} />
+    <Footer line={site.data.footer.line} />
     <script>
       import "../scripts/reveal.ts";
     </script>

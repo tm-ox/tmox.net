@@ -1,17 +1,22 @@
 ---
 import { getEntry } from "astro:content";
 import { Icon } from "astro-icon/components";
-import { getWork, getFeatured, GRID } from "../lib/work";
+import { getWork, getFeatured } from "../lib/work";
 import Layout from "../layouts/Layout.astro";
 import WorkTile from "../components/WorkTile.astro";
 import Contact from "../components/Contact.astro";
-import CopyEmail from "../components/CopyEmail.astro";
 
 const page = await getEntry("pages", "index");
 if (!page) throw new Error("Missing content entry: pages/index");
 const data = page.data;
 
 const work = await getWork();
+
+// Hero headline: split around the accent phrase (owner-editable in pages/index.md).
+const { title, accent } = data.hero;
+const at = accent ? title.indexOf(accent) : -1;
+if (accent && at < 0) throw new Error(`[home] hero.accent "${accent}" is not part of hero.title`);
+const head = at < 0 ? [title, "", ""] : [title.slice(0, at), accent!, title.slice(at + accent!.length)];
 const featured = getFeatured(work);
 
 // Every service proof slug must be a published project.
@@ -22,50 +27,45 @@ for (const s of data.services)
 ---
 
 <Layout title={data.title} description={data.description}>
-  <!-- Hero -->
-  <section id="top" class="page pt-12 pb-10 md:pt-16 md:pb-14">
-    <p class="meta">{data.hero.kicker}</p>
-    <h1 class="mt-4 text-display font-extrabold text-hi max-w-[24ch]">
-      {data.hero.title}
-    </h1>
-    <p class="mt-6 text-lead text-text max-w-[52ch]">{data.hero.lead}</p>
-    <div class="mt-8 flex flex-wrap items-center gap-x-6 gap-y-4">
-      <a class="btn-primary" href="#contact">Start a project</a>
-      <span class="inline-flex flex-wrap items-center gap-x-2">
-        <a class="link font-mono text-sm text-hi" href={`mailto:${data.email}`}
-          >{data.email}</a
-        >
-        <CopyEmail email={data.email} />
-      </span>
+  <!-- Hero: headline, lead, calls to action. (Reel.astro is parked, unused.) -->
+  <section id="top" class="hero">
+    <div class="page hero-body">
+      <p class="meta hero-in" style="--i:0">{data.hero.kicker}</p>
+      <h1 class="mt-4 hero-title hero-in" style="--i:1">
+        {head[0]}{head[1] && <span class="hl">{head[1]}</span>}{head[2]}
+      </h1>
+      <p class="mt-6 text-lead text-text max-w-[52ch] hero-in" style="--i:2">{data.hero.lead}</p>
+      <div class="mt-8 flex flex-wrap items-center gap-x-6 gap-y-4 hero-in" style="--i:3">
+        <a class="btn-primary" href="#contact">Start a project</a>
+        <a class="link text-sm inline-flex items-center gap-1 min-h-11" href="#work">
+          See selected work
+          <Icon name="ion:arrow-down" class="size-[1em]" aria-hidden="true" />
+        </a>
+      </div>
+      {
+        data.hero.availability && (
+          <p class="mt-6 meta flex items-center gap-2 hero-in" style="--i:4">
+            <span class="size-1.5 bg-accent" aria-hidden="true" />
+            {data.hero.availability}
+          </p>
+        )
+      }
     </div>
-    {
-      data.hero.availability && (
-        <p class="mt-6 meta flex items-center gap-2">
-          <span class="size-1.5 bg-accent" aria-hidden="true" />
-          {data.hero.availability}
-        </p>
-      )
-    }
   </section>
 
   <!-- Selected work -->
-  <section id="work" class="page pb-16 md:pb-24">
+  <section id="work" class="page pt-10 md:pt-12 pb-16 md:pb-24">
     <div class="flex items-end justify-between gap-6 mb-8 md:mb-12">
-      <h2 class="text-h2 font-extrabold text-hi">Selected work</h2>
+      <h2 class="text-h2 font-extrabold text-accent">Selected work</h2>
       <a href="/work" class="link text-sm inline-flex items-center gap-1 whitespace-nowrap">
         All {work.length} projects
         <Icon name="ion:arrow-forward" class="size-[1em]" aria-hidden="true" />
       </a>
     </div>
-    <ul class="grid grid-cols-4 md:grid-cols-12 gap-x-4 md:gap-x-6 gap-y-10 md:gap-y-14">
+    <ul class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-10 md:gap-y-12">
       {
         featured.map((entry, i) => (
-          <WorkTile
-            entry={entry}
-            span={GRID[i].span}
-            row={GRID[i].row}
-            eager={i < 2}
-          />
+          <WorkTile entry={entry} eager={i < 3} />
         ))
       }
     </ul>
@@ -73,15 +73,15 @@ for (const s of data.services)
 
   <!-- Services -->
   <section id="services" class="page py-16 md:py-24 xl:py-32 border-t border-line">
-    <h2 class="text-h2 font-extrabold text-hi mb-8 md:mb-12">What I do</h2>
-    <ul class="grid gap-10 md:grid-cols-3 md:gap-x-6">
+    <h2 class="text-h2 font-extrabold text-accent mb-8 md:mb-12">What I do</h2>
+    <ul class="grid gap-10 md:grid-cols-3 md:gap-x-10">
       {
         data.services.map((s, i) => (
           <li
             class="border-t border-line pt-8 md:border-t-0 md:pt-0 first:border-t-0 first:pt-0"
             data-reveal="once"
           >
-            <p class="meta text-dim">{String(i + 1).padStart(2, "0")}</p>
+            <p class="meta text-accent">{String(i + 1).padStart(2, "0")}</p>
             <h3 class="mt-3 text-h3 font-bold text-hi">{s.title}</h3>
             <p class="mt-3 text-base text-text">{s.intro}</p>
             <ul class="mt-5 grid gap-2 text-sm text-text">
@@ -116,7 +116,7 @@ for (const s of data.services)
     id="about"
     class="page py-16 md:py-24 xl:py-32 border-t border-line grid gap-8 md:grid-cols-12 md:gap-x-6"
   >
-    <h2 class="text-h2 font-extrabold text-hi md:col-span-4">{data.about.title}</h2>
+    <h2 class="text-h2 font-extrabold text-accent md:col-span-4">{data.about.title}</h2>
     <div class="md:col-span-7 md:col-start-6">
       {
         data.about.paragraphs.map((p, i) => (
@@ -140,7 +140,6 @@ for (const s of data.services)
 
   <!-- Contact -->
   <Contact
-    email={data.email}
     title={data.contact.title}
     lead={data.contact.lead}
     note={data.contact.note}

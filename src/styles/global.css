@@ -32,8 +32,7 @@
   --color-mat-white: #ffffff;
   --color-backdrop: #0e0e0e;
 
-  --font-sans: var(--font-schibsted), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: var(--font-plex-mono), ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --font-sans: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
 
   --text-meta: 0.75rem;
   --text-meta--line-height: 1rem;
@@ -61,7 +60,10 @@
   --text-display--line-height: 0.98;
   --text-display--letter-spacing: -0.03em;
 
-  --radius-ctl: 4px;
+  --radius: 8px; /* the one corner radius: controls, nav items, chips, tiles, fields */
+  --radius-ctl: var(--radius);
+  --field-h: 3rem; /* form field height */
+  --field-r: var(--radius); /* form field corner radius */
   --ease-snap: cubic-bezier(0.2, 0, 0, 1);
 }
 
@@ -110,8 +112,37 @@
     outline: 2px solid var(--color-accent);
     outline-offset: 3px;
   }
+  /* Tunables (Revision 2). Edit one number here to adjust. */
+  :root {
+    --nav-clear: calc(4.75rem + env(safe-area-inset-bottom)); /* room kept free under the phone nav pill */
+    --hero-size: min(clamp(2.75rem, 1.2rem + 6vw, 7rem), 11svh); /* hero headline size */
+    --hero-peek: 4.5rem; /* how much of "Selected work" shows under the hero */
+    --reel-h: min(clamp(6.5rem, 4rem + 9vw, 10.5rem), 16svh); /* project reel card height */
+    --reel-pace: 6s; /* reel time per card: larger is slower */
+    --rise: 700ms; /* hero entrance duration */
+    --hero-leading: 1.1; /* hero headline line height (unitless; 1 = tight) */
+    --brand-pt: 0rem; /* space above the logo/nav row */
+    --brand-h: 3.5rem; /* height of the logo/nav row */
+    --pill-h: 3.25rem; /* nav pill height (2.75rem item + 2 x 0.25rem padding) */
+  }
+  @media (min-width: 768px) {
+    :root {
+      --nav-clear: 0px;
+      --brand-pt: 2rem;
+      --brand-h: 4rem;
+    }
+  }
+  .brand-row {
+    margin-top: var(--brand-pt);
+    height: var(--brand-h);
+  }
   [id] {
-    scroll-margin-top: 5rem;
+    scroll-margin-top: 1.5rem;
+  }
+  @media (min-width: 768px) {
+    [id] {
+      scroll-margin-top: 4rem;
+    }
   }
   img {
     display: block;
@@ -137,7 +168,7 @@
     width: 100%;
     max-width: calc(80rem + 2 * var(--pad));
     margin-inline: auto;
-    padding-inline: var(--pad);
+    padding-inline: max(var(--pad), env(safe-area-inset-left)) max(var(--pad), env(safe-area-inset-right));
   }
   @media (min-width: 640px) {
     .page {
@@ -152,11 +183,10 @@
 
   /* Ticket / meta text */
   .meta {
-    font-family: var(--font-mono);
     font-size: var(--text-meta);
     line-height: var(--text-meta--line-height);
     letter-spacing: var(--text-meta--letter-spacing);
-    font-weight: 500;
+    font-weight: 600;
     text-transform: uppercase;
     color: var(--color-muted);
     font-variant-numeric: tabular-nums;
@@ -244,52 +274,294 @@
     }
   }
 
-  /* Copy email */
-  .copy-btn {
-    font-family: var(--font-mono);
-    font-size: var(--text-meta);
-    letter-spacing: var(--text-meta--letter-spacing);
-    text-transform: uppercase;
-    font-weight: 500;
-  }
-  html:not(.js) .copy-btn {
-    display: none;
-  }
 
-  /* Nav */
-  .nav-link {
+  /* Site nav: a floating pill. Below md it sits bottom centre (thumb reach) and shows
+     only the current/hovered/focused label; from md it sits top right with every label. */
+  .site-nav {
+    position: fixed;
+    z-index: 40;
+    left: 50%;
+    bottom: calc(0.75rem + env(safe-area-inset-bottom));
+    translate: -50% 0;
+  }
+  @media (min-width: 768px) {
+    .site-nav {
+      left: auto;
+      bottom: auto;
+      translate: none;
+      /* vertically centred on the brand row */
+      top: calc(var(--brand-pt) + (var(--brand-h) - var(--pill-h)) / 2);
+      right: 2rem;
+    }
+  }
+  @media (min-width: 1024px) {
+    .site-nav {
+      right: max(3rem, calc((100% - 80rem) / 2));
+    }
+  }
+  .site-nav-list {
+    display: flex;
+    align-items: center;
+    gap: 0.125rem;
+    padding: 0.25rem;
+    border-radius: calc(var(--radius) + 0.25rem); /* nested: item radius + padding */
+    background: var(--color-surface);
+    box-shadow:
+      0 0 0 1px var(--color-line),
+      0 10px 28px -10px rgb(0 0 0 / 0.7);
+  }
+  .nav-item {
     display: inline-flex;
     align-items: center;
     min-height: 2.75rem;
+    min-width: 2.75rem;
+    padding-inline: 0.8125rem;
+    border-radius: var(--radius);
     font-size: var(--text-sm);
     line-height: var(--text-sm--line-height);
     font-weight: 500;
     color: var(--color-text);
-    text-decoration: underline;
-    text-decoration-color: transparent;
-    text-decoration-thickness: 2px;
-    text-underline-offset: 4px;
-    transition: color 150ms var(--ease-snap), text-decoration-color 150ms var(--ease-snap);
+    transition: color 150ms var(--ease-snap), background-color 150ms var(--ease-snap);
   }
-  @media (min-width: 640px) {
-    .nav-link {
+  .nav-item:hover {
+    background: var(--color-raised);
+    color: var(--color-hi);
+  }
+  .nav-item:focus-visible {
+    outline-offset: 1px;
+  }
+  .nav-item[aria-current] {
+    background: var(--color-raised);
+    color: var(--color-accent);
+  }
+  .nav-ico {
+    flex: none;
+    width: 1.125rem;
+    height: 1.125rem;
+  }
+  .nav-ico-on,
+  .nav-item[aria-current] .nav-ico-rest {
+    display: none;
+  }
+  .nav-item[aria-current] .nav-ico-on {
+    display: block;
+  }
+  /* Collapsed label: zero width but still in the accessibility tree (names the link). */
+  .nav-label {
+    max-width: 0;
+    margin-left: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    opacity: 0;
+  }
+  .nav-item[aria-current] .nav-label,
+  .nav-item:hover .nav-label,
+  .nav-item:focus-visible .nav-label {
+    max-width: 6rem;
+    margin-left: 0.375rem;
+    opacity: 1;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .nav-label {
+      transition: max-width 220ms var(--ease-snap), margin-left 220ms var(--ease-snap),
+        opacity 160ms var(--ease-snap);
+    }
+  }
+  @media (min-width: 768px) {
+    .nav-item {
+      min-height: 2.25rem;
+      padding-inline: 0.75rem;
+    }
+    .nav-label {
+      max-width: none;
+      margin-left: 0.375rem;
+      opacity: 1;
+    }
+  }
+  /* Never over the lightbox; on phones, out of the way while typing in the form. */
+  html:has(#lightbox[open]) .site-nav {
+    display: none;
+  }
+  @media (max-width: 767.98px) {
+    html:has(.field input:not([type="radio"]):focus, .field textarea:focus) .site-nav {
+      display: none;
+    }
+  }
+  .site-foot {
+    padding-bottom: var(--nav-clear);
+  }
+
+  /* Hero (home): full screen less the brand row, the phone nav and a peek of the next section. */
+  .hero {
+    display: flex;
+    flex-direction: column;
+    min-height: calc(100svh - var(--brand-pt) - var(--brand-h) - var(--nav-clear) - var(--hero-peek));
+    padding-bottom: 2.5rem;
+  }
+  .hero-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-block: 2rem;
+  }
+  .hero-title {
+    font-size: var(--hero-size);
+    line-height: var(--hero-leading);
+    letter-spacing: -0.035em;
+    font-weight: 800;
+    color: var(--color-hi);
+    max-width: 18ch;
+  }
+  .hero-title .hl {
+    color: var(--color-accent);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .hero-in {
+      animation: rise var(--rise) var(--ease-snap) both;
+      animation-delay: calc(var(--i, 0) * 90ms);
+    }
+  }
+
+  /* Project reel: every published project, drifting right to left in a full-bleed strip.
+     Pauses on hover, keyboard focus or the Pause toggle (CSS only). Static and
+     scrollable under reduced motion. Images keep full opacity, no overlay or mask. */
+  .reel {
+    --reel-gap: 1rem;
+  }
+  .reel-window {
+    overflow: hidden;
+  }
+  .reel-track {
+    display: flex;
+    width: max-content;
+  }
+  .reel-set {
+    display: flex;
+    gap: var(--reel-gap);
+    padding-right: var(--reel-gap);
+  }
+  .reel-set:first-child {
+    padding-left: var(--reel-gap);
+  }
+  .reel-link {
+    display: block;
+  }
+  .reel-media {
+    display: block;
+    height: var(--reel-h);
+    width: calc(var(--reel-h) * var(--ar));
+    overflow: hidden;
+    background: var(--color-surface);
+    box-shadow: 0 0 0 1px var(--color-line);
+    transition: box-shadow 150ms var(--ease-snap);
+  }
+  .reel-media[data-mat="dark"] {
+    background: var(--color-mat-dark);
+  }
+  .reel-media[data-mat="light"] {
+    background: var(--color-mat-light);
+  }
+  .reel-media[data-mat="black"] {
+    background: var(--color-mat-black);
+  }
+  .reel-media[data-mat="white"] {
+    background: var(--color-mat-white);
+  }
+  .reel-media img {
+    width: 100%;
+    height: 100%;
+  }
+  .reel-cap {
+    display: block;
+    margin-top: 0.5rem;
+    font-size: var(--text-cap);
+    line-height: var(--text-cap--line-height);
+    letter-spacing: var(--text-cap--letter-spacing);
+    color: var(--color-muted);
+    transition: color 150ms var(--ease-snap);
+  }
+  .reel-num {
+    color: var(--color-dim);
+    margin-right: 0.5em;
+    font-variant-numeric: tabular-nums;
+  }
+  .reel-link:hover .reel-media,
+  .reel-link:focus-visible .reel-media {
+    box-shadow: 0 0 0 1px var(--color-accent);
+  }
+  .reel-link:hover .reel-cap,
+  .reel-link:focus-visible .reel-cap {
+    color: var(--color-accent);
+  }
+  .reel-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    min-height: 2.75rem;
+    padding-inline: 0.75rem;
+    border-radius: var(--radius);
+    font-size: var(--text-sm);
+    font-weight: 500;
+    color: var(--color-text);
+    cursor: pointer;
+    transition: color 150ms var(--ease-snap), background-color 150ms var(--ease-snap);
+  }
+  @media (min-width: 768px) {
+    .reel-toggle {
       min-height: 2.25rem;
     }
   }
-  .nav-link:hover,
-  .nav-link:focus-visible {
-    color: var(--color-hi);
-    text-decoration-color: var(--color-accent);
-  }
-  .nav-link[aria-current] {
+  .reel-toggle:hover {
+    background: var(--color-raised);
     color: var(--color-hi);
   }
-  .nav-link[aria-current]::before {
-    content: "";
-    width: 6px;
-    height: 6px;
-    margin-right: 8px;
-    background: var(--color-accent);
+  .reel-toggle:has(:focus-visible) {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+  .reel-toggle svg {
+    width: 1rem;
+    height: 1rem;
+  }
+  .reel-state {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+  }
+  .reel-toggle .is-play,
+  .reel-toggle:has(:checked) .is-pause {
+    display: none;
+  }
+  .reel-toggle:has(:checked) .is-play {
+    display: inline-flex;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .reel-track {
+      animation: reel calc(var(--n) * var(--reel-pace)) linear infinite;
+    }
+    .reel:hover .reel-track,
+    .reel:focus-within .reel-track,
+    .reel:has(.reel-toggle :checked) .reel-track {
+      animation-play-state: paused;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .reel-track {
+      animation: none !important;
+    }
+    .reel-window {
+      overflow-x: auto;
+      scroll-snap-type: x proximity;
+    }
+    .reel-set + .reel-set,
+    .reel-toggle {
+      display: none;
+    }
+    .reel-card {
+      scroll-snap-align: start;
+      scroll-margin-left: var(--reel-gap);
+    }
   }
 
   /* Forms */
@@ -301,8 +573,14 @@
     margin: 0;
     min-width: 0;
   }
-  .field label,
-  .field legend {
+  fieldset.field {
+    display: block; /* a grid fieldset ignores the gap around its legend */
+  }
+  .field > legend {
+    margin-bottom: 0.5rem; /* same label-to-control gap as the other fields */
+  }
+  .field > label,
+  .field > legend {
     font-size: var(--text-sm);
     line-height: var(--text-sm--line-height);
     font-weight: 500;
@@ -312,9 +590,9 @@
   .field input:not([type="radio"]),
   .field textarea {
     width: 100%;
-    min-height: 3rem;
+    min-height: var(--field-h);
     padding: 0.625rem 0.75rem;
-    border-radius: var(--radius-ctl);
+    border-radius: var(--field-r);
     background: var(--color-surface);
     border: 1px solid var(--color-control);
     color: var(--color-hi);
@@ -345,32 +623,74 @@
   .field textarea:user-invalid {
     border-color: var(--color-err);
   }
+  .chips {
+    --chip-h: 2rem;
+    --chip-dot: 0.875rem;
+    display: flex;
+    flex-wrap: nowrap; /* always one line; scrolls sideways only if the screen is too narrow */
+    gap: 0.375rem;
+    overflow-x: auto;
+    padding: 3px; /* room for the focus ring inside the scroll box */
+    margin: -3px;
+    scrollbar-width: none;
+  }
+  .chips::-webkit-scrollbar {
+    display: none;
+  }
   .chip {
     display: inline-flex;
+    flex: 1 1 auto; /* chips share the one line and stretch to the form's full width */
+    justify-content: flex-start;
     align-items: center;
     gap: 0.5rem;
-    min-height: 2.5rem;
-    padding-inline: 0.875rem;
-    border-radius: 999px;
-    border: 1px solid var(--color-control);
-    font-size: var(--text-sm);
-    color: var(--color-text);
+    min-height: var(--chip-h); /* deliberately smaller than the 3rem fields */
+    /* the dot sits the same distance from the left end as from the top and bottom, concentric with the rounded end */
+    padding-left: calc((var(--chip-h) - var(--chip-dot)) / 2 - 1px);
+    padding-right: 0.875rem;
+    white-space: nowrap;
+    border-radius: var(--radius);
+    border: 1px solid var(--color-line);
+    font-size: 0.8125rem;
+    line-height: 1.25;
+    font-weight: 500;
+    color: var(--color-muted);
     cursor: pointer;
     transition: color 150ms var(--ease-snap), background-color 150ms var(--ease-snap),
       border-color 150ms var(--ease-snap);
   }
+  /* Native radio, restyled: a ring that fills with an orange dot when chosen. */
   .chip input {
-    accent-color: var(--color-accent);
-    width: 1rem;
-    height: 1rem;
+    appearance: none;
+    flex: none;
+    width: var(--chip-dot);
+    height: var(--chip-dot);
     margin: 0;
+    border-radius: 50%;
+    border: 1.5px solid var(--color-control);
+    background: transparent;
+    cursor: pointer;
+    transition: border-color 150ms var(--ease-snap), background-color 150ms var(--ease-snap);
+  }
+  .chip input:checked {
+    border-color: var(--color-accent);
+    background: radial-gradient(circle, var(--color-accent) 0 45%, transparent 50%);
   }
   .chip:hover {
-    background: var(--color-raised);
+    background: var(--color-surface);
+    color: var(--color-hi);
+  }
+  @media (max-width: 479.98px) {
+    .chip {
+      justify-content: center;
+      padding-inline: 0.5rem;
+    }
+    .chip input {
+      display: none; /* the outline and fill carry the selected state on small phones */
+    }
   }
   .chip:has(:checked) {
     border-color: var(--color-accent);
-    background: var(--color-raised);
+    background: var(--color-surface);
     color: var(--color-hi);
   }
   .chip:has(:focus-visible) {
@@ -382,6 +702,7 @@
   .tile-media {
     position: relative;
     overflow: hidden;
+    border-radius: var(--radius);
     background: var(--color-surface);
     box-shadow: 0 0 0 1px var(--color-line);
     transition: box-shadow 150ms var(--ease-snap);
@@ -417,7 +738,8 @@
     text-decoration-color: transparent;
     text-decoration-thickness: 2px;
     text-underline-offset: 4px;
-    transition: text-decoration-color 150ms var(--ease-snap);
+    color: var(--color-accent);
+    transition: color 150ms var(--ease-snap), text-decoration-color 150ms var(--ease-snap);
   }
   .tile:hover .tile-title,
   .tile:focus-visible .tile-title,
@@ -425,7 +747,8 @@
   .index-row:focus-visible .index-title,
   .pn-link:hover .index-title,
   .pn-link:focus-visible .index-title {
-    text-decoration-color: var(--color-accent);
+    color: var(--color-accent-hi);
+    text-decoration-color: var(--color-accent-hi);
   }
   @media (prefers-reduced-motion: no-preference) {
     .tile:hover .tile-media img {
@@ -449,7 +772,7 @@
   }
   .index-row:hover .index-arrow,
   .index-row:focus-visible .index-arrow {
-    color: var(--color-hi);
+    color: var(--color-accent);
   }
   @media (min-width: 768px) {
     .index-row {
@@ -564,7 +887,6 @@
   }
   .g-cap {
     margin-top: 0.5rem;
-    font-family: var(--font-mono);
     font-size: var(--text-cap);
     line-height: var(--text-cap--line-height);
     letter-spacing: var(--text-cap--letter-spacing);
@@ -627,6 +949,17 @@
   }
 }
 
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+@keyframes reel {
+  to {
+    transform: translateX(-50%);
+  }
+}
 @keyframes lb-in {
   from {
     opacity: 0;

@@ -1,57 +1,71 @@
 ---
+import { Icon } from "astro-icon/components";
 import Logo from "./Logo.astro";
 
-const onWork = Astro.url.pathname.startsWith("/work");
+// Brand row (scrolls away) plus the floating nav pill: top right on desktop,
+// bottom centre below md (thumb reach). Labels always show at md+; below md only
+// the current, hovered or focused item shows its label. Styles: global.css "Site nav".
+const path = Astro.url.pathname;
+const onHome = path === "/";
+const onWork = path.startsWith("/work");
 const links = [
-  { id: "work", label: "Work", href: "/#work", hide: false },
-  { id: "services", label: "Services", href: "/#services", hide: true },
-  { id: "about", label: "About", href: "/#about", hide: true },
+  { id: "top", label: "Home", icon: "ion:home-outline", on: "ion:home" },
+  { id: "work", label: "Work", icon: "ion:albums-outline", on: "ion:albums" },
+  { id: "services", label: "Services", icon: "ion:layers-outline", on: "ion:layers" },
+  { id: "about", label: "About", icon: "ion:person-outline", on: "ion:person" },
+  {
+    id: "contact",
+    label: "Contact",
+    icon: "ion:chatbubble-ellipses-outline",
+    on: "ion:chatbubble-ellipses",
+  },
 ];
+// Build-time state: Work is the page on /work and /work/*; Home starts current on /
+// (the scroll-spy takes over when JS runs).
+const current = (id: string) =>
+  onWork && id === "work" ? "page" : onHome && id === "top" ? "true" : undefined;
 ---
 
-<header class="sticky top-0 z-40 bg-bg border-b border-line">
-  <div class="page flex h-14 items-center justify-between">
-    <a href="/" aria-label="TMOX, home" class="flex items-center gap-2">
-      <Logo class="size-[22px] text-accent" />
-      <span
-        class="font-sans text-[15px] font-extrabold tracking-[0.06em] text-hi"
-        aria-hidden="true">TMOX</span
-      >
-    </a>
-    <nav aria-label="Site">
-      <ul class="flex items-center gap-4 sm:gap-6">
-        {
-          links.map((l) => (
-            <li class={l.hide ? "hidden sm:block" : ""}>
-              <a
-                href={l.href}
-                class="nav-link"
-                data-spy={l.id}
-                aria-current={onWork && l.id === "work" ? "page" : undefined}
-                >{l.label}</a
-              >
-            </li>
-          ))
-        }
-        <li>
-          <a href="/#contact" class="btn-secondary btn-sm" data-spy="contact"
-            >Contact</a
-          >
-        </li>
-      </ul>
-    </nav>
-  </div>
+<header class="page brand-row flex items-center">
+  <a href="/" aria-label="TMOX, home" class="flex items-center gap-3 min-h-11">
+    <Logo class="size-[22px] text-accent" />
+    <span
+      class="font-sans text-[15px] font-extrabold tracking-[0.06em] text-hi"
+      aria-hidden="true">TMOX</span
+    >
+  </a>
+  <nav class="site-nav" aria-label="Site">
+    <ul class="site-nav-list">
+      {
+        links.map((l) => (
+          <li>
+            <a
+              href={`/#${l.id}`}
+              class="nav-item"
+              data-spy={l.id}
+              aria-current={current(l.id)}
+            >
+              <Icon name={l.icon} class="nav-ico nav-ico-rest" aria-hidden="true" />
+              <Icon name={l.on} class="nav-ico nav-ico-on" aria-hidden="true" />
+              <span class="nav-label">{l.label}</span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </nav>
 </header>
 
 <script>
-  // Scroll-spy for the home page only: mark the nav link whose section crosses mid-screen.
-  const sections = ["work", "services", "about", "contact"]
+  // Scroll-spy, home page only: mark the item whose section crosses mid-screen.
+  const ids = ["top", "work", "services", "about", "contact"];
+  const sections = ids
     .map((id) => document.getElementById(id))
     .filter((el): el is HTMLElement => !!el);
 
-  if (sections.length && "IntersectionObserver" in window) {
+  if (sections.length === ids.length && "IntersectionObserver" in window) {
     const links = new Map(
-      Array.from(document.querySelectorAll<HTMLElement>("[data-spy]")).map(
+      Array.from(document.querySelectorAll<HTMLElement>(".site-nav [data-spy]")).map(
         (a) => [a.dataset.spy!, a]
       )
     );

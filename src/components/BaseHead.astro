@@ -10,12 +10,11 @@ const imageUrl = image ? new URL(image, Astro.site) : undefined;
 
 <!-- Global Metadata -->
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <!-- Primary Meta Tags -->
 <title>{title}</title>
 {description && <meta name="description" content={description} />}
-<Font cssVariable="--font-schibsted" preload />
-<Font cssVariable="--font-plex-mono" />
+<Font cssVariable="--font-jakarta" preload />
 <meta name="theme-color" content="#1e222e" />
 <meta name="color-scheme" content="dark" />
 <link rel="canonical" href={canonical} />

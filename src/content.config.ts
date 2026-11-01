@@ -11,10 +11,11 @@ export const collections = {
     schema: z.object({
       title: z.string(),
       description: z.string(),
-      email: z.email(),
       hero: z.object({
         kicker: z.string(),
         title: z.string(),
+        // Words of `title` set in the accent colour; must appear in `title` verbatim.
+        accent: z.string().optional(),
         lead: z.string(),
         availability: z.string().optional(),
       }),
@@ -48,8 +49,8 @@ export const collections = {
       z.object({
         order: z.number().int(),
         draft: z.boolean().default(false),
-        // Home grid: `featured: true` shows the project there (max 6, drawn in pairs).
-        // `featuredOrder` sets its position (1 = first tile). Layout widths come from the position.
+        // Home grid: `featured: true` shows the project there (6 or 12, drawn as an even grid).
+        // `featuredOrder` sets its position (1 = first tile). All tiles are the same size.
         featured: z.boolean().default(false),
         featuredOrder: z.number().int().min(1).optional(),
         title: z.string(),

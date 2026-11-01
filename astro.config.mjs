@@ -10,21 +10,12 @@ export default defineConfig({
   fonts: [
     {
       provider: fontProviders.google(),
-      name: "Schibsted Grotesk",
-      cssVariable: "--font-schibsted",
-      weights: ["400 800"],
+      name: "Plus Jakarta Sans",
+      cssVariable: "--font-jakarta",
+      weights: ["200 800"],
       styles: ["normal"],
       subsets: ["latin"],
       fallbacks: ["sans-serif"],
-    },
-    {
-      provider: fontProviders.google(),
-      name: "IBM Plex Mono",
-      cssVariable: "--font-plex-mono",
-      weights: [400, 500],
-      styles: ["normal"],
-      subsets: ["latin"],
-      fallbacks: ["monospace"],
     },
   ],
   redirects: {

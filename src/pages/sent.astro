@@ -1,19 +1,13 @@
 ---
-import { getEntry } from "astro:content";
 import Layout from "../layouts/Layout.astro";
-
-const site = await getEntry("pages", "index");
-if (!site) throw new Error("Missing content entry: pages/index");
-const email = site.data.email;
 ---
 
 <Layout title="Message sent · TMOX" noindex>
   <section class="page py-24 md:py-32">
     <p class="meta">Message sent</p>
-    <h1 class="mt-4 text-h1 font-extrabold text-hi">Thanks, got it.</h1>
+    <h1 class="mt-4 text-h1 font-extrabold text-accent">Thanks, got it.</h1>
     <p class="mt-6 text-lead max-w-[48ch]">
-      I’ll reply to the address you gave within one working day. If it’s urgent,
-      email <a class="link font-mono" href={`mailto:${email}`}>{email}</a>.
+      I’ll reply to the address you gave within one working day.
     </p>
     <div class="mt-8">
       <a class="btn-secondary" href="/#work">Back to the work</a>

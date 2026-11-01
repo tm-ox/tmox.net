@@ -23,15 +23,8 @@ export function neighbours<T extends { id: string }>(list: T[], id: string) {
 
 // Home grid layout by tile position (1-based): md column span and row height step.
 // Positions are drawn in pairs; each pair's spans sum to 12.
-export const GRID = [
-  { span: 8, row: 1 },
-  { span: 4, row: 1 },
-  { span: 6, row: 2 },
-  { span: 6, row: 2 },
-  { span: 7, row: 3 },
-  { span: 5, row: 3 },
-] as const;
-export const MAX_FEATURED = GRID.length;
+// Home grid: uniform tiles, 2 columns from md and 3 from lg, so a multiple of 6 fills every row.
+export const MAX_FEATURED = 12;
 
 // Featured projects in tile order. Validates the owner-editable flags.
 export function getFeatured(work: Work[]) {
@@ -47,9 +40,9 @@ export function getFeatured(work: Work[]) {
     throw new Error(
       `[home] ${feat.length} featured projects; the grid holds at most ${MAX_FEATURED}`
     );
-  if (feat.length % 2 !== 0)
+  if (feat.length % 6 !== 0)
     throw new Error(
-      `[home] ${feat.length} featured projects; feature an even number (2, 4 or 6) so rows fill`
+      `[home] ${feat.length} featured projects; feature 6 or 12 so rows fill at every width`
     );
   const orders = feat.map((w) => w.data.featuredOrder).filter((n) => n !== undefined);
   if (new Set(orders).size !== orders.length)

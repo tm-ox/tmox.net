@@ -20,8 +20,8 @@ Each project is one file, `src/content/work/<slug>.md` (the slug is the URL: `/w
 
 - `draft: true` hides a project from production builds (no page, no `/work` row, no sitemap entry, no prev/next link). Drafts are still built and visible in `npm run dev`. Flip it to `false` (or delete the line) to publish.
 - `featured: true` puts a project on the home grid ("Selected work"). Default is `false`. Every published project, featured or not, appears on `/work`.
-- `featuredOrder: <number>` sets the tile position on the home grid (1 = first). Widths are fixed per position, so the layout never needs code: positions 1-2 are a wide + narrow pair, 3-4 an even pair, 5-6 a wide + narrow pair.
-  - Feature 2, 4 or 6 projects (an even number, maximum 6), so rows fill. The build fails with a clear `[home]` message otherwise, or if two projects share a `featuredOrder`.
+- `featuredOrder: <number>` sets the tile position on the home grid (1 = first). All tiles are the same size (4:3), in 2 columns from md and 3 from lg.
+  - Feature 6 or 12 projects so rows fill at every width. The build fails with a clear `[home]` message otherwise, or if two projects share a `featuredOrder`.
   - A featured project needs a good `cover` (see below).
 
 ### Other frontmatter
@@ -46,6 +46,18 @@ Old URLs are redirected in `astro.config.mjs` (`redirects`): `/work/01-logos` to
 - `src/components/`: `Header`, `Footer`, `Logo`, `WorkTile`, `Ticket`, `Gallery` (rows and lightbox markup), `Contact` (Netlify form), `CopyEmail`, `Reveal`.
 - `src/scripts/`: `lightbox.ts` (native `<dialog>`, counter, swipe, keyboard), `reveal.ts` (reveal once).
 - `src/styles/global.css`: Tailwind entry, `@theme` tokens (colour, type), component CSS, motion and reduced-motion rules.
-- Fonts: Schibsted Grotesk and IBM Plex Mono via Astro's fonts API (self-hosted at build).
+- Fonts: Plus Jakarta Sans via Astro's fonts API (self-hosted at build).
 - Analytics: gtag via Partytown (`BaseHead.astro`).
 - Contact form uses Netlify Forms and redirects to `/sent`. `netlify.toml` holds build, cache and security headers.
+
+## Where to edit (visual work)
+
+| To change | Edit |
+| :-- | :-- |
+| Colours, fonts, type scale, spacing, hero/nav/reel sizes | `@theme` and `:root` blocks at the top of `src/styles/global.css` |
+| Component styles (buttons, nav pill, tiles, gallery, lightbox, form) | `@layer components` in `src/styles/global.css` |
+| Home hero markup | `<section id="top">` in `src/pages/index.astro`; hero text in `src/content/pages/index.md` (`hero:`) |
+| Nav pill | `src/components/Header.astro` (markup, icons, scroll-spy) |
+| Which projects show on home, and in what order | `featured` / `featuredOrder` in each `src/content/work/*.md` |
+| Project page layout | `src/pages/work/[slug].astro`, `src/components/Gallery.astro` |
+| `src/components/Reel.astro` | parked: the drifting project strip, not used by any page |
