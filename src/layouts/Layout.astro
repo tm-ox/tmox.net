@@ -3,7 +3,7 @@ import BaseHead from "../components/BaseHead.astro";
 import Logo from "../components/Logo.astro";
 import Footer from "../components/Footer.astro";
 
-const { title, description } = Astro.props;
+const { title, description, image, noindex } = Astro.props;
 ---
 
 <html
@@ -11,26 +11,28 @@ const { title, description } = Astro.props;
   class="tracking-wide bg-background text-primary font-jakarta scroll-smooth"
 >
   <head>
-    <BaseHead title={title} description={description} />
+    <script is:inline>
+      document.documentElement.classList.add("js");
+    </script>
+    <BaseHead
+      title={title}
+      description={description}
+      image={image}
+      noindex={noindex}
+    />
   </head>
   <body class="overflow-x-hidden relative">
+    <a
+      href="#main"
+      class="sr-only-focusable fixed top-2 left-2 z-[60] px-3 py-1 rounded-md bg-primary text-background text-sm font-bold"
+      >Skip to content</a
+    >
     <!-- Background -->
-    <div
-      class="fixed -bottom-[700px] right-0 w-[4000px] h-[4000px] border-8 border-primary rounded-full opacity-5 blur-xs animate-blob"
-    >
-    </div>
-    <div
-      class="fixed -bottom-[700px] right-12 w-[4000px] h-[4000px] border-8 border-hover rounded-full opacity-10 blur-xs animate-blob animation-delay-2000"
-    >
-    </div>
-    <div
-      class="fixed -bottom-[700px] right-6 w-[4000px] h-[4000px] border-8 border-hover rounded-full opacity-20 blur-xs animate-blob animation-delay-4000"
-    >
-    </div>
+    <div class="bg-rings" aria-hidden="true"></div>
     <!-- /Background -->
-    <main class="w-[95%] max-w-screen-xl mx-auto mb-16">
+    <main id="main" class="w-[95%] max-w-screen-xl mx-auto mb-16">
       <header class="fixed top-[20px] sm:top-[30px] w-fit z-40">
-        <a href="/"><Logo /></a>
+        <a href="/" aria-label="TMOX, home"><Logo /></a>
       </header>
       <slot />
     </main>
@@ -39,5 +41,8 @@ const { title, description } = Astro.props;
     >
       <Footer />
     </footer>
+    <script>
+      import "../scripts/reveal.ts";
+    </script>
   </body>
 </html>

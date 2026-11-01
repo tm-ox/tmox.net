@@ -2,11 +2,6 @@
 const { origin } = Astro.props;
 ---
 
-<div
-  x-data
-  x-intersect.once="shown = true"
-  class={`${origin} flex flex-col w-full h-full opacity-0 scale-[0.95] ease-in-out duration-[750ms] transition-all`}
-  x-intersect:enter="$el.classList.add('opacity-100', 'scale-[1]')"
->
+<div data-reveal="once" class={`${origin ?? ""} reveal flex flex-col w-full h-full`}>
   <slot />
 </div>

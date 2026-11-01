@@ -1,6 +1,5 @@
 import { defineConfig, fontProviders } from "astro/config";
 import tailwindcss from "@tailwindcss/vite";
-import alpinejs from "@astrojs/alpinejs";
 import partytown from "@astrojs/partytown";
 import icon from "astro-icon";
 import sitemap from "@astrojs/sitemap";
@@ -20,9 +19,10 @@ export default defineConfig({
   ],
   prefetch: { prefetchAll: true },
   integrations: [
-    alpinejs({ entrypoint: "/src/alpine.ts" }),
     icon(),
-    sitemap(),
+    sitemap({
+      filter: (page) => !/\/(sent|404)\/?$/.test(page),
+    }),
     partytown({ config: { forward: ["dataLayer.push"] } }),
   ],
   vite: { plugins: [tailwindcss()] },

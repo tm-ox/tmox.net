@@ -6,6 +6,7 @@ import Layout from "../layouts/Layout.astro";
 import TabNav from "../components/TabNav.astro";
 import Contact from "../components/Contact.astro";
 import Fade from "../components/Fade.astro";
+import Display from "../components/Display.astro";
 
 const page = await getEntry("pages", "index");
 if (!page) throw new Error("Missing content entry: pages/index");
@@ -19,13 +20,14 @@ work.sort((a, b) => Date.parse(a.data.order) - Date.parse(b.data.order));
 <Layout title={data.title} description={data.description}>
     <!-- HI -->
     <section id="home">
-        <p class="section-title">{data.sections[0]}</p>
+        <h2 class="section-title">{data.sections[0]}</h2>
+        <h1 class="sr-only">{data.title}</h1>
         <Fade origin="sm:origin-top-left my-auto">
             <a href="/#work" class="hover:text-primary">
-                <Content />
+                <Content components={{ h1: Display }} />
             </a>
             <h3>{data.subhead1}</h3>
-            <h2 class="font-bold uppercase">{data.sub1}</h2>
+            <h3 class="mt-0 font-bold uppercase">{data.sub1}</h3>
             <div class="flex my-2 mx-auto sm:ml-0">
                 {
                     page.data.sub1skills.flatMap((skills1: any) => (
@@ -44,7 +46,7 @@ work.sort((a, b) => Date.parse(a.data.order) - Date.parse(b.data.order));
                 }
             </div>
             <h3>{data.subhead2}</h3>
-            <h2 class="font-bold uppercase">{data.sub2}</h2>
+            <h3 class="mt-0 font-bold uppercase">{data.sub2}</h3>
             <div class="flex mt-2 mx-auto sm:ml-0">
                 {
                     page.data.sub2skills.flatMap((skills2: any) => (
@@ -62,10 +64,11 @@ work.sort((a, b) => Date.parse(a.data.order) - Date.parse(b.data.order));
                     ))
                 }
             </div>
-            <a href="/#work">
+            <a href="/#work" aria-label="Go to selected work">
                 <Icon
                     name="ion:md-arrow-dropdown-circle"
                     class="mt-10 icon arrow"
+                    aria-hidden="true"
                 />
             </a>
         </Fade>
@@ -73,9 +76,13 @@ work.sort((a, b) => Date.parse(a.data.order) - Date.parse(b.data.order));
     <!-- WORK -->
     <TabNav class="sticky top-6" />
     <section id="work">
-        <p class="section-title">{data.sections[1]}</p>
-        <a href="/#home">
-            <Icon name="ion:md-arrow-dropup-circle" class="mb-5 icon arrow" />
+        <h2 class="section-title">{data.sections[1]}</h2>
+        <a href="/#home" aria-label="Back to top">
+            <Icon
+                name="ion:md-arrow-dropup-circle"
+                class="mb-5 icon arrow"
+                aria-hidden="true"
+            />
         </a>
         <div
             class="grid grid-cols-2 gap-3 mt-4 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 lg:gap-4"
@@ -101,18 +108,23 @@ work.sort((a, b) => Date.parse(a.data.order) - Date.parse(b.data.order));
                 ))
             }
         </div>
-        <a href="/#contact" class="mb-auto">
+        <a href="/#contact" class="mb-auto" aria-label="Go to contact">
             <Icon
                 name="ion:md-arrow-dropdown-circle"
                 class="mt-10 icon arrow"
+                aria-hidden="true"
             />
         </a>
     </section>
     <!-- CONTACT -->
     <section id="contact" class="relative">
-        <p class="section-title">{data.sections[2]}</p>
-        <a href="/#work">
-            <Icon name="ion:md-arrow-dropup-circle" class="mb-5 icon arrow" />
+        <h2 class="section-title">{data.sections[2]}</h2>
+        <a href="/#work" aria-label="Back to selected work">
+            <Icon
+                name="ion:md-arrow-dropup-circle"
+                class="mb-5 icon arrow"
+                aria-hidden="true"
+            />
         </a>
         <div class="mb-auto">
             <Fade>

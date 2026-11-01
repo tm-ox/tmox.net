@@ -1,23 +1,24 @@
 ---
 import { Icon } from "astro-icon/components";
 
-const { prev, next, close, cls } = Astro.props;
+const { prev, next, close } = Astro.props;
 ---
 
 <nav
+  aria-label="Image viewer"
   class="fixed top-[calc(100%-80px)] mx-auto right-1/2 translate-x-1/2 sm:fixed sm:top-[30px] sm:right-0 sm:mr-0 sm:translate-x-0 flex gap-1 transition-all z-50 w-full"
 >
   <div
     class="flex z-50 gap-3 py-2 px-4 h-12 rounded-full shadow-md mx-auto sm:gap-2 bg-secondary sm:h-9 sm:px-3 sm:py-1"
   >
-    <a href={prev} class="icon">
-      <Icon name="ion:md-arrow-dropleft-circle" />
+    <a href={prev} class="icon" aria-label="Previous image">
+      <Icon name="ion:md-arrow-dropleft-circle" aria-hidden="true" />
     </a>
-    <a href={close} class="icon">
-      <Icon name="ion:close-circled" />
+    <a href={close} class="icon" aria-label="Close image">
+      <Icon name="ion:close-circled" aria-hidden="true" />
     </a>
-    <a href={next} class="icon">
-      <Icon name="ion:md-arrow-dropright-circle" class="icon" />
+    <a href={next} class="icon" aria-label="Next image">
+      <Icon name="ion:md-arrow-dropright-circle" aria-hidden="true" />
     </a>
   </div>
 </nav>

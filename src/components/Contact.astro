@@ -1,44 +1,47 @@
 <form
-    action="https://api.staticforms.xyz/submit"
-    method="post"
+    name="contact"
+    method="POST"
+    action="/sent"
+    data-netlify="true"
+    data-netlify-honeypot="bot-field"
     class="flex flex-col mx-auto w-full max-w-2xl"
 >
+    <input type="hidden" name="form-name" value="contact" />
     <div class="flex flex-col">
         <div
             class="flex flex-col py-4 px-3 mb-6 rounded-lg shadow-md bg-primary"
         >
+            <label for="contact-name" class="sr-only">Name</label>
             <input
+                id="contact-name"
                 type="text"
                 name="name"
                 placeholder="NAME"
+                autocomplete="name"
                 required
                 class="form autofill:bg-primary"
             />
+            <label for="contact-email" class="sr-only">Email</label>
             <input
+                id="contact-email"
                 type="email"
                 name="email"
                 placeholder="EMAIL"
+                autocomplete="email"
                 required
                 class="form"
             />
+            <label for="contact-message" class="sr-only">Message</label>
             <textarea
+                id="contact-message"
                 name="message"
                 placeholder="MESSAGE"
+                autocomplete="off"
                 required
                 class="pt-3 pb-0 mb-0 form"></textarea>
-            <input type="text" name="honeypot" style="display: none" />
-            <input
-                type="hidden"
-                name="accessKey"
-                value="020ddf74-0c4e-4e9b-931d-e0fef80e6d23"
-            />
-            <input type="hidden" name="subject" value="Contact - TMOX" />
-            <input type="hidden" name="replyTo" value="@" />
-            <input
-                type="hidden"
-                name="redirectTo"
-                value="https://tmox.net/sent"
-            />
+            <p class="hidden">
+                <label>Leave this empty: <input name="bot-field" /></label>
+            </p>
         </div>
         <button class="submitButton shadow-3xl" type="submit">SUBMIT</button>
     </div>
@@ -50,7 +53,7 @@
         @apply h-32 text-sm;
     }
     .form {
-        @apply mb-4 pt-2 md:pb-[10px] px-3 rounded-lg bg-background border-0 ring-0 focus:border-0 focus:ring-0 focus:bg-background placeholder:text-primary placeholder:text-xs text-xs sm:text-sm font-medium tracking-wider;
+        @apply mb-4 pt-2 md:pb-[10px] px-3 rounded-lg bg-background border-0 focus:border-0 focus:ring-2 focus:ring-inset focus:ring-primary focus:bg-background placeholder:text-primary placeholder:text-xs text-xs sm:text-sm font-medium tracking-wider;
     }
     .submitButton {
         @apply self-center bg-primary text-sm font-bold text-background hover:bg-hover py-1 px-6 rounded-lg shadow-md;

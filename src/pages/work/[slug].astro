@@ -18,24 +18,35 @@ const { page } = Astro.props;
 const data = page.data;
 ---
 
-<Layout title={`TMOX - ${data.title}`}>
+<Layout title={`TMOX - ${data.title}`} description={data.description}>
     <p class="section-title">TMOX</p>
     <div class="sm:-mt-2 min-h-screen">
+        <h1 class="sr-only">{data.title}</h1>
         <!-- Nav -->
         <TabNav>
             <a
                 slot="prev"
                 href={`/work/${data.url.prev}`}
                 class="z-50 p-2 rounded-full shadow-md bg-secondary sm:p-1"
+                aria-label="Previous project"
             >
-                <Icon name="ion:md-arrow-dropleft-circle" class="icon" />
+                <Icon
+                    name="ion:md-arrow-dropleft-circle"
+                    class="icon"
+                    aria-hidden="true"
+                />
             </a>
             <a
                 slot="next"
                 href={`/work/${data.url.next}`}
                 class="z-50 p-2 rounded-full shadow-md bg-secondary sm:p-1"
+                aria-label="Next project"
             >
-                <Icon name="ion:md-arrow-dropright-circle" class="icon" />
+                <Icon
+                    name="ion:md-arrow-dropright-circle"
+                    class="icon"
+                    aria-hidden="true"
+                />
             </a>
         </TabNav>
         <!-- Details -->

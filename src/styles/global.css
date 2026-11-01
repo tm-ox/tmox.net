@@ -8,27 +8,15 @@
   --color-tertiary: #1ba6fa;
   --color-background: #1e293b;
   --color-hover: #47a216;
+  /* UI icon tints: >=3:1 on their surfaces (muted on secondary 4.05, dim on background 3.67) */
+  --color-muted: #8fa3c4;
+  --color-dim: #6b80a6;
 
   --font-jakarta: var(--font-jakarta-sans);
 
   --animate-pulse-slow: pulse 8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   --animate-bounce-slow: bounce 2s infinite;
-  --animate-blob: blob 30s infinite;
 
-  @keyframes blob {
-    0% {
-      transform: translate(0px, 0px) scale(1);
-    }
-    33% {
-      transform: translate(0px, -5px) scale(1.005);
-    }
-    66% {
-      transform: translate(-2.5px, 5px) scale(0.999);
-    }
-    100% {
-      transform: translate(0px, 0px) scale(1);
-    }
-  }
 }
 
 @layer base {
@@ -59,14 +47,17 @@
 }
 
 @layer components {
+  .display {
+    @apply font-extrabold text-5xl sm:text-5xl md:text-6xl xl:text-7xl leading-[55px] sm:leading-[3.7rem] md:leading-[4.5rem] xl:leading-[5rem] text-center sm:text-left mb-0;
+  }
   .icon {
-    @apply w-8 h-8 transition-all sm:h-7 sm:w-7 text-background hover:text-primary cursor-pointer;
+    @apply w-8 h-8 transition-all sm:h-7 sm:w-7 text-muted hover:text-primary focus-visible:text-primary cursor-pointer;
   }
   .icon svg {
     @apply w-full h-full;
   }
   .arrow {
-    @apply hidden sm:block mr-auto text-secondary animate-bounce-slow;
+    @apply hidden sm:block mr-auto text-dim animate-bounce-slow;
   }
   .section-title {
     @apply sticky top-[17px] sm:top-[27px]
@@ -80,11 +71,57 @@
 }
 
 @layer utilities {
-  .animation-delay-2000 {
-    animation-delay: 2s;
+  .sr-only-focusable:not(:focus):not(:focus-within) {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
   }
-  .animation-delay-4000 {
-    animation-delay: 4s;
+}
+
+/* Static background rings (replaces three blurred 4000px animated circles) */
+.bg-rings {
+  position: fixed;
+  inset: 0;
+  z-index: -10;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at calc(100% - 2000px) calc(100% - 1300px), transparent 1996px, rgb(105 226 40 / 0.06) 1997px 2003px, transparent 2004px),
+    radial-gradient(circle at calc(100% - 1976px) calc(100% - 1300px), transparent 1996px, rgb(71 162 22 / 0.12) 1997px 2003px, transparent 2004px),
+    radial-gradient(circle at calc(100% - 1952px) calc(100% - 1300px), transparent 1996px, rgb(71 162 22 / 0.22) 1997px 2003px, transparent 2004px);
+}
+
+/* Fade / FadeOnce: visible by default; hidden only when JS is running and motion is allowed */
+.reveal {
+  transition: opacity 750ms ease-in-out, scale 750ms ease-in-out;
+}
+@media (prefers-reduced-motion: no-preference) {
+  html.js .reveal:not(.in) {
+    opacity: 0;
+    scale: 0.95;
+  }
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto !important;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }
 
