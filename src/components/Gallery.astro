@@ -163,7 +163,7 @@ const rows = counts.map((n) => {
 <dialog
   id="lightbox"
   aria-label="Image viewer"
-  class="fixed inset-0 m-0 h-dvh w-dvw max-h-none max-w-none border-0 p-0 bg-backdrop/[0.97] text-text open:grid grid-rows-[56px_1fr_64px]"
+  class="fixed inset-0 m-0 h-dvh w-dvw max-h-none max-w-none border-0 p-0 bg-backdrop/[0.97] text-text open:grid lb-rows"
 >
   <div class="page flex items-center justify-between">
     <p class="meta text-text" data-lb-count></p>
@@ -185,10 +185,10 @@ const rows = counts.map((n) => {
       draggable="false"
     />
   </div>
-  <div class="page grid grid-cols-[48px_1fr_48px] items-center gap-4">
+  <div class="page grid lb-cols items-center gap-4">
     <button
       type="button"
-      class="inline-flex size-12 items-center justify-center rounded-[var(--radius-ctl)] text-text hover:bg-raised hover:text-hi"
+      class="inline-flex size-12 items-center justify-center rounded-ctl text-text hover:bg-raised hover:text-hi"
       data-lb-prev
       aria-label="Previous image"
     >
@@ -197,7 +197,7 @@ const rows = counts.map((n) => {
     <p class="g-cap text-center" data-lb-caption></p>
     <button
       type="button"
-      class="inline-flex size-12 items-center justify-center rounded-[var(--radius-ctl)] text-text hover:bg-raised hover:text-hi"
+      class="inline-flex size-12 items-center justify-center rounded-ctl text-text hover:bg-raised hover:text-hi"
       data-lb-next
       aria-label="Next image"
     >

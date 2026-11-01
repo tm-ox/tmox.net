@@ -62,10 +62,22 @@
   --text-title--letter-spacing: -0.035em;
 
   --radius: 8px; /* the one corner radius: controls, nav items, chips, tiles, fields */
-  --radius-ctl: var(--radius);
   --field-h: 3rem; /* form field height */
   --field-r: var(--radius); /* form field corner radius */
   --ease-snap: cubic-bezier(0.2, 0, 0, 1);
+
+  /* Icon sizes for utilities (size-logo, size-em, size-em-sm) and the control radius (rounded-ctl) */
+  --spacing-logo: 22px; /* size-logo: the logo mark */
+  --spacing-em: 1em; /* size-em: icon the size of its text */
+  --spacing-em-sm: 0.9em; /* size-em-sm: slightly smaller inline icon */
+  --radius-ctl: var(--radius); /* rounded-ctl: controls */
+}
+
+@utility z-skip {
+  z-index: var(--z-skip);
+}
+@utility p-mat {
+  padding: var(--mat-pad);
 }
 
 @layer base {
@@ -115,6 +127,49 @@
   }
   /* Tunables (Revision 2). Edit one number here to adjust. */
   :root {
+    /* Spacing scale: 4px steps, named by Tailwind units (--space-3 = 0.75rem) */
+    --space-0_5: 0.125rem;
+    --space-1: 0.25rem;
+    --space-1_5: 0.375rem;
+    --space-2: 0.5rem;
+    --space-2_5: 0.625rem;
+    --space-3: 0.75rem;
+    --space-3_5: 0.875rem;
+    --space-4: 1rem;
+    --space-5: 1.25rem;
+    --space-6: 1.5rem;
+    --space-8: 2rem;
+    --space-10: 2.5rem;
+    --space-12: 3rem;
+    /* Control heights: touch target (phones, and buttons) and the compact desktop size */
+    --ctl-h: 2.75rem;
+    --ctl-h-sm: 2.25rem;
+    /* Icon sizes: small (chevrons), medium (nav), large (row arrows) */
+    --icon-sm: 1rem;
+    --icon-md: 1.125rem;
+    --icon-lg: 1.25rem;
+    /* Layout */
+    --page-max: 80rem; /* content width, excluding the side padding */
+    --title-clear: 5rem; /* space kept below the logo row for pinned section titles and focus */
+    --nav-label-max: 6rem; /* widest nav label when expanded on phones */
+    --textarea-h: 10rem; /* minimum height of the message field */
+    --feat-caption-max: 26rem; /* home stage: widest project caption */
+    --g-cap-max: 50rem; /* gallery: widest justified row cap */
+    --g-cap-marks: 22.5rem; /* gallery: cap for rows of marks */
+    --g-phone-max: 18.75rem; /* gallery: widest phone screenshot column */
+    --lb-head-h: 56px; /* lightbox: top bar */
+    --lb-foot-h: 64px; /* lightbox: caption bar */
+    --lb-btn: 48px; /* lightbox: side column, matches the 48px (size-12) buttons */
+    /* Motion */
+    --dur-fast: 150ms; /* hover and focus colour changes */
+    --dur: 200ms; /* fades and slides */
+    --dur-slow: 400ms; /* reveal on scroll */
+    /* Stacking: local 0 / 1 / -1 stay inline where they sit inside an isolated parent */
+    --z-sticky: 20; /* pinned section title */
+    --z-brand: 30; /* logo row */
+    --z-nav: 40; /* nav pill */
+    --z-skip: 60; /* skip link, above everything */
+    --mat-pad: 10%; /* breathing room round a logo on a mat in the reel */
     --nav-clear: calc(4.75rem + env(safe-area-inset-bottom)); /* room kept free under the phone nav pill */
     --hero-size: min(clamp(2.75rem, 1.2rem + 6vw, 7rem), 11svh); /* hero headline size */
     --reel-h: min(clamp(6.5rem, 4rem + 9vw, 10.5rem), 16svh); /* project reel card height */
@@ -153,7 +208,7 @@
   .brand-row {
     position: sticky;
     top: 0;
-    z-index: 30;
+    z-index: var(--z-brand);
     isolation: isolate;
     padding-top: var(--brand-pt);
     height: calc(var(--brand-pt) + var(--brand-h));
@@ -161,11 +216,11 @@
   .brand-row::before {
     content: "";
     position: absolute;
-    inset: 0 calc(50% - 50vw) -1.25rem; /* full viewport width: the header itself is capped at the page width */
+    inset: 0 calc(50% - 50vw) calc(-1 * var(--space-5)); /* full viewport width: the header itself is capped at the page width */
     z-index: -1;
     pointer-events: none;
     background: linear-gradient(to bottom, var(--color-bg) 65%, transparent);
-    transition: opacity 200ms var(--ease-snap);
+    transition: opacity var(--dur) var(--ease-snap);
   }
   /* At the very top of the page the backing is transparent (the hero backdrop shows behind the logo);
      the script adds .scrolled on <html> once the page moves. Without JS it stays solid. */
@@ -179,11 +234,11 @@
      scrollIntoView, so cancel it for the home sections: they land with their top at the logo row. */
   .hero[id],
   .sect[id] {
-    scroll-margin-top: calc(-5rem);
+    scroll-margin-top: calc(-1 * var(--title-clear));
   }
   /* Keep keyboard focus clear of the sticky logo row and section title, and of the phone nav pill. */
   html {
-    scroll-padding-top: calc(var(--brand-pt) + var(--brand-h) + 5rem);
+    scroll-padding-top: calc(var(--brand-pt) + var(--brand-h) + var(--title-clear));
     scroll-padding-bottom: var(--nav-clear);
   }
   html:has(dialog[open]) {
@@ -212,20 +267,20 @@
 @layer components {
   /* Layout container */
   .page {
-    --pad: 1.25rem;
+    --pad: var(--space-5);
     width: 100%;
-    max-width: calc(80rem + 2 * var(--pad));
+    max-width: calc(var(--page-max) + 2 * var(--pad));
     margin-inline: auto;
     padding-inline: max(var(--pad), env(safe-area-inset-left)) max(var(--pad), env(safe-area-inset-right));
   }
   @media (min-width: 640px) {
     .page {
-      --pad: 2rem;
+      --pad: var(--space-8);
     }
   }
   @media (min-width: 1024px) {
     .page {
-      --pad: 3rem;
+      --pad: var(--space-12);
     }
   }
 
@@ -249,7 +304,7 @@
     text-decoration-thickness: 1px;
     text-decoration-color: var(--color-control);
     text-underline-offset: 4px;
-    transition: color 150ms var(--ease-snap);
+    transition: color var(--dur-fast) var(--ease-snap);
   }
   /* Hover and focus are a colour change only; the resting hairline underline never changes. */
   .link:hover,
@@ -264,16 +319,16 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-height: 2.75rem;
-    padding-inline: 1.25rem;
+    min-height: var(--ctl-h);
+    padding-inline: var(--space-5);
     border-radius: var(--radius-ctl);
     font-size: var(--text-sm);
     font-weight: 600;
     line-height: 1.2;
     cursor: pointer;
     border: 1px solid transparent;
-    transition: color 150ms var(--ease-snap), background-color 150ms var(--ease-snap),
-      border-color 150ms var(--ease-snap), box-shadow 150ms var(--ease-snap);
+    transition: color var(--dur-fast) var(--ease-snap), background-color var(--dur-fast) var(--ease-snap),
+      border-color var(--dur-fast) var(--ease-snap), box-shadow var(--dur-fast) var(--ease-snap);
   }
   .btn-primary {
     background: var(--color-accent);
@@ -311,13 +366,13 @@
     color: var(--color-hi);
   }
   .btn-sm {
-    min-height: 2.25rem;
-    padding-inline: 0.75rem;
+    min-height: var(--ctl-h-sm);
+    padding-inline: var(--space-3);
     font-size: var(--text-sm);
   }
   @media (max-width: 767.98px) {
     .btn-sm {
-      min-height: 2.75rem;
+      min-height: var(--ctl-h);
     }
   }
 
@@ -326,9 +381,9 @@
      only the current/hovered/focused label; from md it sits top right with every label. */
   .site-nav {
     position: fixed;
-    z-index: 40;
+    z-index: var(--z-nav);
     left: 50%;
-    bottom: calc(0.75rem + env(safe-area-inset-bottom));
+    bottom: calc(var(--space-3) + env(safe-area-inset-bottom));
     translate: -50% 0;
   }
   @media (min-width: 768px) {
@@ -338,19 +393,19 @@
       translate: none;
       /* vertically centred on the brand row */
       top: calc(var(--brand-pt) + (var(--brand-h) - var(--pill-h)) / 2);
-      right: 2rem;
+      right: var(--space-8);
     }
   }
   @media (min-width: 1024px) {
     .site-nav {
-      right: max(3rem, calc((100% - 80rem) / 2));
+      right: max(var(--space-12), calc((100% - var(--page-max)) / 2));
     }
   }
   .site-nav-list {
     display: flex;
     align-items: center;
-    gap: 0.125rem;
-    padding: 0.25rem;
+    gap: var(--space-0_5);
+    padding: var(--space-1);
     border-radius: calc(var(--radius) + 0.25rem); /* nested: item radius + padding */
     background: var(--color-surface);
     box-shadow:
@@ -360,15 +415,15 @@
   .nav-item {
     display: inline-flex;
     align-items: center;
-    min-height: 2.75rem;
-    min-width: 2.75rem;
-    padding-inline: 0.8125rem;
+    min-height: var(--ctl-h);
+    min-width: var(--ctl-h);
+    padding-inline: var(--space-3_5);
     border-radius: var(--radius);
     font-size: var(--text-sm);
     line-height: var(--text-sm--line-height);
     font-weight: 500;
     color: var(--color-text);
-    transition: color 150ms var(--ease-snap), background-color 150ms var(--ease-snap);
+    transition: color var(--dur-fast) var(--ease-snap), background-color var(--dur-fast) var(--ease-snap);
   }
   .nav-item:hover {
     background: var(--color-raised);
@@ -383,8 +438,8 @@
   }
   .nav-ico {
     flex: none;
-    width: 1.125rem;
-    height: 1.125rem;
+    width: var(--icon-md);
+    height: var(--icon-md);
   }
   .nav-ico-on,
   .nav-item[aria-current] .nav-ico-rest {
@@ -404,24 +459,24 @@
   .nav-item[aria-current] .nav-label,
   .nav-item:hover .nav-label,
   .nav-item:focus-visible .nav-label {
-    max-width: 6rem;
-    margin-left: 0.375rem;
+    max-width: var(--nav-label-max);
+    margin-left: var(--space-1_5);
     opacity: 1;
   }
   @media (prefers-reduced-motion: no-preference) {
     .nav-label {
-      transition: max-width 220ms var(--ease-snap), margin-left 220ms var(--ease-snap),
-        opacity 160ms var(--ease-snap);
+      transition: max-width var(--dur) var(--ease-snap), margin-left var(--dur) var(--ease-snap),
+        opacity var(--dur-fast) var(--ease-snap);
     }
   }
   @media (min-width: 768px) {
     .nav-item {
-      min-height: 2.25rem;
-      padding-inline: 0.75rem;
+      min-height: var(--ctl-h-sm);
+      padding-inline: var(--space-3);
     }
     .nav-label {
       max-width: none;
-      margin-left: 0.375rem;
+      margin-left: var(--space-1_5);
       opacity: 1;
     }
   }
@@ -467,10 +522,10 @@
   .sect-title {
     position: sticky;
     top: calc(var(--brand-pt) + var(--brand-h));
-    z-index: 20;
+    z-index: var(--z-sticky);
     isolation: isolate;
     margin: 0;
-    padding-block: 0.25rem;
+    padding-block: var(--space-1);
     font-size: var(--text-title);
     line-height: var(--text-title--line-height);
     letter-spacing: var(--text-title--letter-spacing);
@@ -502,7 +557,7 @@
     display: flex;
     flex-direction: column;
     min-height: calc(100svh - var(--brand-pt) - var(--brand-h) - var(--nav-clear));
-    padding-bottom: 2.5rem;
+    padding-bottom: var(--space-10);
   }
   /* Hero backdrop: the same real halftone as the Selected work stage, but of a soft light field
      instead of a photo. ::before is a large glowing blob (the "picture"), ::after the tiled cone
@@ -571,7 +626,7 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding-block: 2rem;
+    padding-block: var(--space-8);
   }
   .hero-title {
     font-size: var(--hero-size);
@@ -595,7 +650,7 @@
      Pauses on hover, keyboard focus or the Pause toggle (CSS only). Static and
      scrollable under reduced motion. Images keep full opacity, no overlay or mask. */
   .reel {
-    --reel-gap: 1rem;
+    --reel-gap: var(--space-4);
   }
   .reel-window {
     overflow: hidden;
@@ -622,7 +677,7 @@
     overflow: hidden;
     background: var(--color-surface);
     box-shadow: 0 0 0 1px var(--color-line);
-    transition: box-shadow 150ms var(--ease-snap);
+    transition: box-shadow var(--dur-fast) var(--ease-snap);
   }
   .reel-media[data-mat="dark"] {
     background: var(--color-mat-dark);
@@ -642,12 +697,12 @@
   }
   .reel-cap {
     display: block;
-    margin-top: 0.5rem;
+    margin-top: var(--space-2);
     font-size: var(--text-cap);
     line-height: var(--text-cap--line-height);
     letter-spacing: var(--text-cap--letter-spacing);
     color: var(--color-muted);
-    transition: color 150ms var(--ease-snap);
+    transition: color var(--dur-fast) var(--ease-snap);
   }
   .reel-num {
     color: var(--color-dim);
@@ -665,19 +720,19 @@
   .reel-toggle {
     display: inline-flex;
     align-items: center;
-    gap: 0.375rem;
-    min-height: 2.75rem;
-    padding-inline: 0.75rem;
+    gap: var(--space-1_5);
+    min-height: var(--ctl-h);
+    padding-inline: var(--space-3);
     border-radius: var(--radius);
     font-size: var(--text-sm);
     font-weight: 500;
     color: var(--color-text);
     cursor: pointer;
-    transition: color 150ms var(--ease-snap), background-color 150ms var(--ease-snap);
+    transition: color var(--dur-fast) var(--ease-snap), background-color var(--dur-fast) var(--ease-snap);
   }
   @media (min-width: 768px) {
     .reel-toggle {
-      min-height: 2.25rem;
+      min-height: var(--ctl-h-sm);
     }
   }
   .reel-toggle:hover {
@@ -689,13 +744,13 @@
     outline-offset: 2px;
   }
   .reel-toggle svg {
-    width: 1rem;
-    height: 1rem;
+    width: var(--icon-sm);
+    height: var(--icon-sm);
   }
   .reel-state {
     display: inline-flex;
     align-items: center;
-    gap: 0.375rem;
+    gap: var(--space-1_5);
   }
   .reel-toggle .is-play,
   .reel-toggle:has(:checked) .is-pause {
@@ -735,7 +790,7 @@
   /* Forms */
   .field {
     display: grid;
-    gap: 0.5rem;
+    gap: var(--space-2);
     border: 0;
     padding: 0;
     margin: 0;
@@ -745,7 +800,7 @@
     display: block; /* a grid fieldset ignores the gap around its legend */
   }
   .field > legend {
-    margin-bottom: 0.5rem; /* same label-to-control gap as the other fields */
+    margin-bottom: var(--space-2); /* same label-to-control gap as the other fields */
   }
   .field > label,
   .field > legend {
@@ -759,17 +814,17 @@
   .field textarea {
     width: 100%;
     min-height: var(--field-h);
-    padding: 0.625rem 0.75rem;
+    padding: var(--space-2_5) var(--space-3);
     border-radius: var(--field-r);
     background: var(--color-surface);
     border: 1px solid var(--color-control);
     color: var(--color-hi);
     font: inherit;
     font-size: var(--text-base);
-    transition: border-color 150ms var(--ease-snap), box-shadow 150ms var(--ease-snap);
+    transition: border-color var(--dur-fast) var(--ease-snap), box-shadow var(--dur-fast) var(--ease-snap);
   }
   .field textarea {
-    min-height: 10rem;
+    min-height: var(--textarea-h);
     resize: vertical;
   }
   .field input::placeholder,
@@ -796,7 +851,7 @@
     --chip-dot: 0.875rem;
     display: flex;
     flex-wrap: nowrap; /* always one line; scrolls sideways only if the screen is too narrow */
-    gap: 0.375rem;
+    gap: var(--space-1_5);
     overflow-x: auto;
     padding: 3px; /* room for the focus ring inside the scroll box */
     margin: -3px;
@@ -810,11 +865,11 @@
     flex: 1 1 auto; /* chips share the one line and stretch to the form's full width */
     justify-content: flex-start;
     align-items: center;
-    gap: 0.5rem;
+    gap: var(--space-2);
     min-height: var(--chip-h); /* deliberately smaller than the 3rem fields */
     /* the dot sits the same distance from the left end as from the top and bottom, concentric with the rounded end */
     padding-left: calc((var(--chip-h) - var(--chip-dot)) / 2 - 1px);
-    padding-right: 0.875rem;
+    padding-right: var(--space-3_5);
     white-space: nowrap;
     border-radius: var(--radius);
     border: 1px solid var(--color-line);
@@ -823,8 +878,8 @@
     font-weight: 500;
     color: var(--color-muted);
     cursor: pointer;
-    transition: color 150ms var(--ease-snap), background-color 150ms var(--ease-snap),
-      border-color 150ms var(--ease-snap);
+    transition: color var(--dur-fast) var(--ease-snap), background-color var(--dur-fast) var(--ease-snap),
+      border-color var(--dur-fast) var(--ease-snap);
   }
   /* Native radio, restyled: a ring that fills with an orange dot when chosen. */
   .chip input {
@@ -837,7 +892,7 @@
     border: 1.5px solid var(--color-control);
     background: transparent;
     cursor: pointer;
-    transition: border-color 150ms var(--ease-snap), background-color 150ms var(--ease-snap);
+    transition: border-color var(--dur-fast) var(--ease-snap), background-color var(--dur-fast) var(--ease-snap);
   }
   .chip input:checked {
     border-color: var(--color-accent);
@@ -850,7 +905,7 @@
   @media (max-width: 479.98px) {
     .chip {
       justify-content: center;
-      padding-inline: 0.5rem;
+      padding-inline: var(--space-2);
     }
     /* The radio stays in the accessibility tree and keyboard order: visually hidden, not removed.
        The chosen chip gets a tick as well as the orange outline, and a stronger resting border. */
@@ -871,7 +926,7 @@
       content: "\2713";
       font-weight: 700;
       color: var(--color-accent);
-      margin-right: 0.3rem;
+      margin-right: var(--space-1);
     }
   }
   .chip:has(:checked) {
@@ -916,10 +971,10 @@
     display: grid;
     grid-template-columns: var(--row-thumb) minmax(0, 1fr) auto;
     align-items: center;
-    column-gap: 1rem;
+    column-gap: var(--space-4);
     height: 100%;
-    padding: 0.75rem;
-    transition: background-color 150ms var(--ease-snap);
+    padding: var(--space-3);
+    transition: background-color var(--dur-fast) var(--ease-snap);
   }
   .wrow-link:hover {
     background: var(--color-surface);
@@ -934,7 +989,7 @@
     border-radius: var(--radius);
     background: var(--color-surface);
     box-shadow: 0 0 0 1px var(--color-line);
-    transition: box-shadow 150ms var(--ease-snap);
+    transition: box-shadow var(--dur-fast) var(--ease-snap);
   }
   .wimg img {
     width: 100%;
@@ -1110,10 +1165,10 @@
     color: var(--color-dim);
   }
   .wrow-arrow {
-    width: 1.25rem;
-    height: 1.25rem;
+    width: var(--icon-lg);
+    height: var(--icon-lg);
     color: var(--color-dim);
-    transition: color 150ms var(--ease-snap);
+    transition: color var(--dur-fast) var(--ease-snap);
   }
   .wrow-link:hover .wrow-arrow,
   .wrow-link:focus-visible .wrow-arrow {
@@ -1121,7 +1176,7 @@
   }
   .index-title {
     color: var(--color-accent);
-    transition: color 150ms var(--ease-snap);
+    transition: color var(--dur-fast) var(--ease-snap);
   }
   .wrow-link:hover .index-title,
   .wrow-link:focus-visible .index-title {
@@ -1157,7 +1212,7 @@
     }
     .feat .wrow-link {
       grid-template-columns: minmax(0, 1fr) auto;
-      padding: 0.5rem 1.25rem;
+      padding: var(--space-2) var(--space-5);
     }
     /* The cover, lifted onto the stage. Hidden covers stay painted for one fade so the
        incoming one (on top) fades over it, then drop out of hit-testing. */
@@ -1200,10 +1255,10 @@
     .feat .wcap {
       position: absolute;
       z-index: 1;
-      left: 1rem;
-      bottom: 1rem;
-      max-width: min(26rem, calc(100% - 2rem));
-      padding: 0.625rem 0.875rem;
+      left: var(--space-4);
+      bottom: var(--space-4);
+      max-width: min(var(--feat-caption-max), calc(100% - 2 * var(--space-4)));
+      padding: var(--space-2_5) var(--space-3_5);
       border-radius: var(--radius);
       background: var(--color-accent);
       color: var(--color-on-accent);
@@ -1213,14 +1268,14 @@
     }
     /* Title and ticket line up with the label text, which sits after the dot. */
     .feat .wrow-text > :not(.wrow-no) {
-      padding-left: calc(6px + 0.5rem);
+      padding-left: calc(6px + var(--space-2));
     }
     .feat .wrow-no::before {
       content: "";
       display: inline-block;
       width: 6px;
       height: 6px;
-      margin-right: 0.5rem;
+      margin-right: var(--space-2);
       vertical-align: 0.1em;
       border-radius: 50%;
       background: var(--color-accent);
@@ -1303,15 +1358,21 @@
   }
 
   /* Gallery */
+  .lb-rows {
+    grid-template-rows: var(--lb-head-h) 1fr var(--lb-foot-h);
+  }
+  .lb-cols {
+    grid-template-columns: var(--lb-btn) 1fr var(--lb-btn);
+  }
   .gallery {
-    --g-gap: 1rem;
+    --g-gap: var(--space-4);
     display: flex;
     flex-direction: column;
     gap: calc(var(--g-gap) * 2);
   }
   @media (min-width: 768px) {
     .gallery {
-      --g-gap: 1.5rem;
+      --g-gap: var(--space-6);
     }
   }
   .g-row {
@@ -1321,7 +1382,7 @@
     width: 100%;
   }
   .g-row[data-type="justified"] {
-    --cap: min(80svh, 50rem);
+    --cap: min(80svh, var(--g-cap-max));
     display: flex;
     gap: var(--g-gap);
     align-items: flex-start;
@@ -1329,7 +1390,7 @@
     max-width: calc(var(--cap) * var(--sum) + (var(--n) - 1) * var(--g-gap));
   }
   .g-row[data-type="justified"][data-marks] {
-    --cap: 22.5rem;
+    --cap: var(--g-cap-marks);
   }
   .g-row[data-type="justified"] > .g-item {
     flex: var(--r) 1 0%;
@@ -1340,7 +1401,7 @@
     gap: var(--g-gap);
     justify-content: center;
     align-items: start;
-    grid-template-columns: repeat(var(--n), minmax(0, 18.75rem));
+    grid-template-columns: repeat(var(--n), minmax(0, var(--g-phone-max)));
   }
   .g-row[data-type="sheet"] {
     display: grid;
@@ -1363,7 +1424,7 @@
     overflow: hidden;
     background: var(--color-surface);
     box-shadow: 0 0 0 1px var(--color-line);
-    transition: box-shadow 150ms var(--ease-snap);
+    transition: box-shadow var(--dur-fast) var(--ease-snap);
   }
   .g-row[data-type="sheet"] .g-media,
   .g-media[data-kind="mark"] {
@@ -1408,7 +1469,7 @@
     outline-offset: 3px;
   }
   .g-cap {
-    margin-top: 0.5rem;
+    margin-top: var(--space-2);
     font-size: var(--text-cap);
     line-height: var(--text-cap--line-height);
     letter-spacing: var(--text-cap--letter-spacing);
@@ -1443,7 +1504,7 @@
 
   /* Reveal: once only. Visible by default; hidden only when JS runs and motion is allowed. */
   [data-reveal] {
-    transition: opacity 400ms var(--ease-snap), transform 400ms var(--ease-snap);
+    transition: opacity var(--dur-slow) var(--ease-snap), transform var(--dur-slow) var(--ease-snap);
   }
   @media (prefers-reduced-motion: no-preference) {
     html.js [data-reveal]:not(.in) {
@@ -1489,13 +1550,13 @@
 }
 @media (prefers-reduced-motion: no-preference) {
   #lightbox[open] {
-    animation: lb-in 180ms var(--ease-snap);
+    animation: lb-in var(--dur) var(--ease-snap);
   }
   @view-transition {
     navigation: auto;
   }
   ::view-transition-group(root) {
-    animation-duration: 200ms;
+    animation-duration: var(--dur);
   }
 }
 

@@ -66,7 +66,7 @@ const set = cards.length >= 8 ? cards : [...cards, ...cards, ...cards].slice(0, 
                     <Image
                       src={c.src}
                       alt=""
-                      class={c.contain ? "object-contain p-[10%]" : "object-cover"}
+                      class={c.contain ? "object-contain p-mat" : "object-cover"}
                       style={c.contain ? undefined : `object-position:${c.position}`}
                       widths={[240, 480]}
                       quality={70}
