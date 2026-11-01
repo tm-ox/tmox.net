@@ -8,8 +8,8 @@
   --color-tertiary: #1ba6fa;
   --color-background: #1e293b;
   --color-hover: #47a216;
-  /* UI icon tints: >=3:1 on their surfaces (muted on secondary 4.05, dim on background 3.67) */
-  --color-muted: #8fa3c4;
+  /* UI icon tints: muted (dark green) 3.19 on secondary, dim 3.67 on background; both >=3:1 */
+  --color-muted: #47a216;
   --color-dim: #6b80a6;
 
   --font-jakarta: var(--font-jakarta-sans);
