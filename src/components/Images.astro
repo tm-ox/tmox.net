@@ -20,7 +20,7 @@ const { src, alt, id, prev, next, cls } = Astro.props;
       </div>
     </FadeOnce>
     <div
-      class="hidden fixed top-0 left-0 z-50 flex-col justify-center w-full h-full bg-opacity-90 backdrop-blur-xl cursor-default pointer-events-none lightbox bg-background"
+      class="hidden fixed top-0 left-0 z-50 flex-col justify-center w-full h-full backdrop-blur-xl cursor-default pointer-events-none lightbox bg-background/90"
     >
       <Fade>
         <div class="flex flex-col-reverse h-full sm:flex-col">
@@ -34,7 +34,7 @@ const { src, alt, id, prev, next, cls } = Astro.props;
             />
           </div>
           <div
-            class="justify-center mt-4 mb-0 bg-opacity-0 sm:mb-4 h-fit box text-primary"
+            class="justify-center mt-4 mb-0 sm:mb-4 h-fit box bg-transparent text-primary"
           >
             {alt}
           </div>

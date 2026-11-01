@@ -24,7 +24,7 @@ const { index, src, alt, cls } = Astro.props;
 />
 <div class="hidden z-50 lightbox-overlay">
   <div
-    class="flex flex-col justify-between h-full bg-opacity-90 backdrop-blur-xl bg-background"
+    class="flex flex-col justify-between h-full backdrop-blur-xl bg-background/90"
   >
     <Fade>
       <label
@@ -37,7 +37,7 @@ const { index, src, alt, cls } = Astro.props;
         alt={alt}
         class="h-fit max-h-[80vh] w-max max-w-[90vw] m-auto"
       />
-      <div class="justify-center mt-auto mb-4 bg-opacity-0 box text-primary">
+      <div class="justify-center mt-auto mb-4 box bg-transparent text-primary">
         <strong>{alt}</strong>
       </div>
     </Fade>
