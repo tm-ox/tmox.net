@@ -26,6 +26,10 @@ cover:
   position: "0% 0%"
   mat: none
   mobileAspect: "4/3"
+# Home stage image: the sign-in screen.
+feature:
+  src: ./tg/tg-gm-login.png
+  position: "50% 50%"
 rows: [1, 2, 2, 3, 2]
 images:
   - src: ./tg/tg-gm-tg.png

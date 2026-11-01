@@ -1,7 +1,7 @@
 ---
 order: 3
 featured: true
-featuredOrder: 3
+featuredOrder: 1
 title: "Logo design"
 client: "Various"
 type: "Logo design"
@@ -31,6 +31,10 @@ cover:
     - ./logos/pos-e.png
     - ./logos/gula-2-e.png
     - ./logos/imogen.png
+# Home stage image: the O'Divine mark alone, instead of the six-logo sheet (the sheet is still the cover elsewhere).
+feature:
+  src: ./logos/odivine-e.png
+  position: "50% 46%"
 rows: [18]
 images:
   - src: ./logos/dark-house.png

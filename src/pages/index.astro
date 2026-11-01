@@ -3,7 +3,7 @@ import { getEntry } from "astro:content";
 import { Icon } from "astro-icon/components";
 import { getWork, getFeatured } from "../lib/work";
 import Layout from "../layouts/Layout.astro";
-import WorkTile from "../components/WorkTile.astro";
+import WorkRow from "../components/WorkRow.astro";
 import Contact from "../components/Contact.astro";
 
 const page = await getEntry("pages", "index");
@@ -29,6 +29,7 @@ for (const s of data.services)
 <Layout title={data.title} description={data.description}>
   <!-- Hero: headline, lead, calls to action. (Reel.astro is parked, unused.) -->
   <section id="top" class="hero">
+    <div class="hero-dots" aria-hidden="true"></div>
     <div class="page hero-body">
       <p class="meta hero-in" style="--i:0">{data.hero.kicker}</p>
       <h1 class="mt-4 hero-title hero-in" style="--i:1">
@@ -44,8 +45,8 @@ for (const s of data.services)
       </div>
       {
         data.hero.availability && (
-          <p class="mt-6 meta flex items-center gap-2 hero-in" style="--i:4">
-            <span class="size-1.5 bg-accent" aria-hidden="true" />
+          <p class="mt-8 meta flex items-center gap-2 hero-in" style="--i:4">
+            <span class="size-1.5 rounded-full bg-accent" aria-hidden="true" />
             {data.hero.availability}
           </p>
         )
@@ -53,27 +54,43 @@ for (const s of data.services)
     </div>
   </section>
 
-  <!-- Selected work -->
-  <section id="work" class="page pt-10 md:pt-12 pb-16 md:pb-24">
-    <div class="flex items-end justify-between gap-6 mb-8 md:mb-12">
-      <h2 class="text-h2 font-extrabold text-accent">Selected work</h2>
-      <a href="/work" class="link text-sm inline-flex items-center gap-1 whitespace-nowrap">
-        All {work.length} projects
-        <Icon name="ion:arrow-forward" class="size-[1em]" aria-hidden="true" />
-      </a>
+  <!-- Duotone for the Selected work stage: luminance mapped from slate #1e222e (shadows) to orange #ff9e64 (highlights). -->
+  <svg width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute">
+    <filter id="duotone" color-interpolation-filters="sRGB">
+      <feColorMatrix type="matrix" values="0.2126 0.7152 0.0722 0 0  0.2126 0.7152 0.0722 0 0  0.2126 0.7152 0.0722 0 0  0 0 0 1 0" />
+      <feComponentTransfer>
+        <feFuncR type="table" tableValues="0.118 1" />
+        <feFuncG type="table" tableValues="0.133 0.62" />
+        <feFuncB type="table" tableValues="0.18 0.392" />
+      </feComponentTransfer>
+    </filter>
+  </svg>
+
+  <!-- Selected work: one module, an index of featured projects beside a stage that shows
+       the hovered or focused one (global.css "Work list"). A plain row list on touch and narrow screens. -->
+  <section id="work" class="page screen sect">
+    <div class="sect-head"><h2 class="sect-title">Selected work</h2></div>
+    <div class="sect-body">
+      <div class="flex justify-end mb-4">
+        <a href="/work" class="link text-sm inline-flex items-center gap-1 whitespace-nowrap">
+          All {work.length} projects
+          <Icon name="ion:arrow-forward" class="size-[1em]" aria-hidden="true" />
+        </a>
+      </div>
+      <div class="wlist feat" data-screen="halftone" data-reveal="once">
+        <span class="feat-hl" aria-hidden="true"></span>
+        <ul class="wlist-rows">
+          {featured.map((entry, i) => <WorkRow entry={entry} stage on={i === 0} eager={i === 0} />)}
+        </ul>
+        <div class="feat-stage" aria-hidden="true"></div>
+      </div>
     </div>
-    <ul class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-10 md:gap-y-12">
-      {
-        featured.map((entry, i) => (
-          <WorkTile entry={entry} eager={i < 3} />
-        ))
-      }
-    </ul>
   </section>
 
   <!-- Services -->
-  <section id="services" class="page py-16 md:py-24 xl:py-32 border-t border-line">
-    <h2 class="text-h2 font-extrabold text-accent mb-8 md:mb-12">What I do</h2>
+  <section id="services" class="page screen sect">
+    <div class="sect-head"><h2 class="sect-title">What I do</h2></div>
+    <div class="sect-body">
     <ul class="grid gap-10 md:grid-cols-3 md:gap-x-10">
       {
         data.services.map((s, i) => (
@@ -109,18 +126,16 @@ for (const s of data.services)
         ))
       }
     </ul>
+    </div>
   </section>
 
   <!-- About -->
-  <section
-    id="about"
-    class="page py-16 md:py-24 xl:py-32 border-t border-line grid gap-8 md:grid-cols-12 md:gap-x-6"
-  >
-    <h2 class="text-h2 font-extrabold text-accent md:col-span-4">{data.about.title}</h2>
-    <div class="md:col-span-7 md:col-start-6">
+  <section id="about" class="page screen sect">
+    <div class="sect-head"><h2 class="sect-title">{data.about.title}</h2></div>
+    <div class="sect-body max-w-[66ch] md:max-w-[58rem]">
       {
         data.about.paragraphs.map((p, i) => (
-          <p class={i === 0 ? "text-lead max-w-[66ch]" : "mt-5 text-base max-w-[66ch]"}>
+          <p class={i === 0 ? "statement max-w-[40ch]" : "mt-6 text-base max-w-[66ch]"}>
             {p}
           </p>
         ))
@@ -145,3 +160,77 @@ for (const s of data.services)
     note={data.contact.note}
   />
 </Layout>
+
+<script>
+  import "../scripts/section-keys.ts";
+</script>
+
+<script>
+  // Selected work stage. `is-on` marks the remembered row (without this script the CSS falls back
+  // to the first project). Hovering or focusing a row picks it. With a mouse from 1024px the stage
+  // also cycles on its own every CYCLE_MS, pausing while the pointer or focus is inside the module
+  // or the tab or module is out of view, and never when the user prefers reduced motion.
+  const CYCLE_MS = 3200; // time each project stays on the stage
+  const wide = matchMedia("(min-width: 1024px) and (hover: hover)");
+  const calm = matchMedia("(prefers-reduced-motion: reduce)");
+
+  for (const feat of document.querySelectorAll<HTMLElement>(".feat")) {
+    feat.style.setProperty("--feat-cycle", `${CYCLE_MS}ms`); // CSS ties the dot-screen fade to it
+    const rows = [...feat.querySelectorAll<HTMLElement>(".wrow")];
+    let current = Math.max(0, rows.findIndex((r) => r.classList.contains("is-on")));
+    // Sliding highlight (.feat-hl): placed under the active row; the first placement is instant.
+    const hl = feat.querySelector<HTMLElement>(".feat-hl");
+    const place = () => {
+      const on = rows[current];
+      if (!hl || !on) return;
+      hl.style.setProperty("--hl-y", `${on.offsetTop}px`);
+      hl.style.setProperty("--hl-h", `${on.offsetHeight}px`);
+    };
+    const pick = (i: number) => {
+      current = i;
+      rows.forEach((r, n) => r.classList.toggle("is-on", n === i));
+      place();
+    };
+    const mode = () => {
+      feat.classList.toggle("has-hl", wide.matches);
+      place();
+    };
+    mode();
+    requestAnimationFrame(() => requestAnimationFrame(() => feat.classList.add("hl-anim")));
+    wide.addEventListener("change", mode);
+    addEventListener("resize", place);
+    rows.forEach((row, i) => {
+      row.addEventListener("pointerenter", () => pick(i));
+      row.addEventListener("focusin", () => pick(i));
+    });
+
+    let timer: number | undefined;
+    let visible = true;
+    let inside = false;
+    const stop = () => {
+      window.clearInterval(timer);
+      timer = undefined;
+    };
+    const sync = () => {
+      stop();
+      if (wide.matches && !calm.matches && visible && !inside && !document.hidden)
+        timer = window.setInterval(() => pick((current + 1) % rows.length), CYCLE_MS);
+    };
+    feat.addEventListener("pointerenter", () => ((inside = true), sync()));
+    feat.addEventListener("pointerleave", () => ((inside = false), sync()));
+    feat.addEventListener("focusin", () => ((inside = true), sync()));
+    feat.addEventListener("focusout", (e) => {
+      if (!feat.contains(e.relatedTarget as Node | null)) {
+        inside = false;
+        sync();
+      }
+    });
+    document.addEventListener("visibilitychange", sync);
+    wide.addEventListener("change", sync);
+    calm.addEventListener("change", sync);
+    new IntersectionObserver((entries) => {
+      visible = entries.some((e) => e.isIntersecting);
+      sync();
+    }).observe(feat);
+  }
+</script>

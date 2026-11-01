@@ -21,12 +21,12 @@ export function neighbours<T extends { id: string }>(list: T[], id: string) {
   };
 }
 
-// Home grid layout by tile position (1-based): md column span and row height step.
-// Positions are drawn in pairs; each pair's spans sum to 12.
-// Home grid: uniform tiles, 2 columns from md and 3 from lg, so a multiple of 6 fills every row.
-export const MAX_FEATURED = 12;
+// Home "Selected work" module: the featured rows share the stage's height, so keep the
+// count small. 6 is the designed count; 4 to 8 fit.
+export const MIN_FEATURED = 4;
+export const MAX_FEATURED = 8;
 
-// Featured projects in tile order. Validates the owner-editable flags.
+// Featured projects in row order. Validates the owner-editable flags.
 export function getFeatured(work: Work[]) {
   const feat = work
     .filter((w) => w.data.featured)
@@ -35,14 +35,9 @@ export function getFeatured(work: Work[]) {
         (a.data.featuredOrder ?? 99) - (b.data.featuredOrder ?? 99) ||
         a.data.order - b.data.order
     );
-  if (feat.length === 0) throw new Error("[home] no published project has `featured: true`");
-  if (feat.length > MAX_FEATURED)
+  if (feat.length < MIN_FEATURED || feat.length > MAX_FEATURED)
     throw new Error(
-      `[home] ${feat.length} featured projects; the grid holds at most ${MAX_FEATURED}`
-    );
-  if (feat.length % 6 !== 0)
-    throw new Error(
-      `[home] ${feat.length} featured projects; feature 6 or 12 so rows fill at every width`
+      `[home] ${feat.length} featured projects; feature ${MIN_FEATURED} to ${MAX_FEATURED} (6 is the designed count)`
     );
   const orders = feat.map((w) => w.data.featuredOrder).filter((n) => n !== undefined);
   if (new Set(orders).size !== orders.length)

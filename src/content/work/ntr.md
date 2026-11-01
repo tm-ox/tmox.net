@@ -1,7 +1,5 @@
 ---
 order: 2
-featured: true
-featuredOrder: 2
 title: "Nags to Riches catalogue"
 client: "Nags to Riches"
 website: "nagstoriches.com.au"

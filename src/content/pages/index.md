@@ -2,7 +2,7 @@
 title: "TMOX — Brand, print and web design"
 description: "Freelance designer for logos and identities, catalogues and brochures, and websites and app interfaces. Trained in print, mostly on screen now."
 hero:
-  kicker: "TMOX · Freelance design · Brand / Print / Web"
+  kicker: "Freelance design · Brand / Print / Web"
   title: "Logos, print and websites, set with care."
   accent: "set with care."
   lead: "I design logos and identities, catalogues and brochures, and websites and app screens, and I build the websites too."
@@ -59,7 +59,7 @@ about:
     - Astro, Svelte, Nuxt, Next
     - Tailwind CSS
 contact:
-  title: "Tell me about the job."
+  title: "Get in touch"
   lead: "Tell me what you need and send it through the form below."
   note: "Replies within one working day, UTC+7."
 footer:

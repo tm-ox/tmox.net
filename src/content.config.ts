@@ -49,8 +49,8 @@ export const collections = {
       z.object({
         order: z.number().int(),
         draft: z.boolean().default(false),
-        // Home grid: `featured: true` shows the project there (6 or 12, drawn as an even grid).
-        // `featuredOrder` sets its position (1 = first tile). All tiles are the same size.
+        // Home "Selected work": `featured: true` lists the project there (4 to 8; 6 designed).
+        // `featuredOrder` sets its position (1 = first row, shown on the stage first).
         featured: z.boolean().default(false),
         featuredOrder: z.number().int().min(1).optional(),
         title: z.string(),
@@ -76,6 +76,11 @@ export const collections = {
           mobileAspect: z.enum(["4/3", "3/2", "4/5"]).default("4/3"),
           sheet: z.array(image()).length(6).optional(),
         }),
+        // Optional: a different image for the home "Selected work" stage (duotoned there). When
+        // absent the cover is used. `position` is the crop focus, e.g. "50% 30%".
+        feature: z
+          .object({ src: image(), position: z.string().default("50% 50%") })
+          .optional(),
         rows: z.array(z.number().int().min(1)).optional(),
         images: z.array(
           z.object({

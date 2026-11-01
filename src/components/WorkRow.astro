@@ -1,0 +1,79 @@
+---
+import { Image } from "astro:assets";
+import { Icon } from "astro-icon/components";
+import type { Work } from "../lib/work";
+import Ticket from "./Ticket.astro";
+
+// One row of a work list (global.css "Work list"): cover, No. (or a label), title, ticket, arrow.
+// Used by the home "Selected work" stage, the /work index and project prev/next.
+// `stage`: the cover is drawn large in the module's stage (home); elsewhere it is a thumbnail.
+interface Props {
+  entry: Work;
+  label?: string; // replaces "No.07", e.g. "Previous"
+  as?: "h2" | "h3" | "span";
+  stage?: boolean;
+  on?: boolean; // the row whose cover the stage shows first
+  eager?: boolean;
+  back?: boolean; // arrow points back
+}
+const { entry, label, as: Tag = "h3", stage = false, on = false, eager = false, back = false } = Astro.props;
+const { data } = entry;
+const c = data.cover;
+const f = stage ? data.feature : undefined; // home stage may use its own image
+const mode = f ? "cover" : c.sheet ? "sheet" : c.fit === "contain" ? "contain" : "cover";
+const mat = mode === "cover" ? "none" : c.mat;
+const loading = eager ? "eager" : "lazy";
+const uid = `wr-${entry.id}${label ? `-${label.toLowerCase()}` : ""}`;
+
+// The stage is ~58% of the 80rem page from 1024px; elsewhere a ~7-9rem thumbnail.
+// On the home stage the image is drawn at its own size (1600 CSS px wide, cropped by the panel).
+const sizes = stage ? "(min-width:1024px) and (hover:hover) 1600px, 144px" : "144px";
+const widths = stage ? [240, 480, 800, 1200, 1600, 2400] : [160, 320];
+---
+
+<li class={`wrow${on ? " is-on" : ""}`}>
+  <a
+    href={`/work/${entry.id}`}
+    class="wrow-link"
+    data-astro-prefetch="hover"
+    aria-labelledby={`${uid}-t`}
+    aria-describedby={stage ? `${uid}-m ${uid}-d` : `${uid}-m`}
+  >
+    <div class="wmedia">
+      <div class="wimg" data-mode={mode} data-mat={mat}>
+        {
+          mode === "sheet" ? (
+            c.sheet!.map((s) => (
+              <Image src={s} alt="" widths={[160, 320]} sizes="(min-width:1024px) 200px, 144px" loading={loading} />
+            ))
+          ) : (
+            <Image
+              src={f ? f.src : c.src}
+              alt=""
+              style={mode === "cover" ? `object-position:${f ? f.position : stage ? "50% 50%" : c.position}` : undefined}
+              widths={widths}
+              sizes={sizes}
+              loading={loading}
+              fetchpriority={eager ? "high" : "auto"}
+            />
+          )
+        }
+      </div>
+      {
+        stage && (
+          <p class="wcap">
+            <span class="line-clamp-2" id={`${uid}-d`}>{data.description}</span>
+          </p>
+        )
+      }
+    </div>
+    <div class="wrow-text">
+      <p class="meta wrow-no">{label ?? `No.${String(data.order).padStart(2, "0")}`}</p>
+      <Tag class="mt-1 block text-h3 font-bold">
+        <span class="index-title" id={`${uid}-t`}>{data.title}</span>
+      </Tag>
+      <Ticket entry={entry} variant="short" class="mt-1" id={`${uid}-m`} />
+    </div>
+    <Icon name={back ? "ion:arrow-back" : "ion:arrow-forward"} class="wrow-arrow" aria-hidden="true" />
+  </a>
+</li>

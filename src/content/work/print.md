@@ -1,5 +1,7 @@
 ---
 order: 10
+featured: true
+featuredOrder: 2
 title: "Print design"
 client: "Various"
 type: "Print design"

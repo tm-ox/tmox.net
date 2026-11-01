@@ -53,6 +53,9 @@
   --text-h2: clamp(1.75rem, 1.3rem + 1.8vw, 2.5rem);
   --text-h2--line-height: 1.1;
   --text-h2--letter-spacing: -0.02em;
+  --text-title: clamp(2.125rem, 1.25rem + 2.9vw, 4rem);
+  --text-title--line-height: 0.98;
+  --text-title--letter-spacing: -0.035em;
   --text-h1: clamp(2.25rem, 1.5rem + 3.2vw, 4rem);
   --text-h1--line-height: 1.02;
   --text-h1--letter-spacing: -0.025em;
@@ -116,7 +119,6 @@
   :root {
     --nav-clear: calc(4.75rem + env(safe-area-inset-bottom)); /* room kept free under the phone nav pill */
     --hero-size: min(clamp(2.75rem, 1.2rem + 6vw, 7rem), 11svh); /* hero headline size */
-    --hero-peek: 4.5rem; /* how much of "Selected work" shows under the hero */
     --reel-h: min(clamp(6.5rem, 4rem + 9vw, 10.5rem), 16svh); /* project reel card height */
     --reel-pace: 6s; /* reel time per card: larger is slower */
     --rise: 700ms; /* hero entrance duration */
@@ -124,6 +126,21 @@
     --brand-pt: 0rem; /* space above the logo/nav row */
     --brand-h: 3.5rem; /* height of the logo/nav row */
     --pill-h: 3.25rem; /* nav pill height (2.75rem item + 2 x 0.25rem padding) */
+    /* Work list (Revision 3) */
+    --row-thumb: clamp(6rem, 4.5rem + 4vw, 8.5rem); /* cover thumbnail width in work rows */
+    --feat-split: 40%; /* home: share of the module taken by the project index; the stage gets the rest */
+    --feat-ar: 4 / 3; /* home: stage image shape (width / height) */
+    --feat-fade: 600ms; /* home: stage cross-fade between projects (was 200ms) */
+    --feat-dots: 0.9; /* home: strength of the dot screen over the duotone (0 = none); was 0.4 */
+    --feat-dot: 16px; /* home: plain dot screen pitch; was 5px (fine) */
+    --hero-ht: 7px; /* hero: dot pitch of the backdrop */
+    --hero-dots-o: 0.22; /* hero: backdrop strength */
+    --hero-pulse-t: 7s; /* hero: backdrop breath period */
+    --feat-ht: 3px; /* home: halftone screen pitch (was 9px, 6px, 4px) */
+    --feat-ht-contrast: 26; /* home: halftone edge crispness (higher = harder dots) */
+    --feat-ht-pulse: 0.81; /* home: halftone end point of the slow fade, screen opacity (1 = no change) */
+    --feat-kb: 8s; /* home: time of the slow zoom-and-drift on the active cover */
+    --feat-dot-t: 6s; /* home: time for the dot screen to drift one pitch */
   }
   @media (min-width: 768px) {
     :root {
@@ -132,17 +149,32 @@
       --brand-h: 4rem;
     }
   }
+  /* Logo row: sticky, so the logo and the nav pill (fixed on the same centre line) stay put.
+     Content fades out under it instead of showing a hard bar. */
   .brand-row {
-    margin-top: var(--brand-pt);
-    height: var(--brand-h);
+    position: sticky;
+    top: 0;
+    z-index: 30;
+    isolation: isolate;
+    padding-top: var(--brand-pt);
+    height: calc(var(--brand-pt) + var(--brand-h));
+  }
+  .brand-row::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 -1.25rem;
+    z-index: -1;
+    pointer-events: none;
+    background: linear-gradient(to bottom, var(--color-bg) 65%, transparent);
+    transition: opacity 200ms var(--ease-snap);
+  }
+  /* At the very top of the page the backing is transparent (the hero backdrop shows behind the logo);
+     the script adds .scrolled on <html> once the page moves. Without JS it stays solid. */
+  html.js:not(.scrolled) .brand-row::before {
+    opacity: 0;
   }
   [id] {
-    scroll-margin-top: 1.5rem;
-  }
-  @media (min-width: 768px) {
-    [id] {
-      scroll-margin-top: 4rem;
-    }
+    scroll-margin-top: calc(var(--brand-pt) + var(--brand-h));
   }
   img {
     display: block;
@@ -201,13 +233,12 @@
     text-decoration-thickness: 1px;
     text-decoration-color: var(--color-control);
     text-underline-offset: 4px;
-    transition: color 150ms var(--ease-snap), text-decoration-color 150ms var(--ease-snap);
+    transition: color 150ms var(--ease-snap);
   }
+  /* Hover and focus are a colour change only; the resting hairline underline never changes. */
   .link:hover,
   .link:focus-visible {
-    text-decoration-thickness: 2px;
-    text-decoration-color: var(--color-accent);
-    color: var(--color-hi);
+    color: var(--color-accent-hi);
   }
 
   /* Buttons */
@@ -391,12 +422,130 @@
     padding-bottom: var(--nav-clear);
   }
 
-  /* Hero (home): full screen less the brand row, the phone nav and a peek of the next section. */
+  /* Home sections: each one fills a screen under the sticky logo row (less the phone nav),
+     content centred; no rules between sections. */
+  .screen {
+    min-height: calc(100svh - var(--brand-pt) - var(--brand-h) - var(--nav-clear));
+    align-content: center;
+  }
+
+  /* Home sections: a big orange title pinned just under the logo row. It stays pinned only while
+     there is room above the content; when the content (centred in the section) comes up to
+     --sect-gap below the title, the title unpins and the two scroll off together.
+     Structure: .sect-head (grows to fill the space above the content; holds the sticky title),
+     .sect-body (the content), and an equal spacer after it (.sect::after), so the content is centred. */
+  .sect {
+    --sect-gap: clamp(1.25rem, 0.6rem + 2.4vw, 3rem); /* space kept between the title and the content */
+    display: flex;
+    flex-direction: column;
+    padding-bottom: var(--sect-gap);
+  }
+  .sect::after {
+    content: "";
+    flex: 1 1 0;
+  }
+  .sect-head {
+    flex: 1 1 0;
+    padding-bottom: var(--sect-gap);
+  }
+  .sect-title {
+    position: sticky;
+    top: calc(var(--brand-pt) + var(--brand-h));
+    z-index: 20;
+    isolation: isolate;
+    margin: 0;
+    padding-block: 0.25rem;
+    font-size: var(--text-title);
+    line-height: var(--text-title--line-height);
+    letter-spacing: var(--text-title--letter-spacing);
+    font-weight: 800;
+    color: var(--color-accent);
+  }
+  .sect-title::before {
+    content: "";
+    position: absolute;
+    inset: 0 calc(-1 * var(--pad));
+    z-index: -1;
+    pointer-events: none;
+    background: var(--color-bg);
+  }
+  .sect-body {
+    flex: none;
+    width: 100%;
+  }
+  .statement {
+    font-size: clamp(1.375rem, 1.05rem + 1.3vw, 2.125rem);
+    line-height: 1.3;
+    letter-spacing: -0.015em;
+    font-weight: 500;
+    color: var(--color-hi);
+  }
+
+  /* Hero (home): exactly one screen: the sticky brand row plus the hero fill 100svh (less the phone nav). */
   .hero {
     display: flex;
     flex-direction: column;
-    min-height: calc(100svh - var(--brand-pt) - var(--brand-h) - var(--nav-clear) - var(--hero-peek));
+    min-height: calc(100svh - var(--brand-pt) - var(--brand-h) - var(--nav-clear));
     padding-bottom: 2.5rem;
+  }
+  /* Hero backdrop: the same real halftone as the Selected work stage, but of a soft light field
+     instead of a photo. ::before is a large glowing blob (the "picture"), ::after the tiled cone
+     screen; the container's contrast() thresholds them into dots that swell toward the centre of the
+     glow and vanish at its edges, and #duotone (inline SVG in this page) colours them slate to orange.
+     The blob breathes (opacity and scale only). Faint by design: text stays on top.
+     Tunables: --hero-ht (pitch), --hero-dots-o (overall strength), --hero-pulse-t (breath period). */
+  .hero {
+    position: relative;
+    isolation: isolate;
+  }
+  .hero-dots {
+    position: absolute;
+    /* reaches up behind the (transparent, at the top of the page) logo row, so the backdrop runs
+       the full height of the screen */
+    inset: calc(-1 * (var(--brand-pt) + var(--brand-h))) 0 0;
+    z-index: -1;
+    overflow: hidden;
+    pointer-events: none;
+    background-color: #000;
+    filter: contrast(22) url(#duotone);
+    opacity: var(--hero-dots-o, 0.22);
+    -webkit-mask-image: linear-gradient(to bottom, #000 92%, transparent);
+    mask-image: linear-gradient(to bottom, #000 92%, transparent);
+  }
+  .hero-dots::before,
+  .hero-dots::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+  }
+  .hero-dots::before {
+    /* a tall glow on the right, taller than the screen, so the dense part runs off the top and bottom */
+    background: radial-gradient(ellipse 58% 85% at 78% 50%, #808080 0, #000 100%);
+    transform-origin: 78% 50%;
+  }
+  .hero-dots::after {
+    mix-blend-mode: plus-lighter;
+    background: radial-gradient(
+        circle at center,
+        #808080 0,
+        #000 calc(var(--hero-ht, 7px) * 0.7071)
+      )
+      0 0 / var(--hero-ht, 7px) var(--hero-ht, 7px);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .hero-dots::before {
+      animation: hero-breath var(--hero-pulse-t, 7s) ease-in-out infinite alternate;
+    }
+    @keyframes hero-breath {
+      from {
+        opacity: 1;
+        transform: scale(1);
+      }
+      to {
+        opacity: 0.72;
+        transform: scale(1.14);
+      }
+    }
   }
   .hero-body {
     flex: 1;
@@ -698,85 +847,419 @@
     outline-offset: 2px;
   }
 
-  /* Work tiles */
-  .tile-media {
+  /* Work list (Revision 3): one hairline-framed box of rows, used on home (.feat), /work and
+     the project prev/next. Row: cover thumbnail, No. (or label), orange title, ticket, arrow.
+     Tunables: --row-thumb and the --feat-* values in :root. */
+  .wlist {
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius);
+    overflow: clip;
+  }
+  .wlist-rows {
+    display: grid;
+    margin-bottom: -1px; /* the last row's hairline tucks under the frame */
+  }
+  .wrow {
+    min-width: 0;
+    border-bottom: 1px solid var(--color-line);
+  }
+  @media (min-width: 768px) {
+    .wlist[data-cols="2"] .wlist-rows {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .wlist[data-cols="2"] .wrow:nth-child(odd) {
+      border-right: 1px solid var(--color-line);
+    }
+    .wlist[data-cols="2"] .wrow:nth-child(odd):last-child {
+      grid-column: 1 / -1;
+      border-right: 0;
+    }
+  }
+  .wrow-link {
+    display: grid;
+    grid-template-columns: var(--row-thumb) minmax(0, 1fr) auto;
+    align-items: center;
+    column-gap: 1rem;
+    height: 100%;
+    padding: 0.75rem;
+    transition: background-color 150ms var(--ease-snap);
+  }
+  .wrow-link:hover {
+    background: var(--color-surface);
+  }
+  .wrow-link:focus-visible {
+    outline-offset: -2px; /* inside the frame, which clips */
+  }
+  .wimg {
     position: relative;
     overflow: hidden;
+    aspect-ratio: 4 / 3;
     border-radius: var(--radius);
     background: var(--color-surface);
     box-shadow: 0 0 0 1px var(--color-line);
     transition: box-shadow 150ms var(--ease-snap);
   }
-  .tile-media[data-mat="dark"] {
+  .wimg img {
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    object-fit: cover;
+  }
+  .wimg[data-mode="contain"] {
+    padding: 8%;
+  }
+  .wimg[data-mode="sheet"] {
+    padding: 12%;
+  }
+  .wimg:is([data-mode="contain"], [data-mode="sheet"]) img {
+    object-fit: contain;
+  }
+  .wimg[data-mode="sheet"] img:not(:first-child) {
+    display: none; /* thumbnails show the first mark only; the stage shows all six */
+  }
+  .wimg[data-mat="dark"] {
     background: var(--color-mat-dark);
   }
-  .tile-media[data-mat="light"] {
+  .wimg[data-mat="light"] {
     background: var(--color-mat-light);
   }
-  .tile-media[data-mat="black"] {
+  .wimg[data-mat="black"] {
     background: var(--color-mat-black);
   }
-  .tile-media[data-mat="white"] {
+  .wimg[data-mat="white"] {
     background: var(--color-mat-white);
   }
-  .tile-media img {
-    transition: transform 400ms var(--ease-snap);
+
+  /* Home stage treatment (applied here, never baked into the files): every cover is mapped to a
+     two-colour duotone (dark slate to orange; the SVG filter #duotone is in index.astro) with a
+     fine dot screen on top, so mismatched crops read as one family. Click through for the real
+     work. Remove the two rules below to show the images untreated. */
+  .feat .wimg {
+    filter: url(#duotone);
   }
-  .tile:hover .tile-media,
-  .tile:focus-visible .tile-media {
-    box-shadow: 0 0 0 1px var(--color-control);
+  /* From the stage breakpoint the image is drawn at 100% of its own size (see `sizes` in
+     WorkRow.astro) and cropped by the panel at the cover's `position`, instead of being fitted. */
+  @media (min-width: 1024px) and (hover: hover) {
+    .feat .wimg:is([data-mode="cover"], [data-mode="contain"]) img {
+      object-fit: none;
+    }
+    .feat .wimg[data-mode="contain"] {
+      padding: 0;
+    }
   }
-  .tile:active .tile-media {
-    box-shadow: 0 0 0 1px var(--color-accent);
+  .feat .wimg::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image: radial-gradient(circle at center, transparent calc(var(--feat-dot, 5px) * 0.3), var(--color-bg) calc(var(--feat-dot, 5px) * 0.34));
+    background-size: var(--feat-dot, 5px) var(--feat-dot, 5px);
+    opacity: var(--feat-dots, 0.4);
   }
-  .tile:focus-visible {
-    outline-offset: 4px;
-  }
-  .tile-title,
-  .index-title {
-    text-decoration: underline;
-    text-decoration-color: transparent;
-    text-decoration-thickness: 2px;
-    text-underline-offset: 4px;
-    color: var(--color-accent);
-    transition: color 150ms var(--ease-snap), text-decoration-color 150ms var(--ease-snap);
-  }
-  .tile:hover .tile-title,
-  .tile:focus-visible .tile-title,
-  .index-row:hover .index-title,
-  .index-row:focus-visible .index-title,
-  .pn-link:hover .index-title,
-  .pn-link:focus-visible .index-title {
-    color: var(--color-accent-hi);
-    text-decoration-color: var(--color-accent-hi);
-  }
-  @media (prefers-reduced-motion: no-preference) {
-    .tile:hover .tile-media img {
-      transform: scale(1.015);
+
+  /* Halftone screen (home stage; opt in with data-screen="halftone" on .feat in index.astro, remove
+     the attribute for the plain dot screen). A real tone-dependent screen made in CSS at view time:
+     the image is greyscaled, halved in brightness and blurred to about one dot; a tiled cone
+     (grey centre falling to black) is ADDED on top (plus-lighter); the container's high
+     contrast() then thresholds the sum at 50%. Bright areas grow big merged dots, dark areas
+     small ones, so the dots follow the picture like newsprint. #duotone then colours the result.
+     The screen is fixed while the picture drifts under it. Tunables: --feat-ht (pitch),
+     --feat-ht-contrast (edge crispness; lower is softer). */
+  @media (min-width: 1024px) and (hover: hover) {
+    .feat[data-screen="halftone"] .wmedia::after {
+      content: none;
+    }
+    .feat[data-screen="halftone"] .wimg {
+      isolation: isolate;
+      background-color: #000;
+      filter: contrast(var(--feat-ht-contrast, 22)) url(#duotone);
+    }
+    .feat[data-screen="halftone"] .wimg:is([data-mode="cover"], [data-mode="contain"]) img,
+    .feat[data-screen="halftone"] .wimg[data-mode="sheet"] img {
+      filter: grayscale(1) brightness(0.5) blur(calc(var(--feat-ht, 9px) * 0.55));
+    }
+    .feat[data-screen="halftone"] .wimg::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      mix-blend-mode: plus-lighter;
+      background: radial-gradient(
+          circle at center,
+          #808080 0,
+          #000 calc(var(--feat-ht, 9px) * 0.7071)
+        )
+        0 0 / var(--feat-ht, 9px) var(--feat-ht, 9px);
     }
   }
 
-  /* Work index rows */
-  .index-row {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    align-items: center;
-    column-gap: 1.5rem;
-    row-gap: 0.25rem;
-    padding-block: 1rem;
-    border-bottom: 1px solid var(--color-line);
+  /* Stage motion (home, desktop with a mouse; all of it off for reduced motion).
+     1. Drift (OFF by default: add data-drift to .feat in index.astro to enable): the active cover
+        slowly zooms and slides, transform only, so it runs on the compositor. A transition (not keyframes) keeps the outgoing cover frozen through the
+        cross-fade, then resets while hidden. Direction varies per project.
+     2. Dot screen: lifted out of the filtered image onto the stage panel and drifted one pitch per
+        loop (seamless), again transform only. Tunables: --feat-kb (drift time), --feat-dot-t. */
+  @media (min-width: 1024px) and (hover: hover) {
+    .feat .wimg::after {
+      content: none; /* the screen moves to .wmedia::after here */
+    }
+    .feat .wmedia {
+      overflow: clip;
+    }
+    .feat .wmedia::after {
+      content: "";
+      position: absolute;
+      inset: calc(-1 * var(--feat-dot, 5px)); /* one pitch of overscan for the drift */
+      z-index: 0; /* above the image, below the description label (z-index 1) */
+      pointer-events: none;
+      background-image: radial-gradient(circle at center, transparent calc(var(--feat-dot, 5px) * 0.3), var(--color-bg) calc(var(--feat-dot, 5px) * 0.34));
+      background-size: var(--feat-dot, 5px) var(--feat-dot, 5px);
+      opacity: var(--feat-dots, 0.4);
+    }
   }
-  .index-arrow {
+  @media (min-width: 1024px) and (hover: hover) and (prefers-reduced-motion: no-preference) {
+    .feat[data-drift] .wimg:not([data-mode="sheet"]) img {
+      transform: scale(1) translate(0, 0);
+      transition: transform 0s linear var(--feat-fade); /* hold the last frame through the fade */
+    }
+    .feat[data-drift] .wrow.is-on .wimg:not([data-mode="sheet"]) img {
+      transform: scale(1.06) translate(var(--kb-x, 2%), var(--kb-y, 1%));
+      transition: transform var(--feat-kb, 8s) linear;
+    }
+    .feat[data-drift] .wrow:nth-child(2n) .wimg img {
+      --kb-x: -2%;
+      --kb-y: 1%;
+    }
+    .feat[data-drift] .wrow:nth-child(3n) .wimg img {
+      --kb-x: 1%;
+      --kb-y: -2%;
+    }
+    .feat .wrow.is-on .wmedia::after {
+      animation: feat-dots var(--feat-dot-t, 6s) linear infinite;
+    }
+    /* Halftone motion (only with data-screen="halftone"): while a project is on the stage the dot
+       screen eases from full strength to --feat-ht-pulse (opacity only), taking the whole time the
+       project is shown, so the dots slowly shrink and the next project starts fresh. */
+    .feat[data-screen="halftone"] .wrow.is-on .wimg::after {
+      /* one way, from full strength down to --feat-ht-pulse, spread over the project's time on
+         the stage (--feat-cycle, set from CYCLE_MS by the script), then held there */
+      animation: feat-ht-pulse var(--feat-cycle, 2.5s) ease-in-out 1 both;
+    }
+    @keyframes feat-ht-pulse {
+      from {
+        opacity: 1;
+      }
+      to {
+        opacity: var(--feat-ht-pulse, 0.81);
+      }
+    }
+    @keyframes feat-dots {
+      to {
+        transform: translate(var(--feat-dot, 5px), var(--feat-dot, 5px));
+      }
+    }
+  }
+  .wrow-link:hover .wimg {
+    box-shadow: 0 0 0 1px var(--color-control);
+  }
+  .wrow-link:active .wimg {
+    box-shadow: 0 0 0 1px var(--color-accent);
+  }
+  .wcap {
+    display: none;
+  }
+  .wrow-no {
+    color: var(--color-dim);
+  }
+  .wrow-arrow {
+    width: 1.25rem;
+    height: 1.25rem;
     color: var(--color-dim);
     transition: color 150ms var(--ease-snap);
   }
-  .index-row:hover .index-arrow,
-  .index-row:focus-visible .index-arrow {
+  .wrow-link:hover .wrow-arrow,
+  .wrow-link:focus-visible .wrow-arrow {
     color: var(--color-accent);
   }
-  @media (min-width: 768px) {
-    .index-row {
-      grid-template-columns: 120px 4rem 1fr 12rem 5rem 20px;
+  .index-title {
+    color: var(--color-accent);
+    transition: color 150ms var(--ease-snap);
+  }
+  .wrow-link:hover .index-title,
+  .wrow-link:focus-visible .index-title {
+    color: var(--color-accent-hi);
+  }
+
+  /* Home "Selected work" stage: with a mouse from 1024px, the rows become an index beside one
+     large stage. Each row's cover is lifted out of the row onto the stage; the hovered or
+     focused row shows, else the remembered one (.is-on, moved by a tiny script; server-set
+     on the first row, so it works without JS). Touch and narrow screens keep the plain rows. */
+  .feat-stage,
+  .feat-hl {
+    display: none;
+  }
+  @media (min-width: 1024px) and (hover: hover) {
+    .feat {
+      position: relative;
+      display: grid;
+      grid-template-columns: var(--feat-split) minmax(0, 1fr);
+    }
+    .feat .wlist-rows {
+      grid-area: 1 / 1;
+      grid-auto-rows: 1fr;
+    }
+    .feat-stage {
+      display: block;
+      grid-area: 1 / 2;
+    }
+    .feat-stage::before {
+      content: "";
+      display: block;
+      aspect-ratio: var(--feat-ar);
+    }
+    .feat .wrow-link {
+      grid-template-columns: minmax(0, 1fr) auto;
+      padding: 0.5rem 1.25rem;
+    }
+    /* The cover, lifted onto the stage. Hidden covers stay painted for one fade so the
+       incoming one (on top) fades over it, then drop out of hit-testing. */
+    .feat .wmedia {
+      position: absolute;
+      inset: 0 0 0 var(--feat-split);
+      display: flex;
+      flex-direction: column;
+      border-left: 1px solid var(--color-line);
+      background: var(--color-bg);
+      z-index: 0;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0s linear var(--feat-fade), visibility 0s linear var(--feat-fade);
+    }
+    .feat .wimg {
+      flex: 1;
+      min-height: 0;
+      aspect-ratio: auto;
+      border-radius: 0;
+      box-shadow: none;
+    }
+    .feat .wrow-link:is(:hover, :active) .wimg {
+      box-shadow: none; /* the stage is framed by its hairline */
+    }
+    .feat .wimg[data-mode="sheet"] {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-rows: repeat(2, minmax(0, 1fr));
+      gap: 4%;
+      padding: 6%;
+    }
+    .feat .wimg[data-mode="sheet"] img:not(:first-child) {
+      display: block;
+    }
+    /* The description floats over the bottom-left of the image as an orange label,
+       so the image fills the whole panel. */
+    .feat .wcap {
+      position: absolute;
+      z-index: 1;
+      left: 1rem;
+      bottom: 1rem;
+      max-width: min(26rem, calc(100% - 2rem));
+      padding: 0.625rem 0.875rem;
+      border-radius: var(--radius);
+      background: var(--color-accent);
+      color: var(--color-on-accent);
+      font-size: var(--text-sm);
+      line-height: var(--text-sm--line-height);
+      font-weight: 600;
+    }
+    /* Title and ticket line up with the label text, which sits after the dot. */
+    .feat .wrow-text > :not(.wrow-no) {
+      padding-left: calc(6px + 0.5rem);
+    }
+    .feat .wrow-no::before {
+      content: "";
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      margin-right: 0.5rem;
+      vertical-align: 0.1em;
+      border-radius: 50%;
+      background: var(--color-accent);
+      opacity: 0;
+    }
+    /* Sliding highlight: the lighter band behind the active row is one element (.feat-hl) that glides
+       between rows with the same timing as the cover cross-fade; the script sets its position
+       (--hl-y, --hl-h) and turns it on with .has-hl. The row text colours ease with the same
+       timing. Without the script each row simply gets its own background. */
+    .feat-hl {
+      display: block;
+      position: absolute;
+      z-index: -1;
+      left: 0;
+      top: 0;
+      width: var(--feat-split);
+      height: var(--hl-h, 0px);
+      transform: translateY(var(--hl-y, 0px));
+      background: var(--color-surface);
+      pointer-events: none;
+      opacity: 0;
+    }
+    .feat.has-hl .feat-hl {
+      opacity: 1;
+    }
+    .feat.hl-anim .feat-hl {
+      transition:
+        transform var(--feat-fade) ease-in-out,
+        height var(--feat-fade) ease-in-out;
+    }
+    .feat {
+      isolation: isolate; /* the band sits at z-index -1: behind the rows, above the module's own background */
+    }
+    .feat.has-hl .wrow .wrow-link {
+      background: transparent !important;
+    }
+    .feat .wrow-no,
+    .feat .wrow-arrow,
+    .feat .index-title {
+      transition: color var(--feat-fade) ease-in-out;
+    }
+    .feat .wrow-no::before {
+      transition: opacity var(--feat-fade) ease-in-out;
+    }
+    /* On: the hovered or focused row, else the remembered one. A hovered row beats a focused one. */
+    .feat .wrow:is(:hover, :focus-within) .wmedia,
+    .feat:not(:has(.wrow:is(:hover, :focus-within))) .wrow.is-on .wmedia {
+      z-index: 1;
+      opacity: 1;
+      visibility: visible;
+      transition: opacity var(--feat-fade) ease-in-out;
+    }
+    .feat:has(.wrow:hover) .wrow:not(:hover) .wmedia {
+      z-index: 0;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0s linear var(--feat-fade), visibility 0s linear var(--feat-fade);
+    }
+    .feat .wrow:is(:hover, :focus-within) .wrow-link,
+    .feat:not(:has(.wrow:is(:hover, :focus-within))) .wrow.is-on .wrow-link {
+      background: var(--color-surface);
+    }
+    .feat:has(.wrow:hover) .wrow:not(:hover) .wrow-link {
+      background: transparent;
+    }
+    .feat .wrow:is(:hover, :focus-within) .wrow-no,
+    .feat:not(:has(.wrow:is(:hover, :focus-within))) .wrow.is-on .wrow-no {
+      color: var(--color-hi);
+    }
+    .feat .wrow:is(:hover, :focus-within) .wrow-no::before,
+    .feat:not(:has(.wrow:is(:hover, :focus-within))) .wrow.is-on .wrow-no::before {
+      opacity: 1;
+    }
+    .feat:has(.wrow:hover) .wrow:not(:hover) .wrow-no {
+      color: var(--color-dim);
+    }
+    .feat:has(.wrow:hover) .wrow:not(:hover) .wrow-no::before {
+      opacity: 0;
     }
   }
 

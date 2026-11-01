@@ -4,6 +4,7 @@ import { Icon } from "astro-icon/components";
 import Layout from "../../layouts/Layout.astro";
 import Gallery from "../../components/Gallery.astro";
 import Ticket from "../../components/Ticket.astro";
+import WorkRow from "../../components/WorkRow.astro";
 import { getWork, neighbours } from "../../lib/work";
 
 export async function getStaticPaths() {
@@ -14,8 +15,8 @@ export async function getStaticPaths() {
       params: { slug: page.id },
       props: {
         page,
-        prev: { id: prev.id, title: prev.data.title },
-        next: { id: next.id, title: next.data.title },
+        prev,
+        next,
       },
     };
   });
@@ -91,18 +92,11 @@ const tools = data.tools.map((t) => t.name.replace(/,+$/, "")).join(", ");
       </div>
     </div>
 
-    <nav
-      aria-label="Project navigation"
-      class="mt-12 grid gap-4 sm:grid-cols-2 border-t border-line pt-6"
-    >
-      <a href={`/work/${prev.id}`} class="pn-link block min-h-11">
-        <span class="meta text-dim block">Previous</span>
-        <span class="text-h3 font-bold index-title">{prev.title}</span>
-      </a>
-      <a href={`/work/${next.id}`} class="pn-link block min-h-11 sm:text-right">
-        <span class="meta text-dim block">Next</span>
-        <span class="text-h3 font-bold index-title">{next.title}</span>
-      </a>
+    <nav aria-label="Project navigation" class="mt-12 wlist" data-cols="2">
+      <ul class="wlist-rows">
+        <WorkRow entry={prev} label="Previous" as="span" back />
+        <WorkRow entry={next} label="Next" as="span" />
+      </ul>
     </nav>
   </article>
 </Layout>

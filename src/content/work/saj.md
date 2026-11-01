@@ -1,7 +1,5 @@
 ---
 order: 1
-featured: true
-featuredOrder: 1
 title: "Share A Jet"
 client: "Share A Jet"
 website: "shareajet.vip"

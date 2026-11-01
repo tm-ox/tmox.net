@@ -14,13 +14,11 @@ const needs = [
 ];
 ---
 
-<section
-  id="contact"
-  class="page py-16 md:py-24 xl:py-32 border-t border-line grid gap-12 md:grid-cols-12 md:gap-x-6"
->
+<section id="contact" class="page screen sect">
+  <div class="sect-head"><h2 class="sect-title">{title}</h2></div>
+  <div class="sect-body grid gap-12 md:grid-cols-12 md:gap-x-6">
   <div class="md:col-span-5">
-    <h2 class="text-h2 font-extrabold text-accent">{title}</h2>
-    <p class="mt-4 text-lead max-w-[40ch]">{lead}</p>
+    <p class="text-lead max-w-[40ch]">{lead}</p>
     {note && <p class="mt-4 meta">{note}</p>}
   </div>
   <div class="md:col-span-6 md:col-start-7">
@@ -30,7 +28,7 @@ const needs = [
       action="/sent"
       data-netlify="true"
       data-netlify-honeypot="bot-field"
-      class="grid gap-6"
+      class="grid gap-4"
     >
       <input type="hidden" name="form-name" value="contact" />
       <p hidden>
@@ -71,5 +69,6 @@ const needs = [
       </div>
       <div><button class="btn-primary" type="submit">Send enquiry</button></div>
     </form>
+  </div>
   </div>
 </section>

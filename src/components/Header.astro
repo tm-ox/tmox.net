@@ -57,6 +57,12 @@ const current = (id: string) =>
 </header>
 
 <script>
+  // Solid backing under the logo row only once the page has scrolled (see global.css .brand-row).
+  const root = document.documentElement;
+  const mark = () => root.classList.toggle("scrolled", window.scrollY > 4);
+  mark();
+  addEventListener("scroll", mark, { passive: true });
+
   // Scroll-spy, home page only: mark the item whose section crosses mid-screen.
   const ids = ["top", "work", "services", "about", "contact"];
   const sections = ids

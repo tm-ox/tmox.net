@@ -1,7 +1,5 @@
 ---
 order: 6
-featured: true
-featuredOrder: 6
 title: "Fred St."
 client: "Fred St."
 website: "fredst.com"

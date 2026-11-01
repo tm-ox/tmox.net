@@ -1,5 +1,7 @@
 ---
 order: 9
+featured: true
+featuredOrder: 3
 title: "MJO Mortgage Solutions"
 client: "MJO"
 website: "mjomortgagesolutions.com.au"
