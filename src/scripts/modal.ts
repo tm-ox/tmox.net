@@ -22,7 +22,12 @@ document.addEventListener("click", (e) => {
     openModal(target);
     return;
   }
-  from?.closest("[data-modal-close]")?.closest("dialog")?.close();
+  const closer = from?.closest<HTMLElement>("[data-modal-close]");
+  if (!closer) return;
+  // the logo is a link home: with the dialog closed the home page is what is underneath, so close instead of
+  // reloading (modified clicks keep their normal meaning)
+  if (closer instanceof HTMLAnchorElement && !(e.button || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey)) e.preventDefault();
+  closer.closest("dialog")?.close();
 });
 
 // A dialog opened from the hash leaves the hash behind; clear it on close so a reload does not reopen it.

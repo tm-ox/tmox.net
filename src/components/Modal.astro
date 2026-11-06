@@ -4,8 +4,8 @@ import IconButton from "./IconButton.astro";
 import Menu from "./Menu.astro";
 import { getSite } from "../lib/site";
 
-// Full-viewport native <dialog>, laid out like any page of the site: the logo row (logo left, the Close
-// menu right, same position as on the home screen), then the title (.sect-title), then the body. Opened
+// Full-viewport native <dialog>, laid out like any page of the site: the logo row (logo left, a link home that
+// closes the dialog, the Close menu right, same position as on the home screen), then the title (.sect-title), then the body. Opened
 // by any element with data-modal-open="<id>" (src/scripts/modal.ts), or by a matching URL hash
 // (/#contact). Slots: default (body), "backdrop" (decoration behind the content).
 // variant: "page"         logo row, title row, body
@@ -33,7 +33,7 @@ const { site } = await getSite();
     !bare && (
       <>
         <div class="page modal-head">
-          <Brand class="flex items-center gap-3" />
+          <Brand href="/" class="flex items-center gap-3 min-h-11" data-modal-close />
           <Menu>
             <IconButton icon="ion:close" label={site.close} side="left" data-modal-close />
           </Menu>

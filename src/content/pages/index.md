@@ -86,7 +86,7 @@ about:
       - { name: "Other proprietary nonsense" }
 contact:
   title: "Hit me up"
-  lead: "If there’s something you’d like to make together, tell me what it is and we can work out the rest."
+  lead: "If there’s something you’d like to make together, tell me what it is and we can work out the rest… or"
   note: "I usually reply within a working day (UTC+7)."
   honeypot: "Leave this empty"
   nameLabel: "Name"
