@@ -1,0 +1,10 @@
+---
+// Meta text where " | " becomes a spaced pipe separator (owner-editable in the content file).
+interface Props {
+  text: string;
+}
+const { text } = Astro.props;
+const parts = text.split(" | ");
+---
+
+{parts.map((t, i) => (<>{i > 0 && <span class="sep" aria-hidden="true">|</span>}{t}</>))}

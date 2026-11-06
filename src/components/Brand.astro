@@ -1,0 +1,22 @@
+---
+import Logo from "./Logo.astro";
+import { getSite } from "../lib/site";
+
+// Logo and wordmark. A link with `href` (aria-label = the site's home label), otherwise a decorative,
+// aria-hidden span (the modal's head). `class` lays out the wrapper.
+interface Props {
+  href?: string;
+  class?: string;
+  [attr: string]: unknown; // passed to the link, e.g. data-astro-prefetch
+}
+const { href, class: className, ...rest } = Astro.props;
+const { site } = await getSite();
+const linked = href !== undefined;
+const Tag = linked ? "a" : "span";
+const attrs = linked ? { href, "aria-label": site.homeLabel, ...rest } : { "aria-hidden": "true" as const };
+---
+
+<Tag class={className} {...attrs}>
+  <Logo class="size-logo text-accent" />
+  <span class="font-sans text-sm font-extrabold tracking-wordmark text-hi" aria-hidden={linked ? "true" : undefined}>{site.brand}</span>
+</Tag>

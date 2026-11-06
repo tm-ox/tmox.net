@@ -1,0 +1,15 @@
+---
+// The bordered box of square boxes (IconButtons): one control wide, 1px dividers, rounded outside.
+// Position it with a class from the parent's scope (e.g. .viewer-menu).
+interface Props {
+  direction?: "column" | "row";
+  class?: string;
+  role?: astroHTML.JSX.AriaRole;
+  label?: string; // aria-label
+}
+const { direction = "column", class: className, role, label } = Astro.props;
+---
+
+<div class:list={["menu", direction === "row" && "menu-row", className]} role={role} aria-label={label}>
+  <slot />
+</div>

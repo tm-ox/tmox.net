@@ -1,0 +1,40 @@
+---
+import { Icon } from "astro-icon/components";
+
+// One box of a Menu: an icon button (<button>), an icon link (with `href`), or a text key (`text`,
+// a non-interactive box such as "h-l"). The label is the aria-label; the tooltip defaults to it.
+interface Props {
+  label: string;
+  tip?: string;
+  side?: "left" | "right"; // which way the tooltip opens (default: below)
+  icon?: string; // astro-icon name, e.g. "ion:close"
+  text?: string; // shown instead of an icon
+  href?: string;
+  download?: boolean;
+  newTab?: boolean; // target="_blank" rel="noopener"
+  class?: string;
+  [attr: string]: unknown; // passed through, e.g. data-modal-close, role
+}
+const { label, tip, side, icon, text, href, download, newTab, class: className, ...rest } = Astro.props;
+const attrs = {
+  class: ["menu-btn", text !== undefined && "menu-key", className].filter(Boolean).join(" "),
+  "aria-label": label,
+  "data-tip": tip ?? label,
+  "data-tip-side": side,
+  ...rest,
+};
+---
+
+{
+  text !== undefined ? (
+    <span {...attrs}>{text}</span>
+  ) : href ? (
+    <a {...attrs} href={href} download={download} target={newTab ? "_blank" : undefined} rel={newTab ? "noopener" : undefined}>
+      {icon && <Icon name={icon} aria-hidden="true" />}
+    </a>
+  ) : (
+    <button {...attrs} type="button">
+      {icon && <Icon name={icon} aria-hidden="true" />}
+    </button>
+  )
+}

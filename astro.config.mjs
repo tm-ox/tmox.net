@@ -18,10 +18,6 @@ export default defineConfig({
       fallbacks: ["sans-serif"],
     },
   ],
-  redirects: {
-    "/work/01-logos": "/work/logos",
-    "/work/02-tg": "/work/triplegoal",
-  },
   prefetch: { prefetchAll: false, defaultStrategy: "hover" },
   integrations: [
     icon(),

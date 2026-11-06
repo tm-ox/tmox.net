@@ -5,23 +5,22 @@
 [build.environment]
   NODE_VERSION = "22"
 
-# Real 301s for the renamed project slugs (Astro also emits meta-refresh stubs; force wins over them).
-[[redirects]]
-  from = "/work/01-logos"
-  to = "/work/logos/"
-  status = 301
-  force = true
-
-[[redirects]]
-  from = "/work/02-tg"
-  to = "/work/triplegoal/"
-  status = 301
-  force = true
-
 [[headers]]
   for = "/_astro/*"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
+
+# Portfolio images and the PDF keep their file names when regenerated, so cache for a day and
+# serve stale while revalidating for a week.
+[[headers]]
+  for = "/folio/*"
+  [headers.values]
+    Cache-Control = "public, max-age=86400, stale-while-revalidate=604800"
+
+[[headers]]
+  for = "/portfolio.pdf"
+  [headers.values]
+    Cache-Control = "public, max-age=86400, stale-while-revalidate=604800"
 
 [[headers]]
   for = "/*"

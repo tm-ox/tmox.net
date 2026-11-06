@@ -23,30 +23,20 @@
   --color-on-accent: #1e222e;
   /* Utility */
   --color-select: #364a82;
-  --color-ok: #9ece6a;
   --color-err: #f7768e;
-  /* Neutral mats (R=G=B) */
-  --color-mat-dark: #141414;
-  --color-mat-light: #e8e8e8;
-  --color-mat-black: #000000;
-  --color-mat-white: #ffffff;
-  --color-backdrop: #0e0e0e;
 
-  /* Line lengths (max-w-measure-*): one narrow, one prose, one for headings */
-  --container-measure-heading: 20ch;
+  /* Line lengths (max-w-measure-*): one narrow, one prose */
   --container-measure-narrow: 40ch;
   --container-measure: 56ch;
   /* Wordmark letter-spacing */
   --tracking-wordmark: 0.06em;
 
   --font-sans: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
+  --default-mono-font-family: var(--font-sans); /* no monospace anywhere: preflight's code/kbd/samp/pre resolve to the sans */
 
   --text-meta: 0.75rem;
   --text-meta--line-height: 1rem;
   --text-meta--letter-spacing: 0.08em;
-  --text-cap: 0.75rem;
-  --text-cap--line-height: 1.125rem;
-  --text-cap--letter-spacing: 0.01em;
   --text-sm: 0.875rem;
   --text-sm--line-height: 1.375rem;
   --text-base: clamp(1rem, 0.95rem + 0.2vw, 1.0625rem);
@@ -62,27 +52,16 @@
   --text-title--letter-spacing: -0.035em;
 
   --radius: 8px; /* the one corner radius: controls, nav items, chips, tiles, fields */
-  --field-h: 3rem; /* form field height */
-  --field-r: var(--radius); /* form field corner radius */
+  --field-h: 2.5rem; /* form field height; the contact chips match it */
   --ease-snap: cubic-bezier(0.2, 0, 0, 1);
 
-  /* Icon sizes for utilities (size-logo, size-em, size-em-sm) and the control radius (rounded-ctl) */
+  /* Logo size (size-logo) and the control radius (rounded-ctl) */
   --spacing-logo: 22px; /* size-logo: the logo mark */
-  --spacing-em: 1em; /* size-em: icon the size of its text */
-  --spacing-em-sm: 0.9em; /* size-em-sm: slightly smaller inline icon */
   --radius-ctl: var(--radius); /* rounded-ctl: controls */
-
-  /* Vertical rhythm between the blocks of a standalone page (utilities mt-block-sm, mt-block, mt-block-lg, pt-block-sm) */
-  --spacing-block-sm: clamp(2rem, 1.6rem + 1vw, 2.5rem); /* close blocks: title area to summary, rule to its heading */
-  --spacing-block: clamp(3rem, 2.4rem + 1.5vw, 4rem); /* a new block: gallery, project navigation */
-  --spacing-block-lg: clamp(4rem, 3rem + 2.5vw, 6rem); /* a new part of the page: the call to action */
 }
 
 @utility z-skip {
   z-index: var(--z-skip);
-}
-@utility p-mat {
-  padding: var(--mat-pad);
 }
 
 @layer base {
@@ -127,8 +106,8 @@
     color: var(--color-hi);
   }
   :focus-visible {
-    outline: 2px solid var(--color-accent);
-    outline-offset: 3px;
+    outline: var(--focus-w) solid var(--color-accent);
+    outline-offset: var(--focus-off);
   }
   /* Tunables (Revision 2). Edit one number here to adjust. */
   :root {
@@ -146,72 +125,75 @@
     --space-8: 2rem;
     --space-10: 2.5rem;
     --space-12: 3rem;
-    /* Control heights: touch target (phones, and buttons) and the compact desktop size */
+    /* Control height: the touch target (buttons, menu boxes, and fields and chips on touch and phones) */
     --ctl-h: 2.75rem;
-    --ctl-h-sm: 2.25rem;
-    /* Icon sizes: small (chevrons), medium (nav), large (row arrows) */
-    --icon-sm: 1rem;
+    /* Icon sizes: medium (chevrons), extra large (menu box icons) */
     --icon-md: 1.125rem;
-    --icon-lg: 1.25rem;
+    --icon-xl: 1.5rem;
+    /* Focus ring: width, and the gap between it and the element */
+    --focus-w: 2px;
+    --focus-off: 3px;
+    --focus-room: calc(var(--focus-w) + var(--focus-off)); /* what a scroll box must leave around its content */
+    --leading-tight: 1.25; /* line height of single-line controls and small UI text */
     /* Layout */
     --page-max: 80rem; /* content width, excluding the side padding */
-    --title-clear: 5rem; /* space kept below the logo row for pinned section titles and focus */
-    --nav-label-max: 6rem; /* widest nav label when expanded on phones */
     --textarea-h: 10rem; /* minimum height of the message field */
-    --feat-caption-max: 26rem; /* home stage: widest project caption */
-    --g-cap-max: 50rem; /* gallery: widest justified row cap */
-    --g-cap-marks: 22.5rem; /* gallery: cap for rows of marks */
-    --g-phone-max: 18.75rem; /* gallery: widest phone screenshot column */
-    --lb-head-h: 56px; /* lightbox: top bar */
-    --lb-foot-h: 64px; /* lightbox: caption bar */
-    --lb-btn: 48px; /* lightbox: side column, matches the 48px (size-12) buttons */
     /* Motion */
     --dur-fast: 150ms; /* hover and focus colour changes */
     --dur: 200ms; /* fades and slides */
-    --dur-slow: 400ms; /* reveal on scroll */
-    /* Stacking: local 0 / 1 / -1 stay inline where they sit inside an isolated parent */
+    --dur-modal: 280ms; /* modal open (close uses --dur-fast) */
+    --dur-slide: 300ms; /* portfolio page slide (viewer.ts shortens it to 35-90 ms per page when flicking through: the JS side is intentional) */
+    --dur-delay: 120ms; /* tooltip show delay */
+    --stagger: 90ms; /* hero entrance: delay between rows */
+    --rise-y: var(--space-3_5); /* hero entrance: how far a row rises */
+    /* Stacking: local 0 / -1 stay inline where they sit inside an isolated parent */
+    --z-side: 1; /* viewer arrow zones (phones) */
+    --z-menu: 2; /* viewer menus */
+    --z-tip: 5; /* tooltip; its pointer sits one above */
+    --z-tip-arrow: 6;
     --z-sticky: 20; /* pinned section title */
     --z-brand: 30; /* logo row */
-    --z-nav: 40; /* nav pill */
     --z-skip: 60; /* skip link, above everything */
-    --mat-pad: 10%; /* breathing room round a logo on a mat in the reel */
-    --nav-clear: calc(4.75rem + env(safe-area-inset-bottom)); /* room kept free under the phone nav pill */
     --hero-size: min(clamp(2.75rem, 1.2rem + 6vw, 7rem), 11svh); /* hero headline size */
-    --reel-h: min(clamp(6.5rem, 4rem + 9vw, 10.5rem), 16svh); /* project reel card height */
-    --reel-pace: 6s; /* reel time per card: larger is slower */
     --rise: 700ms; /* hero entrance duration */
-    --hero-title-measure: 18ch; /* hero headline line length */
+    --hero-title-measure: 24ch; /* hero headline line length */
+    --modal-dots-o: 0.12; /* halftone strength behind the contact modal */
+    --rail-h: 0.1875rem; /* portfolio viewer: page rail line */
+    --viewer-tick: var(--space-3); /* portfolio viewer: height of a rail tick (its click target) */
+    --viewer-gap: var(--space-2); /* portfolio viewer: gap between the rail and the page */
+    --viewer-foot: calc(var(--viewer-tick) + var(--viewer-gap)); /* portfolio viewer: rail row plus gap above the page */
+    --viewer-edge: 25%; /* portfolio viewer: click zone on each side of the page, a quarter of its width */
+    --viewer-side: calc(var(--ctl-h) * 2); /* portfolio viewer: the arrow, then the menu column beside it */
+    --viewer-pad: var(--space-3); /* portfolio viewer, phones: padding at the screen edge (arrow zone, menu) */
+    --box: calc(var(--ctl-h) - 2px); /* a menu box: one control, less the 1px border either side */
+    --radius-inner: calc(var(--radius) - 1px); /* the radius inside a 1px border */
+    --half-diag: 0.7071; /* half the diagonal of a unit square, for the tooltip pointer */
+    --textarea-h-phone: 6.5rem; /* message field minimum height on phones */
+    --chip-min: 6.5rem; /* phone chip grid: narrowest chip */
+    --chip-dot: var(--space-3_5); /* contact chips: checkbox square */
     --hero-leading: 1.1; /* hero headline line height (unitless; 1 = tight) */
     --brand-pt: 0rem; /* space above the logo/nav row */
     --brand-h: 3.5rem; /* height of the logo/nav row */
-    --tray-over: 2rem; /* push a project page's title down by this where the tray would overlap it (md to 1299px) */
-    --tray-h: 2rem; /* tray item height (the main nav items are --ctl-h-sm) */
     --sep-gap: 0.6em; /* space either side of a separator pipe (about double a plain space) */
     --sect-gap: clamp(0.75rem, 0.4rem + 1.2vw, 1.5rem); /* space between a screen title and its content (every page and home section) */
     --page-end: clamp(4rem, 3rem + 4vw, 6rem); /* space under the last content of a standalone page */
-    --pill-h: calc(var(--ctl-h) + 2 * var(--space-1)); /* nav pill height: item + padding either side */
-    /* Work list (Revision 3) */
-    --row-thumb: clamp(6rem, 4.5rem + 4vw, 8.5rem); /* cover thumbnail width in work rows */
-    --feat-split: 40%; /* home: share of the module taken by the project index; the stage gets the rest */
-    --feat-h: clamp(18rem, calc(100svh - 24rem), 30rem); /* home: module height (index and stage); fits one laptop screen with the title and link row */
-    --feat-fade: 600ms; /* home: stage cross-fade between projects (was 200ms) */
-    --feat-dots: 0.9; /* home: strength of the dot screen over the duotone (0 = none); was 0.4 */
-    --feat-dot: 16px; /* home: plain dot screen pitch; was 5px (fine) */
     --hero-ht: 7px; /* hero: dot pitch of the backdrop */
     --hero-dots-o: 0.22; /* hero: backdrop strength */
     --hero-pulse-t: 7s; /* hero: backdrop breath period */
-    --feat-ht: 3px; /* home: halftone screen pitch (was 9px, 6px, 4px) */
-    --feat-ht-contrast: 26; /* home: halftone edge crispness (higher = harder dots) */
-    --feat-ht-pulse: 0.81; /* home: halftone end point of the slow fade, screen opacity (1 = no change) */
-    --feat-kb: 8s; /* home: time of the slow zoom-and-drift on the active cover */
-    --feat-dot-t: 6s; /* home: time for the dot screen to drift one pitch */
+    --hero-contrast: 22; /* hero: contrast() that thresholds the glow into dots */
+    --halftone-lo: #000; /* halftone: the dark end of the glow and screen (also the mask, which is alpha-only) */
+    --halftone-mid: #808080; /* halftone: the lit centre of the glow and of each dot */
+  }
+  /* Touch and phones: fields and chips grow to the touch target */
+  @media (pointer: coarse), (max-width: 639.98px) {
+    :root {
+      --field-h: var(--ctl-h);
+    }
   }
   @media (min-width: 768px) {
     :root {
-      --nav-clear: 0px;
       --brand-pt: 2rem;
       --brand-h: 4rem;
-      --pill-h: calc(var(--ctl-h-sm) + 2 * var(--space-1)); /* from md the nav items are --ctl-h-sm tall */
     }
   }
   /* Logo row: sticky, so the logo and the nav pill (fixed on the same centre line) stay put.
@@ -238,24 +220,13 @@
   html.js:not(.scrolled) .brand-row::before {
     opacity: 0;
   }
-  [id] {
-    scroll-margin-top: calc(var(--brand-pt) + var(--brand-h));
-  }
-  /* html's scroll-padding-top (below) is for keyboard focus; it also applies to anchor jumps and
-     scrollIntoView, so cancel it for the home sections: they land with their top at the logo row. */
-  .hero[id],
-  .sect[id] {
-    scroll-margin-top: calc(-1 * var(--title-clear));
-  }
-  /* Keep keyboard focus clear of the sticky logo row and section title, and of the phone nav pill. */
-  html {
-    scroll-padding-top: calc(var(--brand-pt) + var(--brand-h) + var(--title-clear));
-    scroll-padding-bottom: var(--nav-clear);
-  }
   html:has(dialog[open]) {
-    overflow: hidden; /* lock page scroll behind the lightbox */
+    overflow: hidden; /* lock page scroll behind the modal */
   }
-  kbd {
+  code,
+  kbd,
+  samp,
+  pre {
     font-family: inherit; /* no monospace anywhere */
   }
   img {
@@ -331,8 +302,7 @@
 
   /* Buttons */
   .btn-primary,
-  .btn-secondary,
-  .btn-ghost {
+  .btn-secondary {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -341,7 +311,7 @@
     border-radius: var(--radius-ctl);
     font-size: var(--text-sm);
     font-weight: 600;
-    line-height: 1.2;
+    line-height: var(--leading-tight);
     cursor: pointer;
     border: 1px solid transparent;
     transition: color var(--dur-fast) var(--ease-snap), background-color var(--dur-fast) var(--ease-snap),
@@ -374,317 +344,163 @@
     background: var(--color-raised);
     border-color: var(--color-text);
   }
-  .btn-ghost {
-    color: var(--color-text);
-    font-weight: 500;
-  }
-  .btn-ghost:hover {
-    background: var(--color-raised);
-    color: var(--color-hi);
-  }
-  .btn-sm {
-    min-height: var(--ctl-h-sm);
-    padding-inline: var(--space-3);
-    font-size: var(--text-sm);
-  }
-  @media (max-width: 767.98px) {
-    .btn-sm {
-      min-height: var(--ctl-h);
-    }
-  }
 
-
-  /* Site nav: a floating pill. Below md it sits bottom centre (thumb reach) and shows
-     only the current/hovered/focused label; from md it sits top right with every label. */
-  .site-nav {
-    position: fixed;
-    z-index: var(--z-nav);
-    left: 50%;
-    bottom: calc(var(--space-3) + env(safe-area-inset-bottom));
-    translate: -50% 0;
-  }
-  @media (min-width: 768px) {
-    .site-nav {
-      left: auto;
-      bottom: auto;
-      translate: none;
-      /* vertically centred on the brand row */
-      top: calc(var(--brand-pt) + (var(--brand-h) - var(--pill-h)) / 2);
-      right: var(--space-8);
-    }
-  }
-  @media (min-width: 1024px) {
-    .site-nav {
-      right: max(var(--space-12), calc((100% - var(--page-max)) / 2));
-    }
-  }
-  /* Tray: a drawer attached to the nav pill, as wide as the pill, for moving between a section's items:
-     previous, the index, next. Pill and tray read as one object: the joining corners are squared and
-     one hairline divides them. From md the tray hangs below the pill; on phones the nav is at the
-     bottom of the screen, so it sits on top of the pill. It slides out of the pill on arrival.
-     Tunables: --tray-h. */
-  .site-nav {
+  /* Menu (Menu.astro + IconButton.astro): a bordered box of square boxes, one control wide. The 1px gap
+     shows the box's own line colour as the dividers, so every box stays an exact square (--box). Used
+     by the modal's Close, the portfolio menu and its key help; the parent scope only positions it. */
+  .menu {
+    --menu-r-first: var(--radius-inner) var(--radius-inner) 0 0; /* corners of the first and last box */
+    --menu-r-last: 0 0 var(--radius-inner) var(--radius-inner);
     display: flex;
-    flex-direction: column-reverse;
-    align-items: stretch;
+    flex-direction: column;
+    gap: 1px;
+    background: var(--color-line);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius);
   }
-  @media (min-width: 768px) {
-    .site-nav {
-      flex-direction: column;
-    }
+  .menu-row {
+    --menu-r-first: var(--radius-inner) 0 0 var(--radius-inner);
+    --menu-r-last: 0 var(--radius-inner) var(--radius-inner) 0;
+    flex-direction: row;
   }
-  .tray {
-    position: relative;
-    z-index: -1; /* behind the pill, so the slide-out starts from under it */
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--space-0_5);
-    padding: var(--space-1);
-    border-radius: calc(var(--radius) + var(--space-1));
-    border-top-left-radius: 0; /* below md the tray is above the pill: joined edge is the bottom */
-    border-top-right-radius: 0;
-    background: var(--color-surface);
-    box-shadow:
-      0 0 0 1px var(--color-line),
-      0 10px 28px -10px rgb(0 0 0 / 0.7);
-  }
-  .tray-item {
+  .menu-btn {
+    flex: none;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-height: var(--tray-h);
-    min-width: var(--tray-h);
-    padding-inline: var(--space-3);
-    border-radius: var(--radius);
-    font-size: var(--text-sm);
-    line-height: var(--text-sm--line-height);
-    color: var(--color-dim);
-    transition: color var(--dur-fast) var(--ease-snap), background-color var(--dur-fast) var(--ease-snap);
+    width: var(--box);
+    height: var(--box);
+    background: var(--color-bg);
+    color: var(--color-control); /* muted at rest; --color-line is deco-only and too faint for icons */
+    border-radius: 0;
+    cursor: pointer;
+    transition: color var(--dur-fast) var(--ease-snap);
   }
-  .tray-index {
-    flex: 1;
+  .menu-btn:first-child {
+    border-radius: var(--menu-r-first);
   }
-  @media (max-width: 767.98px) {
-    .tray-item {
-      min-height: var(--ctl-h); /* phone tap target */
-    }
-    /* Keep content and focus clear of the pill plus the tray stacked above it */
-    html:has(.tray) {
-      --nav-clear: calc(4.75rem + var(--ctl-h) + var(--space-3) + env(safe-area-inset-bottom));
-    }
+  .menu-btn:last-child {
+    border-radius: var(--menu-r-last);
   }
-  @media (min-width: 768px) and (max-width: 1299.98px) {
-    html:has(.tray) .sect-title {
-      margin-top: var(--tray-over);
-    }
+  .menu-btn:only-child {
+    border-radius: var(--radius-inner);
   }
-  .tray-item:hover,
-  .tray-item:focus-visible {
-    background: var(--color-raised);
-    color: var(--color-hi);
-  }
-  .tray-ico {
-    width: var(--icon-md);
-    height: var(--icon-md);
-  }
-  /* The pill's joined corners square off when a tray is attached */
-  .site-nav:has(.tray) .site-nav-list {
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
-  }
-  @media (max-width: 767.98px) {
-    .tray {
-      border-radius: calc(var(--radius) + var(--space-1)) calc(var(--radius) + var(--space-1)) 0 0;
-    }
-    .site-nav:has(.tray) .site-nav-list {
-      border-radius: 0 0 calc(var(--radius) + var(--space-1)) calc(var(--radius) + var(--space-1));
-    }
-  }
-  @media (min-width: 768px) {
-    .tray {
-      border-radius: 0 0 calc(var(--radius) + var(--space-1)) calc(var(--radius) + var(--space-1));
-    }
-  }
-  /* Slide out of the pill and back into it. Page changes run through the client router, so the tray
-     is animated as a view transition: it only exists on one side of a navigation when you arrive at
-     or leave a project, and those are the cases that slide (project to project it stays put). The
-     tray's group is clipped along its joined edge, so it only shows once it is below the pill's lower
-     edge (above it on phones): it emerges from behind the pill rather than sliding over it, with no
-     fade. A direct page load shows it without the slide. */
-  @media (prefers-reduced-motion: no-preference) {
-    /* Clip only the joined edge (top; bottom on phones), so the tray cannot show above the pill, but
-       leave room on the other sides for its hairline and shadow. */
-    ::view-transition-group(nav-tray) {
-      clip-path: inset(0 -40px -40px -40px);
-    }
-    /* A tray on both pages (project to project) is the same object: no crossfade, no motion. */
-    ::view-transition-old(nav-tray):not(:only-child) {
-      display: none;
-    }
-    ::view-transition-new(nav-tray):not(:only-child) {
-      animation: none;
-    }
-    ::view-transition-new(nav-tray):only-child {
-      animation: tray-out var(--dur-slow) var(--ease-snap) both;
-    }
-    ::view-transition-old(nav-tray):only-child {
-      animation: tray-back var(--dur-slow) var(--ease-snap) both;
-    }
-    @keyframes tray-out {
-      from {
-        transform: translateY(-100%);
-      }
-    }
-    @keyframes tray-back {
-      to {
-        transform: translateY(-100%);
-      }
-    }
-    @media (max-width: 767.98px) {
-      ::view-transition-group(nav-tray) {
-        clip-path: inset(-40px -40px 0 -40px);
-      }
-      ::view-transition-new(nav-tray):only-child {
-        animation-name: tray-out-up;
-      }
-      ::view-transition-old(nav-tray):only-child {
-        animation-name: tray-back-down;
-      }
-      @keyframes tray-out-up {
-        from {
-            transform: translateY(100%);
-        }
-      }
-      @keyframes tray-back-down {
-        to {
-            transform: translateY(100%);
-        }
-      }
-    }
-  }
-  /* The pill's drop shadow would fall across the tray, so with a tray attached the pill keeps only its
-     hairline; the tray carries the one shadow, beneath the pair. */
-  .site-nav:has(.tray) .site-nav-list {
-    box-shadow: 0 0 0 1px var(--color-line);
-  }
-  .site-nav-list {
-    display: flex;
-    align-items: center;
-    gap: var(--space-0_5);
-    padding: var(--space-1);
-    border-radius: calc(var(--radius) + var(--space-1)); /* nested: item radius + padding */
-    background: var(--color-surface);
-    box-shadow:
-      0 0 0 1px var(--color-line),
-      0 10px 28px -10px rgb(0 0 0 / 0.7);
-  }
-  .nav-item {
-    display: inline-flex;
-    align-items: center;
-    min-height: var(--ctl-h);
-    min-width: var(--ctl-h);
-    padding-inline: var(--space-3_5);
-    border-radius: var(--radius);
-    font-size: var(--text-sm);
-    line-height: var(--text-sm--line-height);
-    font-weight: 500;
-    color: var(--color-text);
-    transition: color var(--dur-fast) var(--ease-snap), background-color var(--dur-fast) var(--ease-snap);
-  }
-  .nav-item:hover {
-    background: var(--color-raised);
-    color: var(--color-hi);
-  }
-  .nav-item:focus-visible {
-    outline-offset: 1px;
-  }
-  .nav-item[aria-current] {
-    background: var(--color-raised);
+  .menu-btn:hover,
+  .menu-btn:focus-visible {
     color: var(--color-accent);
+    outline: none; /* focus shows as the hover colour, not a ring */
+  }
+  .menu-btn > svg {
+    width: var(--icon-xl);
+    height: var(--icon-xl);
+  }
+  /* Text key (IconButton text="h-l"): not interactive, the keys of a pair sit side by side in one box. */
+  .menu-key {
+    cursor: default;
+    gap: var(--space-1_5);
+    font-size: var(--text-sm);
+    font-weight: 600;
+    line-height: var(--leading-tight);
+    white-space: nowrap;
+  }
+  /* Tooltip for icon buttons: data-tip="Label", data-tip-side="left" to open to the left (default is
+     below, right-aligned). Pointer devices only; shows on hover and keyboard focus after a short delay. */
+  [data-tip] {
+    --tip-arrow: 0.625rem;
+    --tip-gap: calc(var(--tip-arrow) * var(--half-diag)); /* half the turned square's diagonal */
+    position: relative;
+  }
+  [data-tip]::after {
+    content: attr(data-tip);
+    position: absolute;
+    z-index: var(--z-tip);
+    top: calc(100% + var(--space-2));
+    right: 0;
+    padding: var(--space-1) var(--space-2);
+    background: var(--color-bg); /* the buttons' own resting fill */
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius);
+    color: var(--color-control); /* the buttons' own resting icon colour */
+    font-size: var(--text-sm);
+    line-height: var(--leading-tight);
+    font-weight: 500;
+    white-space: pre; /* keeps the line breaks of a multi-line tip */
+    pointer-events: none;
+    opacity: 0;
+    transform: translateX(var(--tip-s, 0)); /* starts nudged toward its button and eases out to its place */
+    transition: opacity var(--dur-fast) var(--ease-snap), transform var(--dur-fast) var(--ease-snap);
+  }
+  /* Side tips: centred on the button's own centre (auto margins and fit-content height), nudged toward it
+     by --tip-s (--tip-dir is +1 for a tip opening left, -1 for right). */
+  [data-tip][data-tip-side] {
+    --tip-off: calc(100% + var(--tip-gap));
+    --tip-s: calc(var(--tip-dir) * var(--space-1_5));
+  }
+  [data-tip][data-tip-side]::after {
+    inset-block: 0;
+    margin-block: auto;
+    height: fit-content;
+  }
+  [data-tip][data-tip-side="left"] {
+    --tip-dir: 1;
+  }
+  [data-tip][data-tip-side="right"] {
+    --tip-dir: -1;
+  }
+  [data-tip][data-tip-side="left"]::after {
+    right: var(--tip-off);
+  }
+  [data-tip][data-tip-side="right"]::after {
+    right: auto;
+    left: var(--tip-off);
+  }
+  /* The pointer: a square turned 45 degrees, its far corner touching the button's edge, drawn over the
+     tip's own border so the two read as one shape. --tip-arrow is its side; the gap is its half-diagonal. */
+  [data-tip][data-tip-side]::before {
+    content: "";
+    position: absolute;
+    z-index: var(--z-tip-arrow);
+    top: 50%;
+    width: var(--tip-arrow);
+    height: var(--tip-arrow);
+    margin-top: calc(var(--tip-arrow) / -2);
+    background: var(--color-bg);
+    pointer-events: none;
+    opacity: 0;
+    transform: translateX(var(--tip-s, 0)) rotate(45deg);
+    transition: opacity var(--dur-fast) var(--ease-snap), transform var(--dur-fast) var(--ease-snap);
+  }
+  [data-tip][data-tip-side="left"]::before {
+    right: calc(var(--tip-off) - var(--tip-arrow) / 2);
+    border-top: 1px solid var(--color-line);
+    border-right: 1px solid var(--color-line);
+  }
+  [data-tip][data-tip-side="right"]::before {
+    left: calc(var(--tip-off) - var(--tip-arrow) / 2);
+    border-bottom: 1px solid var(--color-line);
+    border-left: 1px solid var(--color-line);
+  }
+  @media (hover: hover) {
+    [data-tip]:hover::before,
+    [data-tip]:focus-visible::before,
+    [data-tip]:hover::after,
+    [data-tip]:focus-visible::after {
+      opacity: 1;
+      transform: none;
+      transition-delay: var(--dur-delay);
+    }
+    [data-tip][data-tip-side]:hover::before,
+    [data-tip][data-tip-side]:focus-visible::before {
+      transform: rotate(45deg);
+    }
   }
   .nav-ico {
     flex: none;
     width: var(--icon-md);
     height: var(--icon-md);
   }
-  .nav-ico-on,
-  .nav-item[aria-current] .nav-ico-rest {
-    display: none;
-  }
-  .nav-item[aria-current] .nav-ico-on {
-    display: block;
-  }
-  /* Collapsed label: zero width but still in the accessibility tree (names the link). */
-  .nav-label {
-    max-width: 0;
-    margin-left: 0;
-    overflow: hidden;
-    white-space: nowrap;
-    opacity: 0;
-  }
-  .nav-item[aria-current] .nav-label,
-  .nav-item:hover .nav-label,
-  .nav-item:focus-visible .nav-label {
-    max-width: var(--nav-label-max);
-    margin-left: var(--space-1_5);
-    opacity: 1;
-  }
-  @media (prefers-reduced-motion: no-preference) {
-    .nav-label {
-      transition: max-width var(--dur) var(--ease-snap), margin-left var(--dur) var(--ease-snap),
-        opacity var(--dur-fast) var(--ease-snap);
-    }
-  }
-  @media (min-width: 768px) {
-    .nav-item {
-      min-height: var(--ctl-h-sm);
-      padding-inline: var(--space-3);
-    }
-    .nav-label {
-      max-width: none;
-      margin-left: var(--space-1_5);
-      opacity: 1;
-    }
-  }
-  /* Never over the lightbox; on phones, out of the way while typing in the form. */
-  html:has(#lightbox[open]) .site-nav {
-    display: none;
-  }
-  @media (max-width: 767.98px) {
-    html:has(.field input:not([type="radio"]):focus, .field textarea:focus) .site-nav {
-      display: none;
-    }
-  }
-  .site-foot {
-    padding-bottom: var(--nav-clear);
-  }
 
-  /* Home sections: each one fills a screen under the sticky logo row (less the phone nav),
-     content centred; no rules between sections. */
-  .screen {
-    min-height: calc(100svh - var(--brand-pt) - var(--brand-h) - var(--nav-clear));
-    align-content: center;
-  }
-
-  /* Home sections: a big orange title pinned just under the logo row. It stays pinned only while
-     there is room above the content; when the content (centred in the section) comes up to
-     --sect-gap below the title, the title unpins and the two scroll off together.
-     Structure: .sect-head (grows to fill the space above the content; holds the sticky title),
-     .sect-body (the content), and an equal spacer after it (.sect::after), so the content is centred. */
-  .sect {
-    display: flex;
-    flex-direction: column;
-    padding-bottom: var(--sect-gap);
-  }
-  .sect::after {
-    content: "";
-    flex: 1 1 0;
-  }
-  .sect-head {
-    flex: 1 1 0;
-    padding-bottom: var(--sect-gap);
-  }
+  /* Page and modal title: large accent heading. */
   .sect-title {
     position: relative; /* standalone pages: scrolls with the page */
     z-index: var(--z-sticky);
@@ -697,19 +513,22 @@
     font-weight: 800;
     color: var(--color-accent);
   }
-  .sect .sect-title {
-    position: sticky; /* home sections only: pinned under the logo row */
-    top: calc(var(--brand-pt) + var(--brand-h));
-  }
-  .sect-title::before {
-    content: "";
+  .sect-title:not(.modal .sect-title)::before {
+    content: ""; /* the backing is for pages; a modal's ground is its own */
     position: absolute;
     inset: 0 calc(-1 * var(--pad));
     z-index: -1;
     pointer-events: none;
     background: var(--color-bg);
   }
-  /* Standalone pages (/work, a project, 404, sent): the title is an h1.sect-title placed first, so it
+  /* Display type: the home headline and the contact title. Colour and spacing stay with the element. */
+  .display-title {
+    font-size: var(--hero-size);
+    line-height: var(--hero-leading);
+    letter-spacing: var(--text-title--letter-spacing);
+    font-weight: 800;
+  }
+  /* Standalone pages (404, sent): the title is an h1.sect-title placed first, so it
      sits exactly where the home section titles do, directly under the logo row. Content that follows
      it takes .sect-after; the page itself takes .page-body. One tune each: --sect-gap, --page-end. */
   .sect-after {
@@ -718,9 +537,412 @@
   .page-body {
     padding-bottom: var(--page-end);
   }
-  .sect-body {
+  /* Modals (Modal.astro): a compact head row (logo left, Close menu right), body fills the rest. */
+  .modal {
+    isolation: isolate;
+    background: var(--color-bg);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    /* Modals fade and rise in, and fade and settle back out on close or Esc. Native <dialog> transitions:
+       display and overlay are discrete so the exit plays before the dialog leaves the top layer. */
+    .modal {
+      --modal-from: translateY(var(--space-3)) scale(0.985); /* closed pose: lowered and slightly small */
+      opacity: 0;
+      transform: var(--modal-from);
+      transition:
+        opacity var(--dur-fast) var(--ease-snap),
+        transform var(--dur-fast) var(--ease-snap),
+        display var(--dur-fast) allow-discrete,
+        overlay var(--dur-fast) allow-discrete;
+    }
+    .modal[open] {
+      opacity: 1;
+      transform: none;
+      transition-duration: var(--dur-modal);
+    }
+    @starting-style {
+      .modal[open] {
+        opacity: 0;
+        transform: var(--modal-from);
+      }
+    }
+    .modal::backdrop {
+      opacity: 0;
+      transition: opacity var(--dur-fast) var(--ease-snap), display var(--dur-fast) allow-discrete, overlay var(--dur-fast) allow-discrete;
+    }
+    .modal[open]::backdrop {
+      opacity: 1;
+      transition-duration: var(--dur-modal);
+    }
+    @starting-style {
+      .modal[open]::backdrop {
+        opacity: 0;
+      }
+    }
+  }
+  .modal > .hero-dots {
+    inset: 0;
+    opacity: var(--modal-dots-o);
+  }
+  .modal-head {
     flex: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: var(--brand-pt);
+    height: calc(var(--brand-pt) + var(--brand-h)); /* the same row as the site's logo row */
+  }
+  .modal-titlebar {
+    flex: none;
+    padding-bottom: var(--sect-gap);
+  }
+  /* Bare modal (portfolio): no header, the body takes the whole viewport and is as wide as it can be. */
+  .modal[data-bare] .modal-body {
+    --pad: var(--space-4);
+    max-width: none;
+    padding-block: var(--space-4);
+  }
+  .modal-body {
+    flex: 1 1 0;
+    min-height: 0;
+    overflow-y: auto; /* only a fallback, e.g. a phone with the keyboard open */
+    padding-bottom: var(--space-4);
+  }
+
+  /* Portfolio viewer (index.astro): the page gets all the height there is. A fine progress rail runs
+     along its top edge, the arrows stand either side of it (centred on the screen), Close sits in the
+     modal's top right corner. The page is as large as the height allows, within the width left by the
+     arrows; the rail is exactly as wide as the page. */
+  .modal-body:has(.viewer) {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .viewer {
+    position: relative;
+    flex: 1 1 0;
+    min-height: 0;
+    container-type: size;
+    display: grid;
+    grid-template-rows: auto auto;
+    align-content: center;
+    row-gap: var(--viewer-gap);
+  }
+  .viewer-rail,
+  .viewer-main,
+  .viewer-stage {
+    --viewer-w: min(100cqw - 2 * var(--viewer-side), (100cqh - var(--viewer-foot)) * var(--folio-ratio));
+    --viewer-reach: calc(50% + var(--viewer-w) / 2 + var(--ctl-h)); /* from the page's centre to where the arrow tab ends */
+  }
+  .viewer-rail,
+  .viewer-stage {
+    width: var(--viewer-w);
+    justify-self: center;
+  }
+  .viewer-main {
+    position: relative;
+    display: grid;
+    grid-template-columns: var(--viewer-side) auto var(--viewer-side);
+    justify-content: center;
+    align-items: stretch;
+  }
+  .viewer-stage {
+    position: relative;
+    aspect-ratio: var(--folio-ratio);
+    touch-action: pan-y pinch-zoom;
+    overflow: hidden; /* pages slide inside the frame */
+    border-radius: var(--radius);
+    border: 1px solid var(--color-line);
+    background: var(--color-sunk);
+  }
+  .viewer-pages,
+  .viewer-slide {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .viewer-pages {
+    position: relative;
+  }
+  .viewer-slide {
+    position: absolute;
+    inset: 0;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .viewer-slide[data-dir="in"] {
+      animation: slide-in var(--t, var(--dur-slide)) var(--e, var(--ease-snap)); /* --t and --e are set by viewer.ts */
+    }
+    .viewer-slide[data-dir="out"] {
+      animation: slide-out var(--t, var(--dur-slide)) var(--e, var(--ease-snap)) forwards;
+    }
+  }
+  .viewer-slide img {
+    display: block;
     width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+  /* Click the left or right quarter of the page to go back or forward; a chip shows the direction on hover. */
+  .viewer-half {
+    position: absolute;
+    inset-block: 0;
+    width: var(--viewer-edge);
+    cursor: pointer;
+  }
+  .viewer-half[data-half="prev"] {
+    left: 0;
+  }
+  .viewer-half[data-half="next"] {
+    right: 0;
+  }
+  .viewer-half[data-off] {
+    cursor: default;
+  }
+  .viewer-chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--ctl-h);
+    height: var(--ctl-h);
+    background: var(--color-bg);
+    border: 1px solid var(--color-line);
+    color: var(--color-control); /* muted at rest, primary on hover */
+    transition: opacity var(--dur-fast) var(--ease-snap), color var(--dur-fast) var(--ease-snap);
+  }
+  .viewer-side:disabled .viewer-chip {
+    opacity: 0; /* no arrow where there is nowhere to go (first and last page) */
+  }
+  /* The arrow is a tab on the page edge: flush with it (no inner border, square inner corners, the
+     page's own hairline is the shared edge), rounded on the outer corners only. */
+  .viewer-side[data-prev] {
+    justify-content: flex-end;
+  }
+  .viewer-side[data-next] {
+    justify-content: flex-start;
+  }
+  .viewer-side[data-prev] .viewer-chip {
+    border-right: 0;
+    border-radius: var(--radius) 0 0 var(--radius);
+  }
+  .viewer-side[data-next] .viewer-chip {
+    border-left: 0;
+    border-radius: 0 var(--radius) var(--radius) 0;
+  }
+  /* The arrows live outside the page, always shown while there is somewhere to go. Each side button is
+     a tall click zone as wide as the arrow plus its gap; the arrow is the orange tab on the page edge. */
+  .viewer-side {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--viewer-side);
+    height: auto;
+    border-radius: 0;
+    cursor: pointer;
+  }
+  .viewer-side:focus-visible {
+    outline: none;
+  }
+  .viewer-side:focus-visible .viewer-chip {
+    color: var(--color-accent); /* keyboard focus shows as the hover colour, not a ring */
+  }
+  .viewer-side:disabled {
+    cursor: default;
+  }
+  @media (hover: hover) {
+    .viewer-side:hover:not(:disabled) .viewer-chip,
+    .viewer-main:has(.viewer-half[data-half="prev"]:hover:not([data-off])) .viewer-side[data-prev] .viewer-chip,
+    .viewer-main:has(.viewer-half[data-half="next"]:hover:not([data-off])) .viewer-side[data-next] .viewer-chip {
+      color: var(--color-accent); /* primary while the pointer is on the arrow or its click zone on the page */
+    }
+  }
+  /* Close, open and download: a vertical menu beside the page, level with its top edge, in the
+     right-hand arrow column (the next arrow stays centred below it). */
+  .viewer-menu {
+    position: absolute;
+    top: 0;
+    /* starts where the next arrow tab ends: one arrow width past the page's right edge */
+    left: var(--viewer-reach);
+    z-index: var(--z-menu);
+  }
+  /* Key help: the same menu, mirrored on the left; hover shows the keys. */
+  .viewer-keys {
+    left: auto;
+    right: var(--viewer-reach);
+  }
+  /* The rail: one fine segment per page along the top of the page, orange for the current one. */
+  .viewer-rail {
+    display: flex;
+    gap: var(--space-1);
+    /* The straight part of the ends lines up with where the page's corners meet its top edge: the
+       corner radius, less the tick's own end curve (half its height). */
+    padding-inline: calc(var(--radius) - var(--rail-h) / 2);
+  }
+  .viewer-tick {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    height: var(--viewer-tick);
+    cursor: pointer;
+  }
+  .viewer-tick::before {
+    content: "";
+    flex: 1;
+    height: var(--rail-h);
+    border-radius: var(--radius);
+    background: var(--color-line);
+    transition: background-color var(--dur-fast) var(--ease-snap);
+  }
+  .viewer-tick:hover::before {
+    background: var(--color-control);
+  }
+  .viewer-tick[data-on]::before {
+    background: var(--color-accent);
+  }
+  .viewer-hint {
+    display: none;
+    position: absolute;
+    inset-inline: 0;
+    bottom: 0;
+    text-align: center;
+    color: var(--color-muted);
+  }
+  @media (max-width: 639.98px) {
+    .viewer {
+      margin-inline: calc(-1 * var(--pad)); /* the page runs edge to edge on phones */
+    }
+    .viewer-rail,
+    .viewer-stage {
+      --viewer-w: 100cqw;
+    }
+    .viewer-main {
+      grid-template-columns: auto;
+    }
+    /* No hover on phones: the arrow zones sit over the page edges with their chips always shown */
+    .viewer-side {
+      position: absolute;
+      inset-block: 0;
+      z-index: var(--z-side);
+      width: calc(var(--ctl-h) + var(--viewer-pad)); /* no menu column beside the page on phones */
+    }
+    .viewer-chip {
+      color: var(--color-accent); /* no hover on phones, so the arrows stay primary */
+    }
+    .viewer-side[data-prev] {
+      left: 0;
+      justify-content: flex-start;
+    }
+    .viewer-side[data-next] {
+      right: 0;
+      justify-content: flex-end;
+    }
+    .viewer-side[data-prev] .viewer-chip {
+      border-left: 0;
+      border-right: 1px solid var(--color-line);
+      border-radius: 0 var(--radius) var(--radius) 0;
+    }
+    .viewer-side[data-next] .viewer-chip {
+      border-right: 0;
+      border-left: 1px solid var(--color-line);
+      border-radius: var(--radius) 0 0 var(--radius);
+    }
+    .viewer-stage {
+      border-radius: 0;
+      border-inline: 0;
+    }
+    .viewer-keys {
+      display: none; /* no keyboard on phones */
+    }
+    /* Phones: the menu becomes a row above the page, in the free space over it */
+    .viewer-menu {
+      top: auto;
+      left: auto;
+      right: var(--viewer-pad);
+      bottom: calc(100% + var(--rail-h) + var(--viewer-foot));
+      flex-direction: row;
+      --menu-r-first: var(--radius-inner) 0 0 var(--radius-inner);
+      --menu-r-last: 0 var(--radius-inner) var(--radius-inner) 0;
+    }
+    .viewer-rail {
+      padding-inline: 0; /* square corners on phones */
+    }
+    .viewer-tick {
+      pointer-events: none;
+    }
+    .viewer-half {
+      display: none;
+    }
+  }
+  @media (max-width: 639.98px) and (orientation: portrait) {
+    .viewer-hint {
+      display: block;
+    }
+  }
+
+  /* Contact modal: lead left, form right, content centred in the viewport. */
+  .modal-body:has(.contact) {
+    display: grid;
+    align-content: center;
+  }
+  .contact {
+    display: grid;
+    row-gap: var(--space-6);
+  }
+  .contact-intro .sect-title {
+    margin-bottom: var(--space-4);
+    padding-top: 0; /* the heading's top edge is the block's top edge */
+  }
+  .contact-form {
+    display: grid;
+    row-gap: var(--space-3);
+  }
+  .contact-pair {
+    display: grid;
+    gap: var(--space-3) var(--space-4);
+  }
+  .contact-send {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-3) var(--space-6);
+  }
+  .contact-send .btn-primary {
+    width: 100%;
+  }
+  .contact-error {
+    color: var(--color-err);
+    font-size: var(--text-sm);
+  }
+  @media (min-width: 640px) {
+    .contact-form {
+      row-gap: var(--space-5);
+    }
+    .contact-pair {
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-5) var(--space-4);
+    }
+    .contact-send .btn-primary {
+      width: auto;
+    }
+  }
+  @media (min-width: 768px) {
+    .contact {
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      column-gap: var(--space-6);
+      align-items: start; /* intro block and form share a top edge */
+    }
+    .contact-intro {
+      grid-column: 1 / span 5;
+    }
+    .contact-form,
+    .contact-done {
+      grid-column: 7 / -1;
+    }
+  }
+  @media (max-width: 639.98px) {
+    .contact-form textarea {
+      min-height: var(--textarea-h-phone);
+    }
   }
   .statement {
     font-size: var(--text-h2);
@@ -730,11 +952,12 @@
     color: var(--color-hi);
   }
 
-  /* Hero (home): exactly one screen: the sticky brand row plus the hero fill 100svh (less the phone nav). */
+  /* Hero (home): exactly one screen: the sticky brand row plus the hero fill 100svh. */
   .hero {
     display: flex;
     flex-direction: column;
-    min-height: calc(100svh - var(--brand-pt) - var(--brand-h) - var(--nav-clear));
+    justify-content: center;
+    min-height: calc(100svh - var(--brand-pt) - var(--brand-h));
     padding-bottom: var(--space-10);
     position: relative;
     isolation: isolate;
@@ -753,11 +976,11 @@
     z-index: -1;
     overflow: hidden;
     pointer-events: none;
-    background-color: #000;
-    filter: contrast(22) url(#duotone);
-    opacity: var(--hero-dots-o, 0.22);
-    -webkit-mask-image: linear-gradient(to bottom, #000 92%, transparent);
-    mask-image: linear-gradient(to bottom, #000 92%, transparent);
+    background-color: var(--halftone-lo);
+    filter: contrast(var(--hero-contrast)) url(#duotone);
+    opacity: var(--hero-dots-o);
+    -webkit-mask-image: linear-gradient(to bottom, var(--halftone-lo) 92%, transparent);
+    mask-image: linear-gradient(to bottom, var(--halftone-lo) 92%, transparent);
   }
   .hero-dots::before,
   .hero-dots::after {
@@ -767,31 +990,21 @@
   }
   .hero-dots::before {
     /* a tall glow on the right, taller than the screen, so the dense part runs off the top and bottom */
-    background: radial-gradient(ellipse 58% 85% at 78% 50%, #808080 0, #000 100%);
+    background: radial-gradient(ellipse 58% 85% at 78% 50%, var(--halftone-mid) 0, var(--halftone-lo) 100%);
     transform-origin: 78% 50%;
   }
   .hero-dots::after {
     mix-blend-mode: plus-lighter;
     background: radial-gradient(
         circle at center,
-        #808080 0,
-        #000 calc(var(--hero-ht, 7px) * 0.7071)
+        var(--halftone-mid) 0,
+        var(--halftone-lo) calc(var(--hero-ht) * var(--half-diag))
       )
-      0 0 / var(--hero-ht, 7px) var(--hero-ht, 7px);
+      0 0 / var(--hero-ht) var(--hero-ht);
   }
   @media (prefers-reduced-motion: no-preference) {
     .hero-dots::before {
-      animation: hero-breath var(--hero-pulse-t, 7s) ease-in-out infinite alternate;
-    }
-    @keyframes hero-breath {
-      from {
-        opacity: 1;
-        transform: scale(1);
-      }
-      to {
-        opacity: 0.72;
-        transform: scale(1.14);
-      }
+      animation: hero-breath var(--hero-pulse-t) ease-in-out infinite alternate;
     }
   }
   .hero-body .meta {
@@ -802,164 +1015,20 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding-block: var(--space-8);
+    padding-block: var(--space-6);
   }
   .hero-title {
-    font-size: var(--hero-size);
-    line-height: var(--hero-leading);
-    letter-spacing: var(--text-title--letter-spacing);
-    font-weight: 800;
     color: var(--color-hi);
     max-width: var(--hero-title-measure);
   }
   .hero-title .hl {
+    display: block; /* the accent phrase is the second line */
     color: var(--color-accent);
   }
   @media (prefers-reduced-motion: no-preference) {
     .hero-in {
       animation: rise var(--rise) var(--ease-snap) both;
-      animation-delay: calc(var(--i, 0) * 90ms);
-    }
-  }
-
-  /* Project reel: every published project, drifting right to left in a full-bleed strip.
-     Pauses on hover, keyboard focus or the Pause toggle (CSS only). Static and
-     scrollable under reduced motion. Images keep full opacity, no overlay or mask. */
-  .reel {
-    --reel-gap: var(--space-4);
-  }
-  .reel-window {
-    overflow: hidden;
-  }
-  .reel-track {
-    display: flex;
-    width: max-content;
-  }
-  .reel-set {
-    display: flex;
-    gap: var(--reel-gap);
-    padding-right: var(--reel-gap);
-  }
-  .reel-set:first-child {
-    padding-left: var(--reel-gap);
-  }
-  .reel-link {
-    display: block;
-  }
-  .reel-media {
-    display: block;
-    height: var(--reel-h);
-    width: calc(var(--reel-h) * var(--ar));
-    overflow: hidden;
-    background: var(--color-surface);
-    box-shadow: 0 0 0 1px var(--color-line);
-    transition: box-shadow var(--dur-fast) var(--ease-snap);
-  }
-  .reel-media[data-mat="dark"] {
-    background: var(--color-mat-dark);
-  }
-  .reel-media[data-mat="light"] {
-    background: var(--color-mat-light);
-  }
-  .reel-media[data-mat="black"] {
-    background: var(--color-mat-black);
-  }
-  .reel-media[data-mat="white"] {
-    background: var(--color-mat-white);
-  }
-  .reel-media img {
-    width: 100%;
-    height: 100%;
-  }
-  .reel-cap {
-    display: block;
-    margin-top: var(--space-2);
-    font-size: var(--text-cap);
-    line-height: var(--text-cap--line-height);
-    letter-spacing: var(--text-cap--letter-spacing);
-    color: var(--color-muted);
-    transition: color var(--dur-fast) var(--ease-snap);
-  }
-  .reel-num {
-    color: var(--color-dim);
-    margin-right: 0.5em;
-    font-variant-numeric: tabular-nums;
-  }
-  .reel-link:hover .reel-media,
-  .reel-link:focus-visible .reel-media {
-    box-shadow: 0 0 0 1px var(--color-accent);
-  }
-  .reel-link:hover .reel-cap,
-  .reel-link:focus-visible .reel-cap {
-    color: var(--color-accent);
-  }
-  .reel-toggle {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-1_5);
-    min-height: var(--ctl-h);
-    padding-inline: var(--space-3);
-    border-radius: var(--radius);
-    font-size: var(--text-sm);
-    font-weight: 500;
-    color: var(--color-text);
-    cursor: pointer;
-    transition: color var(--dur-fast) var(--ease-snap), background-color var(--dur-fast) var(--ease-snap);
-  }
-  @media (min-width: 768px) {
-    .reel-toggle {
-      min-height: var(--ctl-h-sm);
-    }
-  }
-  .reel-toggle:hover {
-    background: var(--color-raised);
-    color: var(--color-hi);
-  }
-  .reel-toggle:has(:focus-visible) {
-    outline: 2px solid var(--color-accent);
-    outline-offset: 2px;
-  }
-  .reel-toggle svg {
-    width: var(--icon-sm);
-    height: var(--icon-sm);
-  }
-  .reel-state {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-1_5);
-  }
-  .reel-toggle .is-play,
-  .reel-toggle:has(:checked) .is-pause {
-    display: none;
-  }
-  .reel-toggle:has(:checked) .is-play {
-    display: inline-flex;
-  }
-  @media (prefers-reduced-motion: no-preference) {
-    .reel-track {
-      animation: reel calc(var(--n) * var(--reel-pace)) linear infinite;
-    }
-    .reel:hover .reel-track,
-    .reel:focus-within .reel-track,
-    .reel:has(.reel-toggle :checked) .reel-track {
-      animation-play-state: paused;
-    }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .reel-track {
-      animation: none !important;
-    }
-    .reel-window {
-      overflow-x: auto;
-      scroll-snap-type: x proximity;
-    }
-    .reel-set + .reel-set,
-    .reel-toggle {
-      display: none;
-    }
-    .reel-card {
-      scroll-snap-align: start;
-      scroll-margin-left: var(--reel-gap);
+      animation-delay: calc(var(--i, 0) * var(--stagger));
     }
   }
 
@@ -986,21 +1055,23 @@
     color: var(--color-text);
     padding: 0;
   }
-  .field input:not([type="radio"]),
-  .field textarea {
+  .field :where(input:not([type="checkbox"]), textarea) {
     width: 100%;
     min-height: var(--field-h);
-    padding: var(--space-2_5) var(--space-3);
-    border-radius: var(--field-r);
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius);
     background: var(--color-surface);
     border: 1px solid var(--color-control);
     color: var(--color-hi);
     font: inherit;
     font-size: var(--text-base);
+    line-height: var(--leading-tight); /* single-line fields: the height comes from --field-h, not from tall text */
     transition: border-color var(--dur-fast) var(--ease-snap), box-shadow var(--dur-fast) var(--ease-snap);
   }
   .field textarea {
+    line-height: var(--text-base--line-height);
     min-height: var(--textarea-h);
+    padding-block: var(--space-2_5);
     resize: vertical;
   }
   .field input::placeholder,
@@ -1008,12 +1079,10 @@
     color: var(--color-dim);
     opacity: 1;
   }
-  .field input:not([type="radio"]):hover,
-  .field textarea:hover {
+  .field :where(input:not([type="checkbox"]), textarea):hover {
     border-color: var(--color-muted);
   }
-  .field input:not([type="radio"]):focus,
-  .field textarea:focus {
+  .field :where(input:not([type="checkbox"]), textarea):focus {
     outline: none;
     border-color: var(--color-accent);
     box-shadow: 0 0 0 1px var(--color-accent);
@@ -1023,14 +1092,12 @@
     border-color: var(--color-err);
   }
   .chips {
-    --chip-h: 2rem;
-    --chip-dot: 0.875rem;
     display: flex;
     flex-wrap: nowrap; /* always one line; scrolls sideways only if the screen is too narrow */
     gap: var(--space-1_5);
     overflow-x: auto;
-    padding: 3px; /* room for the focus ring inside the scroll box */
-    margin: -3px;
+    padding: var(--focus-room); /* room for the focus ring inside the scroll box */
+    margin: calc(-1 * var(--focus-room));
     scrollbar-width: none;
   }
   .chips::-webkit-scrollbar {
@@ -1042,29 +1109,30 @@
     justify-content: flex-start;
     align-items: center;
     gap: var(--space-2);
-    min-height: var(--chip-h); /* deliberately smaller than the 3rem fields */
+    min-height: var(--field-h); /* the same height as the fields */
     /* the dot sits the same distance from the left end as from the top and bottom, concentric with the rounded end */
-    padding-left: calc((var(--chip-h) - var(--chip-dot)) / 2 - 1px);
+    padding-left: calc((var(--field-h) - var(--chip-dot)) / 2 - 1px);
     padding-right: var(--space-3_5);
     white-space: nowrap;
     border-radius: var(--radius);
     border: 1px solid var(--color-line);
+    background: var(--color-surface); /* same fill as the chosen chip; the dot and border show the choice */
     font-size: var(--text-sm);
-    line-height: 1.25;
+    line-height: var(--leading-tight);
     font-weight: 500;
-    color: var(--color-muted);
+    color: var(--color-hi);
     cursor: pointer;
     transition: color var(--dur-fast) var(--ease-snap), background-color var(--dur-fast) var(--ease-snap),
       border-color var(--dur-fast) var(--ease-snap);
   }
-  /* Native radio, restyled: a ring that fills with an orange dot when chosen. */
+  /* Native checkbox, restyled: a small square that fills with an orange square when chosen. */
   .chip input {
     appearance: none;
     flex: none;
     width: var(--chip-dot);
     height: var(--chip-dot);
     margin: 0;
-    border-radius: 50%;
+    border-radius: 4px;
     border: 1.5px solid var(--color-control);
     background: transparent;
     cursor: pointer;
@@ -1072,620 +1140,26 @@
   }
   .chip input:checked {
     border-color: var(--color-accent);
-    background: radial-gradient(circle, var(--color-accent) 0 45%, transparent 50%);
+    background: linear-gradient(var(--color-accent), var(--color-accent)) center / 55% 55% no-repeat;
   }
-  .chip:hover {
-    background: var(--color-surface);
-    color: var(--color-hi);
-  }
-  @media (max-width: 479.98px) {
+  /* Phones: chips wrap into an even grid (never a sideways scroll). */
+  @media (max-width: 639.98px) {
+    .chips {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(var(--chip-min), 1fr));
+      overflow: visible;
+    }
     .chip {
       justify-content: center;
       padding-inline: var(--space-2);
     }
-    /* The radio stays in the accessibility tree and keyboard order: visually hidden, not removed.
-       The chosen chip gets a tick as well as the orange outline, and a stronger resting border. */
-    .chip {
-      position: relative;
-      border-color: var(--color-control);
-    }
-    .chip input {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      margin: 0;
-      opacity: 0;
-      cursor: pointer;
-    }
-    .chip:has(:checked)::before {
-      content: "\2713";
-      font-weight: 700;
-      color: var(--color-accent);
-      margin-right: var(--space-1);
-    }
   }
   .chip:has(:checked) {
     border-color: var(--color-accent);
-    background: var(--color-surface);
-    color: var(--color-hi);
   }
   .chip:has(:focus-visible) {
-    outline: 2px solid var(--color-accent);
-    outline-offset: 2px;
-  }
-
-  /* Work list (Revision 3): one hairline-framed box of rows, used on home (.feat), /work and
-     the project prev/next. Row: cover thumbnail, No. (or label), orange title, ticket, arrow.
-     Tunables: --row-thumb and the --feat-* values in :root. */
-  .wlist {
-    border: 1px solid var(--color-line);
-    border-radius: var(--radius);
-    overflow: clip;
-  }
-  .wlist-rows {
-    display: grid;
-    margin-bottom: -1px; /* the last row's hairline tucks under the frame */
-  }
-  .wrow {
-    min-width: 0;
-    border-bottom: 1px solid var(--color-line);
-  }
-  @media (min-width: 768px) {
-    .wlist[data-cols="2"] .wlist-rows {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-    .wlist[data-cols="2"] .wrow:nth-child(odd) {
-      border-right: 1px solid var(--color-line);
-    }
-    .wlist[data-cols="2"] .wrow:nth-child(odd):last-child {
-      grid-column: 1 / -1;
-      border-right: 0;
-    }
-  }
-  .wrow-link {
-    display: grid;
-    grid-template-columns: var(--row-thumb) minmax(0, 1fr) auto;
-    align-items: center;
-    column-gap: var(--space-4);
-    height: 100%;
-    padding: var(--space-3);
-    transition: background-color var(--dur-fast) var(--ease-snap);
-  }
-  .wrow-link:hover {
-    background: var(--color-surface);
-  }
-  .wrow-link:focus-visible {
-    outline-offset: -2px; /* inside the frame, which clips */
-  }
-  .wimg {
-    position: relative;
-    overflow: hidden;
-    aspect-ratio: 4 / 3;
-    border-radius: var(--radius);
-    background: var(--color-surface);
-    box-shadow: 0 0 0 1px var(--color-line);
-    transition: box-shadow var(--dur-fast) var(--ease-snap);
-  }
-  .wimg img {
-    width: 100%;
-    height: 100%;
-    min-height: 0;
-    object-fit: cover;
-  }
-  .wimg[data-mode="contain"] {
-    padding: 8%;
-  }
-  .wimg[data-mode="sheet"] {
-    padding: 12%;
-  }
-  .wimg:is([data-mode="contain"], [data-mode="sheet"]) img {
-    object-fit: contain;
-  }
-  .wimg[data-mode="sheet"] img:not(:first-child) {
-    display: none; /* thumbnails show the first mark only; the stage shows all six */
-  }
-  .wimg[data-mat="dark"] {
-    background: var(--color-mat-dark);
-  }
-  .wimg[data-mat="light"] {
-    background: var(--color-mat-light);
-  }
-  .wimg[data-mat="black"] {
-    background: var(--color-mat-black);
-  }
-  .wimg[data-mat="white"] {
-    background: var(--color-mat-white);
-  }
-
-  /* Home stage treatment (applied here, never baked into the files): every cover is mapped to a
-     two-colour duotone (dark slate to orange; the SVG filter #duotone is in index.astro) with a
-     fine dot screen on top, so mismatched crops read as one family. Click through for the real
-     work. Remove the two rules below to show the images untreated. */
-  .feat .wimg {
-    filter: url(#duotone);
-  }
-  /* From the stage breakpoint the image is drawn at 100% of its own size (see `sizes` in
-     WorkRow.astro) and cropped by the panel at the cover's `position`, instead of being fitted. */
-  @media (min-width: 1024px) and (hover: hover) {
-    .feat .wimg:is([data-mode="cover"], [data-mode="contain"]) img {
-      object-fit: none;
-    }
-    .feat .wimg[data-mode="contain"] {
-      padding: 0;
-    }
-  }
-  .feat .wimg::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    background-image: radial-gradient(circle at center, transparent calc(var(--feat-dot) * 0.3), var(--color-bg) calc(var(--feat-dot) * 0.34));
-    background-size: var(--feat-dot) var(--feat-dot);
-    opacity: var(--feat-dots, 0.4);
-  }
-
-  /* Halftone screen (home stage; opt in with data-screen="halftone" on .feat in index.astro, remove
-     the attribute for the plain dot screen). A real tone-dependent screen made in CSS at view time:
-     the image is greyscaled, halved in brightness and blurred to about one dot; a tiled cone
-     (grey centre falling to black) is ADDED on top (plus-lighter); the container's high
-     contrast() then thresholds the sum at 50%. Bright areas grow big merged dots, dark areas
-     small ones, so the dots follow the picture like newsprint. #duotone then colours the result.
-     The screen is fixed while the picture drifts under it. Tunables: --feat-ht (pitch),
-     --feat-ht-contrast (edge crispness; lower is softer). */
-  @media (min-width: 1024px) and (hover: hover) {
-    .feat[data-screen="halftone"] .wmedia::after {
-      content: none;
-    }
-    .feat[data-screen="halftone"] .wimg {
-      isolation: isolate;
-      background-color: #000;
-      filter: contrast(var(--feat-ht-contrast, 22)) url(#duotone);
-    }
-    .feat[data-screen="halftone"] .wimg:is([data-mode="cover"], [data-mode="contain"]) img,
-    .feat[data-screen="halftone"] .wimg[data-mode="sheet"] img {
-      filter: grayscale(1) brightness(0.5) blur(calc(var(--feat-ht) * 0.55));
-    }
-    .feat[data-screen="halftone"] .wimg::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      z-index: 1;
-      pointer-events: none;
-      mix-blend-mode: plus-lighter;
-      background: radial-gradient(
-          circle at center,
-          #808080 0,
-          #000 calc(var(--feat-ht) * 0.7071)
-        )
-        0 0 / var(--feat-ht) var(--feat-ht);
-    }
-  }
-
-  /* Stage motion (home, desktop with a mouse; all of it off for reduced motion).
-     1. Drift (OFF by default: add data-drift to .feat in index.astro to enable): the active cover
-        slowly zooms and slides, transform only, so it runs on the compositor. A transition (not keyframes) keeps the outgoing cover frozen through the
-        cross-fade, then resets while hidden. Direction varies per project.
-     2. Dot screen: lifted out of the filtered image onto the stage panel and drifted one pitch per
-        loop (seamless), again transform only. Tunables: --feat-kb (drift time), --feat-dot-t. */
-  @media (min-width: 1024px) and (hover: hover) {
-    .feat .wimg::after {
-      content: none; /* the screen moves to .wmedia::after here */
-    }
-    .feat .wmedia {
-      overflow: clip;
-    }
-    .feat .wmedia::after {
-      content: "";
-      position: absolute;
-      inset: calc(-1 * var(--feat-dot)); /* one pitch of overscan for the drift */
-      z-index: 0; /* above the image, below the description label (z-index 1) */
-      pointer-events: none;
-      background-image: radial-gradient(circle at center, transparent calc(var(--feat-dot) * 0.3), var(--color-bg) calc(var(--feat-dot) * 0.34));
-      background-size: var(--feat-dot) var(--feat-dot);
-      opacity: var(--feat-dots, 0.4);
-    }
-  }
-  @media (min-width: 1024px) and (hover: hover) and (prefers-reduced-motion: no-preference) {
-    .feat[data-drift] .wimg:not([data-mode="sheet"]) img {
-      transform: scale(1) translate(0, 0);
-      transition: transform 0s linear var(--feat-fade); /* hold the last frame through the fade */
-    }
-    .feat[data-drift] .wrow.is-on .wimg:not([data-mode="sheet"]) img {
-      transform: scale(1.06) translate(var(--kb-x, 2%), var(--kb-y, 1%));
-      transition: transform var(--feat-kb, 8s) linear;
-    }
-    .feat[data-drift] .wrow:nth-child(2n) .wimg img {
-      --kb-x: -2%;
-      --kb-y: 1%;
-    }
-    .feat[data-drift] .wrow:nth-child(3n) .wimg img {
-      --kb-x: 1%;
-      --kb-y: -2%;
-    }
-    .feat .wrow.is-on .wmedia::after {
-      animation: feat-dots var(--feat-dot-t, 6s) linear infinite;
-    }
-    /* Halftone motion (only with data-screen="halftone"): while a project is on the stage the dot
-       screen eases from full strength to --feat-ht-pulse (opacity only), taking the whole time the
-       project is shown, so the dots slowly shrink and the next project starts fresh. */
-    .feat[data-screen="halftone"] .wrow.is-on .wimg::after {
-      /* one way, from full strength down to --feat-ht-pulse, spread over the project's time on
-         the stage (--feat-cycle, set from CYCLE_MS by the script), then held there */
-      animation: feat-ht-pulse var(--feat-cycle, 2.5s) ease-in-out 1 both;
-    }
-    @keyframes feat-ht-pulse {
-      from {
-        opacity: 1;
-      }
-      to {
-        opacity: var(--feat-ht-pulse, 0.81);
-      }
-    }
-    @keyframes feat-dots {
-      to {
-        transform: translate(var(--feat-dot), var(--feat-dot));
-      }
-    }
-  }
-  .wrow-link:hover .wimg {
-    box-shadow: 0 0 0 1px var(--color-control);
-  }
-  .wrow-link:active .wimg {
-    box-shadow: 0 0 0 1px var(--color-accent);
-  }
-  .wcap {
-    display: none;
-  }
-  .wrow-no {
-    color: var(--color-dim);
-  }
-  .wrow-arrow {
-    width: var(--icon-lg);
-    height: var(--icon-lg);
-    color: var(--color-dim);
-    transition: color var(--dur-fast) var(--ease-snap);
-  }
-  .wrow-link:hover .wrow-arrow,
-  .wrow-link:focus-visible .wrow-arrow {
-    color: var(--color-accent);
-  }
-  .index-title {
-    color: var(--color-accent);
-    transition: color var(--dur-fast) var(--ease-snap);
-  }
-  .wrow-link:hover .index-title,
-  .wrow-link:focus-visible .index-title {
-    color: var(--color-accent-hi);
-  }
-
-  /* Home "Selected work" stage: with a mouse from 1024px, the rows become an index beside one
-     large stage. Each row's cover is lifted out of the row onto the stage; the hovered or
-     focused row shows, else the remembered one (.is-on, moved by a tiny script; server-set
-     on the first row, so it works without JS). Touch and narrow screens keep the plain rows. */
-  .feat-stage,
-  .feat-hl {
-    display: none;
-  }
-  @media (min-width: 1024px) and (hover: hover) {
-    .feat {
-      position: relative;
-      display: grid;
-      grid-template-columns: var(--feat-split) minmax(0, 1fr);
-    }
-    .feat .wlist-rows {
-      grid-area: 1 / 1;
-      grid-auto-rows: 1fr;
-    }
-    .feat-stage {
-      display: block;
-      grid-area: 1 / 2;
-    }
-    .feat-stage::before {
-      content: "";
-      display: block;
-      height: var(--feat-h);
-    }
-    .feat .wrow-link {
-      grid-template-columns: minmax(0, 1fr) auto;
-      padding: var(--space-1) var(--space-5);
-    }
-    /* The cover, lifted onto the stage. Hidden covers stay painted for one fade so the
-       incoming one (on top) fades over it, then drop out of hit-testing. */
-    .feat .wmedia {
-      position: absolute;
-      inset: 0 0 0 var(--feat-split);
-      display: flex;
-      flex-direction: column;
-      border-left: 1px solid var(--color-line);
-      background: var(--color-bg);
-      z-index: 0;
-      opacity: 0;
-      visibility: hidden;
-      transition: opacity 0s linear var(--feat-fade), visibility 0s linear var(--feat-fade);
-      /* the image is not a target: hovering or clicking it does nothing, only the index rows act */
-      pointer-events: none;
-    }
-    .feat .wimg {
-      flex: 1;
-      min-height: 0;
-      aspect-ratio: auto;
-      border-radius: 0;
-      box-shadow: none;
-    }
-    .feat .wrow-link:is(:hover, :active) .wimg {
-      box-shadow: none; /* the stage is framed by its hairline */
-    }
-    .feat .wimg[data-mode="sheet"] {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      grid-template-rows: repeat(2, minmax(0, 1fr));
-      gap: 4%;
-      padding: 6%;
-    }
-    .feat .wimg[data-mode="sheet"] img:not(:first-child) {
-      display: block;
-    }
-    /* The description floats over the bottom-left of the image as an orange label,
-       so the image fills the whole panel. */
-    .feat .wcap {
-      position: absolute;
-      z-index: 1;
-      left: var(--space-4);
-      bottom: var(--space-4);
-      max-width: min(var(--feat-caption-max), calc(100% - 2 * var(--space-4)));
-      padding: var(--space-2_5) var(--space-3_5);
-      border-radius: var(--radius);
-      background: var(--color-accent);
-      color: var(--color-on-accent);
-      font-size: var(--text-sm);
-      line-height: var(--text-sm--line-height);
-      font-weight: 600;
-    }
-    /* Active marker: a dot centred on the title line (22px = text-base leading-snug), the text
-       indented to clear it. The home stage rows carry no number. */
-    .feat .wrow-text {
-      position: relative;
-      padding-left: calc(6px + var(--space-2));
-    }
-    .feat .wrow-text::before {
-      content: "";
-      position: absolute;
-      left: 0;
-      top: 8px;
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: var(--color-accent);
-      opacity: 0;
-    }
-    /* Sliding highlight: the lighter band behind the active row is one element (.feat-hl) that glides
-       between rows with the same timing as the cover cross-fade; the script sets its position
-       (--hl-y, --hl-h) and turns it on with .has-hl. The row text colours ease with the same
-       timing. Without the script each row simply gets its own background. */
-    .feat-hl {
-      display: block;
-      position: absolute;
-      z-index: -1;
-      left: 0;
-      top: 0;
-      width: var(--feat-split);
-      height: var(--hl-h, 0px);
-      transform: translateY(var(--hl-y, 0px));
-      background: var(--color-surface);
-      pointer-events: none;
-      opacity: 0;
-    }
-    .feat.has-hl .feat-hl {
-      opacity: 1;
-    }
-    .feat.hl-anim .feat-hl {
-      transition:
-        transform var(--feat-fade) ease-in-out,
-        height var(--feat-fade) ease-in-out;
-    }
-    .feat {
-      isolation: isolate; /* the band sits at z-index -1: behind the rows, above the module's own background */
-    }
-    .feat.has-hl .wrow .wrow-link {
-      background: transparent !important;
-    }
-    .feat .wrow-arrow,
-    .feat .index-title {
-      transition: color var(--feat-fade) ease-in-out;
-    }
-    .feat .wrow-text::before {
-      transition: opacity var(--feat-fade) ease-in-out;
-    }
-    /* On: the hovered or focused row, else the remembered one. A hovered row beats a focused one. */
-    .feat .wrow:is(:hover, :focus-within) .wmedia,
-    .feat:not(:has(.wrow:is(:hover, :focus-within))) .wrow.is-on .wmedia {
-      z-index: 1;
-      opacity: 1;
-      visibility: visible;
-      transition: opacity var(--feat-fade) ease-in-out;
-    }
-    .feat:has(.wrow:hover) .wrow:not(:hover) .wmedia {
-      z-index: 0;
-      opacity: 0;
-      visibility: hidden;
-      transition: opacity 0s linear var(--feat-fade), visibility 0s linear var(--feat-fade);
-    }
-    .feat .wrow:is(:hover, :focus-within) .wrow-link,
-    .feat:not(:has(.wrow:is(:hover, :focus-within))) .wrow.is-on .wrow-link {
-      background: var(--color-surface);
-    }
-    .feat:has(.wrow:hover) .wrow:not(:hover) .wrow-link {
-      background: transparent;
-    }
-    .feat .wrow:is(:hover, :focus-within) .wrow-text::before,
-    .feat:not(:has(.wrow:is(:hover, :focus-within))) .wrow.is-on .wrow-text::before {
-      opacity: 1;
-    }
-    .feat:has(.wrow:hover) .wrow:not(:hover) .wrow-text::before {
-      opacity: 0;
-    }
-  }
-
-  /* Gallery */
-  .lb-rows {
-    grid-template-rows: var(--lb-head-h) 1fr var(--lb-foot-h);
-  }
-  .lb-cols {
-    grid-template-columns: var(--lb-btn) 1fr var(--lb-btn);
-  }
-  .gallery {
-    --g-gap: var(--space-4);
-    display: flex;
-    flex-direction: column;
-    gap: calc(var(--g-gap) * 2);
-  }
-  @media (min-width: 768px) {
-    .gallery {
-      --g-gap: var(--space-6);
-    }
-  }
-  .g-row {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    width: 100%;
-  }
-  .g-row[data-type="justified"] {
-    --cap: min(80svh, var(--g-cap-max));
-    display: flex;
-    gap: var(--g-gap);
-    align-items: flex-start;
-    margin-inline: auto;
-    max-width: calc(var(--cap) * var(--sum) + (var(--n) - 1) * var(--g-gap));
-  }
-  .g-row[data-type="justified"][data-marks] {
-    --cap: var(--g-cap-marks);
-  }
-  .g-row[data-type="justified"] > .g-item {
-    flex: var(--r) 1 0%;
-    min-width: 0;
-  }
-  .g-row[data-type="phones"] {
-    display: grid;
-    gap: var(--g-gap);
-    justify-content: center;
-    align-items: start;
-    grid-template-columns: repeat(var(--n), minmax(0, var(--g-phone-max)));
-  }
-  .g-row[data-type="sheet"] {
-    display: grid;
-    gap: var(--g-gap);
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-  @media (min-width: 768px) {
-    .g-row[data-type="sheet"] {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-  }
-  @media (min-width: 1280px) {
-    .g-row[data-type="sheet"] {
-      grid-template-columns: repeat(6, minmax(0, 1fr));
-    }
-  }
-  .g-media {
-    position: relative;
-    aspect-ratio: var(--r);
-    overflow: hidden;
-    background: var(--color-surface);
-    box-shadow: 0 0 0 1px var(--color-line);
-    transition: box-shadow var(--dur-fast) var(--ease-snap);
-  }
-  .g-row[data-type="sheet"] .g-media,
-  .g-media[data-kind="mark"] {
-    aspect-ratio: 1;
-  }
-  .g-media img {
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-  }
-  .g-media[data-mat="dark"] {
-    background: var(--color-mat-dark);
-    padding: 8%;
-  }
-  .g-media[data-mat="light"] {
-    background: var(--color-mat-light);
-    padding: 8%;
-  }
-  .g-media[data-mat="black"] {
-    background: var(--color-mat-black);
-  }
-  .g-media[data-mat="white"] {
-    background: var(--color-mat-white);
-  }
-  .g-media[data-kind="mark"][data-mat="dark"],
-  .g-media[data-kind="mark"][data-mat="light"] {
-    padding: 14%;
-  }
-  .g-link {
-    display: block;
-    cursor: zoom-in;
-  }
-  .g-link:hover .g-media {
-    box-shadow: 0 0 0 1px var(--color-control);
-  }
-  .g-link:active .g-media {
-    box-shadow: 0 0 0 1px var(--color-accent);
-  }
-  .g-link:focus-visible {
-    outline: 2px solid var(--color-accent);
-    outline-offset: 3px;
-  }
-  .g-cap {
-    margin-top: var(--space-2);
-    font-size: var(--text-cap);
-    line-height: var(--text-cap--line-height);
-    letter-spacing: var(--text-cap--letter-spacing);
-    color: var(--color-muted);
-    font-variant-numeric: tabular-nums;
-  }
-  .g-num {
-    color: var(--color-dim);
-    margin-right: 0.75em;
-    font-variant-numeric: tabular-nums;
-  }
-  @media (max-width: 639.98px) {
-    .g-row[data-type="justified"][data-m="stack"] {
-      flex-direction: column;
-      max-width: none;
-    }
-    .g-row[data-type="justified"][data-m="stack"] > .g-item {
-      flex: none;
-      width: 100%;
-    }
-    .g-row[data-type="justified"][data-m="wrap2"] {
-      flex-wrap: wrap;
-      max-width: none;
-    }
-    .g-row[data-type="justified"][data-m="wrap2"] > .g-item {
-      flex: 0 0 calc(50% - var(--g-gap) / 2);
-    }
-    .g-row[data-type="phones"] {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-  }
-
-  /* Reveal: once only. Visible by default; hidden only when JS runs and motion is allowed. */
-  [data-reveal] {
-    transition: opacity var(--dur-slow) var(--ease-snap), transform var(--dur-slow) var(--ease-snap);
-  }
-  @media (prefers-reduced-motion: no-preference) {
-    html.js [data-reveal]:not(.in) {
-      opacity: 0;
-      transform: translateY(8px);
-    }
-  }
-
-  /* Lightbox */
-  html:has(#lightbox[open]) {
-    overflow: hidden;
+    outline: var(--focus-w) solid var(--color-accent);
+    outline-offset: var(--focus-off);
   }
 }
 
@@ -1705,37 +1179,27 @@
 @keyframes rise {
   from {
     opacity: 0;
-    transform: translateY(14px);
+    transform: translateY(var(--rise-y));
   }
 }
-@keyframes reel {
-  to {
-    transform: translateX(-50%);
-  }
-}
-@keyframes lb-in {
+@keyframes hero-breath {
   from {
-    opacity: 0;
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0.72;
+    transform: scale(1.14);
   }
 }
-@media (prefers-reduced-motion: no-preference) {
-  #lightbox[open] {
-    animation: lb-in var(--dur) var(--ease-snap);
+@keyframes slide-in {
+  from {
+    transform: translateX(calc(var(--d) * 100%));
   }
-  /* Page transitions run through the client router (<ClientRouter /> in Layout). The header pieces keep a name of their own, so they stay put through the page crossfade instead of
-     dissolving with the rest of the page (that read as a flash). The tray is named separately: it only
-     exists on some pages and fades in or out on its own. */
-  .brand-row {
-    view-transition-name: brand-row;
-  }
-  .site-nav-list {
-    view-transition-name: site-nav;
-  }
-  .tray {
-    view-transition-name: nav-tray;
-  }
-  ::view-transition-group(root) {
-    animation-duration: var(--dur);
+}
+@keyframes slide-out {
+  to {
+    transform: translateX(calc(var(--d) * -100%));
   }
 }
 

@@ -1,41 +1,30 @@
 ---
-import Logo from "./Logo.astro";
+import Brand from "./Brand.astro";
+import { getSite } from "../lib/site";
 
-const { line } = Astro.props as { line: string };
+const { footer, site } = await getSite();
 ---
 
 <footer class="site-foot bg-sunk border-t border-line">
   <div class="page py-12 md:py-16 grid gap-10 md:grid-cols-12">
     <div class="md:col-span-4">
-      <a href="/" class="inline-flex items-center gap-3" aria-label="TMOX, home">
-        <Logo class="size-logo text-accent" knock="var(--color-sunk)" />
-        <span
-          class="font-sans text-sm font-extrabold tracking-wordmark text-hi"
-          aria-hidden="true">TMOX</span
-        >
-      </a>
-      <p class="mt-3 text-sm text-muted max-w-measure-narrow">{line}</p>
+      <Brand href="/" class="inline-flex items-center gap-3" />
+      <p class="mt-3 text-sm text-muted max-w-measure-narrow">{footer.line}</p>
     </div>
     <div class="md:col-span-3">
-      <p class="meta text-dim">Pages</p>
+      <p class="meta text-dim">{footer.pagesTitle}</p>
       <ul class="mt-3 grid gap-2 text-sm">
-        <li><a href="/#services" class="link">Services</a></li>
-        <li><a href="/#about" class="link">About</a></li>
-        <li><a href="/work" class="link">All projects</a></li>
+        <li><a href="/#portfolio" class="link" data-modal-open="portfolio">{footer.portfolio}</a></li>
+        <li><a href="/portfolio.pdf" class="link">{footer.portfolioPdf}</a></li>
+        <li><a href="/#contact" class="link" data-modal-open="contact">{footer.contact}</a></li>
       </ul>
     </div>
     <div class="md:col-span-5">
-      <p class="meta text-dim">Colophon</p>
-      <p class="mt-3 text-sm text-muted max-w-measure">
-        Set in Plus Jakarta Sans. Built with Astro and
-        Tailwind CSS, hosted on Netlify.
-      </p>
-      <p class="mt-2 hidden md:block text-sm text-muted max-w-measure">
-        Keyboard: j and k move between sections on the home page, gg goes to the top, G to the bottom.
-      </p>
+      <p class="meta text-dim">{footer.colophonTitle}</p>
+      <p class="mt-3 text-sm text-muted max-w-measure">{footer.colophon}</p>
     </div>
     <p class="md:col-span-12 border-t border-line pt-6 meta text-dim">
-      © {new Date().getFullYear()} TMOX
+      © {new Date().getFullYear()} {site.brand}
     </p>
   </div>
 </footer>

@@ -1,75 +1,70 @@
 ---
+import Modal from "./Modal.astro";
+import { getSite } from "../lib/site";
 
-const { title, lead, note } = Astro.props as {
-  title: string;
-  lead: string;
-  note?: string;
-};
-const needs = [
-  ["logo", "Logo"],
-  ["print", "Print"],
-  ["website", "Website"],
-  ["ui", "App or UI"],
-  ["other", "Other"],
-];
+// Contact dialog: lead left, form right. The thank-you block replaces the form after sending
+// (src/scripts/contact.ts); without JS the form posts to /sent.
+const { contact: c } = await getSite();
 ---
 
-<section id="contact" class="page screen sect">
-  <div class="sect-head"><h2 class="sect-title">{title}</h2></div>
-  <div class="sect-body grid gap-12 md:grid-cols-12 md:gap-x-6">
-  <div class="md:col-span-5">
-    <p class="text-lead max-w-measure-narrow">{lead}</p>
-    {note && <p class="mt-4 meta">{note}</p>}
-  </div>
-  <div class="md:col-span-6 md:col-start-7">
+<Modal id="contact" title={c.title} variant="custom-title">
+  <div slot="backdrop" class="hero-dots" aria-hidden="true"></div>
+  <div class="contact">
+    <div class="contact-intro">
+      <h2 id="contact-title" class="sect-title display-title">{c.title}</h2>
+      <p class="text-lead max-w-measure-narrow">{c.lead}</p>
+      {c.note && <p class="mt-4 meta">{c.note}</p>}
+    </div>
     <form
       name="contact"
       method="POST"
-      data-astro-reload
       action="/sent"
       data-netlify="true"
       data-netlify-honeypot="bot-field"
-      class="grid gap-4"
+      class="contact-form"
+      data-contact
     >
       <input type="hidden" name="form-name" value="contact" />
       <p hidden>
         <label
-          >Leave this empty
+          >{c.honeypot}
           <input name="bot-field" tabindex="-1" autocomplete="off" /></label
         >
       </p>
-      <div class="field">
-        <label for="c-name">Name <span class="text-accent" aria-hidden="true">*</span></label>
-        <input id="c-name" name="name" autocomplete="name" required />
-      </div>
-      <div class="field">
-        <label for="c-email">Email <span class="text-accent" aria-hidden="true">*</span></label>
-        <input
-          id="c-email"
-          name="email"
-          type="email"
-          autocomplete="email"
-          required
-        />
+      <div class="contact-pair">
+        <div class="field">
+          <label for="c-name">{c.nameLabel} <span class="text-accent" aria-hidden="true">*</span></label>
+          <input id="c-name" name="name" autocomplete="name" required />
+        </div>
+        <div class="field">
+          <label for="c-email">{c.emailLabel} <span class="text-accent" aria-hidden="true">*</span></label>
+          <input id="c-email" name="email" type="email" autocomplete="email" required />
+        </div>
       </div>
       <fieldset class="field">
-        <legend>What do you need?</legend>
+        <legend>{c.needsLegend}</legend>
         <div class="chips">
           {
-            needs.map(([value, label]) => (
+            c.needs.map((n) => (
               <label class="chip">
-                <input type="radio" name="need" value={value} /> {label}
+                <input type="checkbox" name="need" value={n.value} /> {n.label}
               </label>
             ))
           }
         </div>
       </fieldset>
       <div class="field">
-        <label for="c-msg">Message <span class="text-accent" aria-hidden="true">*</span></label>
-        <textarea id="c-msg" name="message" rows="6" required></textarea>
+        <label for="c-msg">{c.messageLabel} <span class="text-accent" aria-hidden="true">*</span></label>
+        <textarea id="c-msg" name="message" rows="4" required></textarea>
       </div>
-      <div><button class="btn-primary" type="submit">Send enquiry</button></div>
+      <div class="contact-send">
+        <button class="btn-primary" type="submit">{c.send}</button>
+      </div>
+      <p class="contact-error" role="alert" hidden data-error>{c.error}</p>
     </form>
+    <div class="contact-done" hidden data-done tabindex="-1">
+      <p class="statement">{c.success.title}</p>
+      <p class="mt-4 text-lead">{c.success.body}</p>
+    </div>
   </div>
-  </div>
-</section>
+</Modal>

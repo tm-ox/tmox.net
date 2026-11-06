@@ -1,19 +1,23 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import { getSite } from "../lib/site";
+
+const { contact } = await getSite();
 ---
 
 <Layout
-  title="Message sent · TMOX"
-  description="Thanks. Your message has been sent and will be answered within a working day."
+  footer={false}
+  title="Message sent | TMOX"
+  description="Thanks for writing. Your message has been sent."
   noindex
 >
   <section class="page page-body">
-    <h1 class="sect-title">Thanks, got it.</h1>
+    <h1 class="sect-title">{contact.success.title}</h1>
     <p class="sect-after text-lead max-w-measure">
-      I’ll reply to the address you gave within one working day.
+      {contact.success.body}
     </p>
     <div class="mt-8">
-      <a class="btn-secondary" href="/#work">Back to the work</a>
+      <a class="btn-secondary" href="/#portfolio">{contact.success.back}</a>
     </div>
   </section>
 </Layout>

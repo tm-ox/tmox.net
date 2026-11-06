@@ -1,67 +1,22 @@
 ---
-import { getEntry } from "astro:content";
-import { Icon } from "astro-icon/components";
-import { getWork, getFeatured } from "../lib/work";
 import Layout from "../layouts/Layout.astro";
-import WorkRow from "../components/WorkRow.astro";
 import Contact from "../components/Contact.astro";
+import Meta from "../components/Meta.astro";
+import Modal from "../components/Modal.astro";
+import Viewer from "../components/Viewer.astro";
+import { getSite } from "../lib/site";
 
-const page = await getEntry("pages", "index");
-if (!page) throw new Error("Missing content entry: pages/index");
-const data = page.data;
-
-const work = await getWork();
+const data = await getSite();
 
 // Hero headline: split around the accent phrase (owner-editable in pages/index.md).
 const { title, accent } = data.hero;
 const at = accent ? title.indexOf(accent) : -1;
 if (accent && at < 0) throw new Error(`[home] hero.accent "${accent}" is not part of hero.title`);
 const head = at < 0 ? [title, "", ""] : [title.slice(0, at), accent!, title.slice(at + accent!.length)];
-const featured = getFeatured(work);
-
-// Icon above each service, keyed by its id in pages/index.md (Ionicons; swap names here).
-const serviceIcon: Record<string, string> = {
-  brand: "ion:shapes",
-  print: "ion:newspaper",
-  web: "ion:browsers",
-};
-
-// Every service proof slug must be a published project.
-const byId = new Map(work.map((w) => [w.id, w]));
-for (const s of data.services)
-  for (const id of s.proof)
-    if (!byId.has(id)) throw new Error(`[home] service "${s.id}": proof "${id}" is not a published project`);
 ---
 
-<Layout title={data.title} description={data.description}>
-  <!-- Hero: headline, lead, calls to action. (Reel.astro is parked, unused.) -->
-  <section id="top" class="hero">
-    <div class="hero-dots" aria-hidden="true"></div>
-    <div class="page hero-body">
-      <p class="meta hero-in" style="--i:0">{data.hero.kicker}</p>
-      <h1 class="mt-4 hero-title hero-in" style="--i:1">
-        {head[0]}{head[1] && <span class="hl">{head[1]}</span>}{head[2]}
-      </h1>
-      <p class="mt-6 text-lead text-text max-w-measure hero-in" style="--i:2">{data.hero.lead}</p>
-      <div class="mt-8 flex flex-wrap items-center gap-x-6 gap-y-4 hero-in" style="--i:3">
-        <a class="btn-primary" href="#contact">Start a project</a>
-        <a class="link text-sm inline-flex items-center gap-1 min-h-11" href="#work">
-          See selected work
-          <Icon name="ion:arrow-down" class="size-em" aria-hidden="true" />
-        </a>
-      </div>
-      {
-        data.hero.availability && (
-          <p class="mt-8 meta flex items-center gap-2 hero-in" style="--i:4">
-            <span class="size-1.5 rounded-full bg-accent" aria-hidden="true" />
-            {data.hero.availability}
-          </p>
-        )
-      }
-    </div>
-  </section>
-
-  <!-- Duotone for the Selected work stage: luminance mapped from slate #1e222e (shadows) to orange #ff9e64 (highlights). -->
+<Layout title={data.title} description={data.description} footer={false}>
+  <!-- Duotone for the hero dots: luminance mapped from slate #1e222e (shadows) to orange #ff9e64 (highlights). -->
   <svg width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute">
     <filter id="duotone" color-interpolation-filters="sRGB">
       <feColorMatrix type="matrix" values="0.2126 0.7152 0.0722 0 0  0.2126 0.7152 0.0722 0 0  0.2126 0.7152 0.0722 0 0  0 0 0 1 0" />
@@ -73,221 +28,45 @@ for (const s of data.services)
     </filter>
   </svg>
 
-  <!-- Selected work: one module, an index of featured projects beside a stage that shows
-       the hovered or focused one (global.css "Work list"). A plain row list on touch and narrow screens. -->
-  <section id="work" class="page screen sect">
-    <div class="sect-head"><h2 class="sect-title">Selected work</h2></div>
-    <div class="sect-body">
-      <div class="flex justify-end mb-4">
-        <a href="/work" class="link text-sm inline-flex items-center gap-1 whitespace-nowrap min-h-11">
-          All {work.length} projects
-          <Icon name="ion:arrow-forward" class="size-em" aria-hidden="true" />
-        </a>
-      </div>
-      <div class="wlist feat" data-screen="halftone" data-reveal="once">
-        <span class="feat-hl" aria-hidden="true"></span>
-        <ul class="wlist-rows">
-          {featured.map((entry, i) => <WorkRow entry={entry} stage on={i === 0} eager={i === 0} />)}
-        </ul>
-        <div class="feat-stage" aria-hidden="true"></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Services -->
-  <section id="services" class="page screen sect">
-    <div class="sect-head"><h2 class="sect-title">What I do</h2></div>
-    <div class="sect-body">
-    <ul class="grid gap-10 md:grid-cols-3 md:gap-x-10">
-      {
-        data.services.map((s, i) => (
-          <li
-            class="border-t border-line pt-8 md:border-t-0 md:pt-0 first:border-t-0 first:pt-0"
-            data-reveal="once"
-          >
-            <p class="meta text-accent">{String(i + 1).padStart(2, "0")}</p>
-            <Icon name={serviceIcon[s.id] ?? "ion:shapes"} class="mt-4 size-16 text-accent" aria-hidden="true" />
-            <h3 class="mt-5 text-lead leading-snug font-bold text-hi">{s.title}</h3>
-            <p class="mt-3 text-base text-text">{s.intro}</p>
-            <ul class="mt-5 grid gap-2 text-sm text-text">
-              {s.deliverables.map((d) => (
-                <li class="flex items-baseline gap-3">
-                  <span class="size-1.5 shrink-0 rounded-full bg-accent -translate-y-0.5" aria-hidden="true" />
-                  <span>{d}</span>
-                </li>
-              ))}
-            </ul>
-            <p class="mt-6 text-sm text-muted">
-              See:{" "}
-              {s.proof.map((id, n) => (
-                <>
-                  {n > 0 && ", "}
-                  <a class="link" href={`/work/${id}`}>
-                    {byId.get(id)!.data.title}
-                  </a>
-                </>
-              ))}
-            </p>
-          </li>
-        ))
-      }
-    </ul>
-    </div>
-  </section>
-
-  <!-- About -->
-  <section id="about" class="page screen sect">
-    <div class="sect-head"><h2 class="sect-title">{data.about.title}</h2></div>
-    <div class="sect-body">
-      <div class="grid gap-8 md:grid-cols-12 md:gap-x-6 md:gap-y-12">
-        <p class="statement md:col-span-12">{data.about.paragraphs[0]}</p>
-        <div class="grid content-start gap-6 text-lead text-hi md:col-span-7">
-          {data.about.paragraphs.slice(1).map((p) => <p class="max-w-measure">{p}</p>)}
-        </div>
-        <dl class="grid content-start gap-6 md:col-span-4 md:col-start-9">
-          <div>
-            <dt class="meta text-dim">Clients</dt>
-            <dd class="mt-2 text-sm text-text">{data.about.clients.join(", ")}</dd>
-          </div>
-          <div>
-            <dt class="meta text-dim">Tools</dt>
-            <dd class="mt-2 text-sm text-text">{data.about.tools.join(", ")}</dd>
-          </div>
-        </dl>
+  <!-- The whole site: one screen. Two buttons open the contact form and the portfolio in modals. -->
+  <section id="top" class="hero">
+    <div class="hero-dots" aria-hidden="true"></div>
+    <div class="page hero-body">
+      <p class="meta hero-in" style="--i:0">
+        <Meta text={data.hero.kicker} />
+      </p>
+      <h1 class="mt-4 display-title hero-title hero-in" style="--i:1">
+        {head[0]}{head[1] && <span class="hl">{head[1]}</span>}{head[2]}
+      </h1>
+      <p class="mt-6 text-lead text-text max-w-measure hero-in" style="--i:2">{data.hero.lead}</p>
+      <div class="mt-6 flex flex-wrap items-center gap-x-3 gap-y-4 hero-in" style="--i:3">
+        <button type="button" class="btn-primary" data-modal-open="contact">{data.hero.contactCta}</button>
+        <a class="btn-secondary" href="/portfolio.pdf" data-modal-open="portfolio">{data.hero.portfolioCta}</a>
       </div>
       {
-        data.about.reviews && data.about.reviews.length > 0 && (
-          <ul class="mt-12 grid gap-8 md:mt-16 md:grid-cols-3 md:gap-x-10" aria-label="Client reviews">
-            {data.about.reviews.map((r) => (
-              <li class="border-t border-line pt-6" data-reveal="once">
-                <figure>
-                  <blockquote class="text-sm text-text">{r.quote}</blockquote>
-                  <figcaption class="meta mt-4 flex items-center gap-2 text-dim">
-                    <span class="size-1.5 shrink-0 rounded-full bg-accent" aria-hidden="true" />
-                    {r.source}
-                  </figcaption>
-                </figure>
-              </li>
-            ))}
-          </ul>
+        data.hero.availability && (
+          <p class="mt-6 meta flex items-center gap-2 hero-in" style="--i:4">
+            <span class="size-1.5 rounded-full bg-accent" aria-hidden="true" />
+            <Meta text={data.hero.availability} />
+          </p>
         )
       }
     </div>
   </section>
 
-  <!-- Contact -->
-  <Contact
-    title={data.contact.title}
-    lead={data.contact.lead}
-    note={data.contact.note}
-  />
+  <!-- Portfolio modal: the viewer (components/Viewer.astro). Without JS the button on the home screen is
+       a plain link to the PDF. -->
+  <Modal id="portfolio" title={data.folio.title} variant="bare">
+    <div slot="backdrop" class="hero-dots" aria-hidden="true"></div>
+    <Viewer />
+  </Modal>
+
+  <!-- Contact modal -->
+  <Contact />
 </Layout>
 
 <script>
-  import "../scripts/section-keys.ts";
-</script>
-
-<script>
-  // Selected work stage. `is-on` marks the remembered row (without this script the CSS falls back
-  // to the first project). Hovering or focusing a row picks it. With a mouse from 1024px the stage
-  // also cycles on its own every CYCLE_MS, pausing while the pointer or focus is inside the module
-  // or the tab or module is out of view, and never when the user prefers reduced motion.
-  // Runs on every page load of the client router; everything bound outside the page's own elements
-  // (window, document, media queries, the timer) is collected in `cleanups` and released before the
-  // next page replaces this one.
-  const CYCLE_MS = 3200; // time each project stays on the stage
-  let cleanups: Array<() => void> = [];
-
-  const setup = () => {
-    const wide = matchMedia("(min-width: 1024px) and (hover: hover)");
-    const calm = matchMedia("(prefers-reduced-motion: reduce)");
-    const on = <T extends EventTarget>(t: T, type: string, fn: EventListener) => {
-      t.addEventListener(type, fn);
-      cleanups.push(() => t.removeEventListener(type, fn));
-    };
-
-    for (const feat of document.querySelectorAll<HTMLElement>(".feat")) {
-      feat.style.setProperty("--feat-cycle", `${CYCLE_MS}ms`); // CSS ties the dot-screen fade to it
-      const rows = [...feat.querySelectorAll<HTMLElement>(".wrow")];
-      let current = Math.max(0, rows.findIndex((r) => r.classList.contains("is-on")));
-      // Sliding highlight (.feat-hl): placed under the active row; the first placement is instant.
-      const hl = feat.querySelector<HTMLElement>(".feat-hl");
-      const place = () => {
-        const row = rows[current];
-        if (!hl || !row) return;
-        hl.style.setProperty("--hl-y", `${row.offsetTop}px`);
-        hl.style.setProperty("--hl-h", `${row.offsetHeight}px`);
-      };
-      const pick = (i: number) => {
-        current = i;
-        rows.forEach((r, n) => r.classList.toggle("is-on", n === i));
-        place();
-      };
-      const mode = () => {
-        feat.classList.toggle("has-hl", wide.matches);
-        place();
-      };
-      mode();
-      requestAnimationFrame(() => requestAnimationFrame(() => feat.classList.add("hl-anim")));
-      on(wide, "change", mode);
-      on(window, "resize", place);
-      document.fonts?.ready.then(place); // row heights can change when the web font swaps in
-      rows.forEach((row, i) => {
-        row.addEventListener("pointerenter", () => pick(i));
-        row.addEventListener("focusin", () => pick(i));
-      });
-
-      let timer: number | undefined;
-      let visible = true;
-      let inside = false;
-      const stop = () => {
-        window.clearInterval(timer);
-        timer = undefined;
-      };
-      const sync = () => {
-        stop();
-        if (wide.matches && !calm.matches && visible && !inside && !document.hidden)
-          timer = window.setInterval(() => pick((current + 1) % rows.length), CYCLE_MS);
-      };
-      cleanups.push(stop);
-      // Only the index rows pause the cycle (the stage image is not a target).
-      const list = feat.querySelector<HTMLElement>(".wlist-rows") ?? feat;
-      list.addEventListener("pointerenter", () => ((inside = true), sync()));
-      list.addEventListener("pointerleave", () => ((inside = false), sync()));
-      list.addEventListener("focusin", () => ((inside = true), sync()));
-      list.addEventListener("focusout", (e) => {
-        if (!list.contains((e as FocusEvent).relatedTarget as Node | null)) {
-          inside = false;
-          sync();
-        }
-      });
-      on(document, "visibilitychange", sync);
-      on(wide, "change", sync);
-      on(calm, "change", sync);
-      const io = new IntersectionObserver((entries) => {
-        visible = entries.some((e) => e.isIntersecting);
-        sync();
-      });
-      io.observe(feat);
-      cleanups.push(() => io.disconnect());
-    }
-  };
-
-  const teardown = () => {
-    cleanups.forEach((fn) => fn());
-    cleanups = [];
-  };
-
-  const w = window as unknown as Record<string, boolean>;
-  if (!w.__tmoxStage) {
-    w.__tmoxStage = true;
-    const boot = () => {
-      teardown();
-      setup(); // safe to repeat: it releases what the previous run bound
-    };
-    if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot, { once: true });
-    else boot();
-    document.addEventListener("astro:page-load", boot);
-    document.addEventListener("astro:before-swap", teardown);
-  }
+  import "../scripts/modal.ts";
+  import "../scripts/viewer.ts";
+  import "../scripts/contact.ts";
 </script>

@@ -1,25 +1,27 @@
 ---
-import { getEntry } from "astro:content";
 import BaseHead from "../components/BaseHead.astro";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
-import { ClientRouter } from "astro:transitions";
+import LogoDefs from "../components/LogoDefs.astro";
+import { getSite } from "../lib/site";
 
-const { title, description, image, noindex, tray } = Astro.props;
-const site = await getEntry("pages", "index");
-if (!site) throw new Error("Missing content entry: pages/index");
+interface Props {
+  title: string;
+  description?: string;
+  image?: string;
+  noindex?: boolean;
+  footer?: boolean;
+}
+const { title, description, image, noindex, footer = true } = Astro.props;
+const { site } = await getSite();
 ---
 
 <html lang="en" class="bg-bg text-text font-sans antialiased">
   <head>
     <script is:inline>
-      // `js` gates the hidden states of the reveal effects. The router swaps <html>'s attributes on
-      // every navigation, which drops it, so it is put back after each swap.
-      const js = () => document.documentElement.classList.add("js");
-      js();
-      document.addEventListener("astro:after-swap", js);
+      // `js` gates the transparent logo-row backing at the top of the page (see .brand-row in global.css).
+      document.documentElement.classList.add("js");
     </script>
-    <ClientRouter />
     <BaseHead
       title={title}
       description={description}
@@ -31,15 +33,13 @@ if (!site) throw new Error("Missing content entry: pages/index");
     <a
       href="#main"
       class="sr-only-focusable fixed top-2 left-2 z-skip bg-accent text-on-accent font-semibold text-sm px-3 py-2 rounded-ctl"
-      >Skip to content</a
+      >{site.skip}</a
     >
-    <Header tray={tray} />
+    <LogoDefs />
+    <Header />
     <main id="main">
       <slot />
     </main>
-    <Footer line={site.data.footer.line} />
-    <script>
-      import "../scripts/reveal.ts";
-    </script>
+    {footer && <Footer />}
   </body>
 </html>
