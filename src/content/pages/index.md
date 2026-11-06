@@ -70,6 +70,10 @@ about:
       - { name: "Next", icon: "simple-icons:nextdotjs", url: "https://nextjs.org" }
       - { name: "Alpine.js", icon: "simple-icons:alpinedotjs", url: "https://alpinejs.dev" }
       - { name: "Tailwind CSS", icon: "simple-icons:tailwindcss", url: "https://tailwindcss.com" }
+      - { name: "Go", icon: "simple-icons:go", url: "https://go.dev" }
+      - { name: "Datastar", mark: "★", url: "https://data-star.dev" }
+      - { name: "Flutter", icon: "simple-icons:flutter", url: "https://flutter.dev" }
+      - { name: "Dart", icon: "simple-icons:dart", url: "https://dart.dev" }
       - { name: "Linux", icon: "simple-icons:linux", url: "https://www.linux.org" }
       - { name: "Vim", icon: "simple-icons:vim", url: "https://www.vim.org" }
       - { name: "Claude Code", icon: "simple-icons:claudecode", url: "https://claude.com/product/claude-code" }
