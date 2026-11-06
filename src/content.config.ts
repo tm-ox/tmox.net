@@ -2,6 +2,8 @@ import { defineCollection } from "astro:content";
 import { glob } from "astro/loaders";
 import { z } from "astro/zod";
 
+const tool = z.object({ name: z.string(), url: z.url().optional(), icon: z.string().optional(), mark: z.string().optional() });
+
 export const collections = {
   pages: defineCollection({
     loader: glob({ pattern: "**/[^_]*.md", base: "./src/content/pages" }),
@@ -24,6 +26,7 @@ export const collections = {
         availability: z.string().optional(),
         contactCta: z.string(),
         portfolioCta: z.string(),
+        aboutCta: z.string(),
       }),
       folio: z.object({
         title: z.string(), // names the portfolio dialog
@@ -43,6 +46,25 @@ export const collections = {
         keysLabel: z.string(),
         keys: z.array(z.object({ key: z.string(), label: z.string() })),
       }),
+      about: z.object({
+        title: z.string(),
+        lead: z.string(),
+        more: z.string(),
+        tabsLabel: z.string(), // aria-label of the tab list
+        services: z.object({
+          tab: z.string(),
+          items: z.array(z.object({ title: z.string(), intro: z.string(), deliverables: z.array(z.string()) })),
+        }),
+        tools: z.object({
+          tab: z.string(),
+          // A tool shows its `icon` (an astro-icon name, e.g. "simple-icons:figma"), or a `mark` (text) when it has no
+          // logo (neither: just the name, larger), and links to `url` when it has one.
+          nowTitle: z.string(),
+          items: z.array(tool),
+          pastTitle: z.string(), // tools no longer in use
+          past: z.array(tool),
+        }),
+      }),
       contact: z.object({
         title: z.string(),
         lead: z.string(),
@@ -51,6 +73,7 @@ export const collections = {
         nameLabel: z.string(),
         emailLabel: z.string(),
         needsLegend: z.string(),
+        needsHint: z.string(),
         needs: z.array(z.object({ value: z.string(), label: z.string() })),
         messageLabel: z.string(),
         send: z.string(),

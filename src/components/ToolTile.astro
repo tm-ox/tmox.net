@@ -1,0 +1,30 @@
+---
+import { Icon } from "astro-icon/components";
+
+// One tool in the About dialog: its logo (an astro-icon name, drawn in currentColor so the tile sets the
+// colour) or, for a tool with no logo, a text mark; with neither, just the name, larger. The name is always
+// shown, so the logo is decoration. With a url the tile links to the tool's site, without one it is a <span>.
+interface Props {
+  name: string;
+  url?: string;
+  icon?: string;
+  mark?: string;
+}
+const { name, url, icon, mark } = Astro.props;
+const Tag = url ? "a" : "span";
+const attrs = url ? { href: url, target: "_blank", rel: "noopener" } : {};
+const logo = icon || mark;
+---
+
+<li>
+  <Tag class:list={["tool", !logo && "tool-text"]} {...attrs}>
+    {
+      logo && (
+        <span class="tool-mark" aria-hidden="true">
+          {icon ? <Icon name={icon} size="100%" /> : mark}
+        </span>
+      )
+    }
+    {name}
+  </Tag>
+</li>

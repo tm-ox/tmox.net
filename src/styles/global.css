@@ -169,9 +169,13 @@
     --radius-inner: calc(var(--radius) - 1px); /* the radius inside a 1px border */
     --half-diag: 0.7071; /* half the diagonal of a unit square, for the tooltip pointer */
     --textarea-h-phone: 6.5rem; /* message field minimum height on phones */
+    --tool-box: 6rem; /* about: a tool tile is an exact square of this size */
+    --tool-icon: var(--space-12); /* about: tool logo box */
+    --tool-label: 0.6875rem; /* about: tool name, smaller than --text-meta so the logo can lead */
     --chip-min: 6.5rem; /* phone chip grid: narrowest chip */
     --chip-dot: var(--space-3_5); /* contact chips: checkbox square */
     --hero-leading: 1.1; /* hero headline line height (unitless; 1 = tight) */
+    --hero-leading-tight: 0.95; /* the same for a display title that wraps (about) */
     --brand-pt: 0rem; /* space above the logo/nav row */
     --brand-h: 3.5rem; /* height of the logo/nav row */
     --sep-gap: 0.6em; /* space either side of a separator pipe (about double a plain space) */
@@ -528,6 +532,9 @@
     letter-spacing: var(--text-title--letter-spacing);
     font-weight: 800;
   }
+  .display-title.is-tight {
+    line-height: var(--hero-leading-tight);
+  }
   /* Standalone pages (404, sent): the title is an h1.sect-title placed first, so it
      sits exactly where the home section titles do, directly under the logo row. Content that follows
      it takes .sect-after; the page itself takes .page-body. One tune each: --sect-gap, --page-end. */
@@ -879,16 +886,16 @@
     }
   }
 
-  /* Contact modal: lead left, form right, content centred in the viewport. */
-  .modal-body:has(.contact) {
+  /* Split modals (contact, about): intro left, main block right, content centred in the viewport. */
+  .modal-body:has(.split) {
     display: grid;
     align-content: center;
   }
-  .contact {
+  .split {
     display: grid;
     row-gap: var(--space-6);
   }
-  .contact-intro .sect-title {
+  .split-intro .sect-title {
     margin-bottom: var(--space-4);
     padding-top: 0; /* the heading's top edge is the block's top edge */
   }
@@ -915,27 +922,26 @@
   }
   @media (min-width: 640px) {
     .contact-form {
-      row-gap: var(--space-5);
+      row-gap: var(--space-4);
     }
     .contact-pair {
       grid-template-columns: 1fr 1fr;
-      gap: var(--space-5) var(--space-4);
+      gap: var(--space-4);
     }
     .contact-send .btn-primary {
       width: auto;
     }
   }
   @media (min-width: 768px) {
-    .contact {
+    .split {
       grid-template-columns: repeat(12, minmax(0, 1fr));
       column-gap: var(--space-6);
-      align-items: start; /* intro block and form share a top edge */
+      align-items: start; /* intro block and main block share a top edge */
     }
-    .contact-intro {
+    .split-intro {
       grid-column: 1 / span 5;
     }
-    .contact-form,
-    .contact-done {
+    .split-main {
       grid-column: 7 / -1;
     }
   }
@@ -943,6 +949,119 @@
     .contact-form textarea {
       min-height: var(--textarea-h-phone);
     }
+  }
+  /* Tabs (Tabs.astro + scripts/tabs.ts): text tabs, the chosen one in the accent with an underline. */
+  .tabs {
+    display: flex;
+    gap: var(--space-6);
+    border-bottom: 1px solid var(--color-line);
+    margin-bottom: var(--space-5);
+  }
+  .tab {
+    min-height: var(--ctl-h);
+    margin-bottom: -1px; /* the underline sits on the tablist's own line */
+    padding: 0;
+    border: 0;
+    border-bottom: 2px solid transparent;
+    background: none;
+    font: inherit;
+    font-size: var(--text-sm);
+    font-weight: 600;
+    line-height: var(--leading-tight);
+    color: var(--color-control);
+    cursor: pointer;
+    transition: color var(--dur-fast) var(--ease-snap), border-color var(--dur-fast) var(--ease-snap);
+  }
+  .tab:hover {
+    color: var(--color-hi);
+  }
+  .tab[aria-selected="true"] {
+    color: var(--color-accent);
+    border-bottom-color: var(--color-accent);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .tab-panel:not([hidden]) {
+      animation: rise var(--dur) var(--ease-snap) both;
+    }
+  }
+
+  /* About modal panels */
+  .about-list {
+    display: grid;
+    row-gap: var(--space-5);
+  }
+  .about-list h3 {
+    font-size: var(--text-base);
+    font-weight: 600;
+    color: var(--color-hi);
+  }
+  .about-list p {
+    margin-top: var(--space-1);
+    font-size: var(--text-base);
+    line-height: var(--text-base--line-height);
+  }
+  /* The deliverables under each service: quieter than the description above them */
+  .about-list .about-extras {
+    margin-top: var(--space-2);
+    font-size: var(--text-sm);
+    font-weight: 400;
+    color: var(--color-dim);
+  }
+  /* Tool tiles (ToolTile.astro): a link, logo over name, muted until hovered */
+  .tools {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, var(--tool-box));
+    gap: var(--space-1_5);
+  }
+  .tool {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    box-sizing: border-box;
+    width: var(--tool-box);
+    height: var(--tool-box); /* fixed, so a long name can never stretch the tile */
+    padding: var(--space-2);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius);
+    background: var(--color-surface);
+    font-size: var(--tool-label);
+    font-weight: 500;
+    line-height: var(--leading-tight);
+    white-space: nowrap; /* one line, so the logo can be large */
+    text-align: center;
+    --tool-c: var(--color-control); /* logo and name share this colour */
+    color: var(--tool-c);
+    transition: color var(--dur-fast) var(--ease-snap), border-color var(--dur-fast) var(--ease-snap);
+  }
+  .tool:hover,
+  .tool:focus-visible {
+    border-color: var(--color-control);
+    --tool-c: var(--color-accent);
+  }
+  .about-groups {
+    display: grid;
+    row-gap: var(--space-4);
+  }
+  .about-groups .meta {
+    margin-bottom: var(--space-2);
+  }
+  /* A tile with only a name (no logo or mark): the words fill the square */
+  .tool-text {
+    font-size: var(--text-sm);
+    white-space: normal;
+  }
+  .tool-mark {
+    display: grid;
+    place-items: center;
+    width: var(--tool-icon);
+    height: var(--tool-icon);
+    color: var(--tool-c);
+    font-size: var(--text-h2);
+    font-weight: 600;
+    line-height: 1;
+    transition: color var(--dur-fast) var(--ease-snap);
   }
   .statement {
     font-size: var(--text-h2);
@@ -1091,6 +1210,10 @@
   .field textarea:user-invalid {
     border-color: var(--color-err);
   }
+  .legend-hint {
+    color: var(--color-muted);
+    font-weight: 400;
+  }
   .chips {
     display: flex;
     flex-wrap: nowrap; /* always one line; scrolls sideways only if the screen is too narrow */
@@ -1125,7 +1248,7 @@
     transition: color var(--dur-fast) var(--ease-snap), background-color var(--dur-fast) var(--ease-snap),
       border-color var(--dur-fast) var(--ease-snap);
   }
-  /* Native checkbox, restyled: a small square that fills with an orange square when chosen. */
+  /* Native checkbox, restyled: a small rounded square that holds an orange dot when chosen. */
   .chip input {
     appearance: none;
     flex: none;
@@ -1140,7 +1263,7 @@
   }
   .chip input:checked {
     border-color: var(--color-accent);
-    background: linear-gradient(var(--color-accent), var(--color-accent)) center / 55% 55% no-repeat;
+    background: radial-gradient(circle closest-side, var(--color-accent) 96%, transparent) center / 55% 55% no-repeat;
   }
   /* Phones: chips wrap into an even grid (never a sideways scroll). */
   @media (max-width: 639.98px) {

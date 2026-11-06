@@ -9,8 +9,8 @@ const { contact: c } = await getSite();
 
 <Modal id="contact" title={c.title} variant="custom-title">
   <div slot="backdrop" class="hero-dots" aria-hidden="true"></div>
-  <div class="contact">
-    <div class="contact-intro">
+  <div class="split">
+    <div class="split-intro">
       <h2 id="contact-title" class="sect-title display-title">{c.title}</h2>
       <p class="text-lead max-w-measure-narrow">{c.lead}</p>
       {c.note && <p class="mt-4 meta">{c.note}</p>}
@@ -21,7 +21,7 @@ const { contact: c } = await getSite();
       action="/sent"
       data-netlify="true"
       data-netlify-honeypot="bot-field"
-      class="contact-form"
+      class="contact-form split-main"
       data-contact
     >
       <input type="hidden" name="form-name" value="contact" />
@@ -31,18 +31,8 @@ const { contact: c } = await getSite();
           <input name="bot-field" tabindex="-1" autocomplete="off" /></label
         >
       </p>
-      <div class="contact-pair">
-        <div class="field">
-          <label for="c-name">{c.nameLabel} <span class="text-accent" aria-hidden="true">*</span></label>
-          <input id="c-name" name="name" autocomplete="name" required />
-        </div>
-        <div class="field">
-          <label for="c-email">{c.emailLabel} <span class="text-accent" aria-hidden="true">*</span></label>
-          <input id="c-email" name="email" type="email" autocomplete="email" required />
-        </div>
-      </div>
       <fieldset class="field">
-        <legend>{c.needsLegend}</legend>
+        <legend>{c.needsLegend} <span class="legend-hint">{c.needsHint}</span></legend>
         <div class="chips">
           {
             c.needs.map((n) => (
@@ -53,6 +43,16 @@ const { contact: c } = await getSite();
           }
         </div>
       </fieldset>
+      <div class="contact-pair">
+        <div class="field">
+          <label for="c-name">{c.nameLabel} <span class="text-accent" aria-hidden="true">*</span></label>
+          <input id="c-name" name="name" autocomplete="name" required />
+        </div>
+        <div class="field">
+          <label for="c-email">{c.emailLabel} <span class="text-accent" aria-hidden="true">*</span></label>
+          <input id="c-email" name="email" type="email" autocomplete="email" required />
+        </div>
+      </div>
       <div class="field">
         <label for="c-msg">{c.messageLabel} <span class="text-accent" aria-hidden="true">*</span></label>
         <textarea id="c-msg" name="message" rows="4" required></textarea>
@@ -62,7 +62,7 @@ const { contact: c } = await getSite();
       </div>
       <p class="contact-error" role="alert" hidden data-error>{c.error}</p>
     </form>
-    <div class="contact-done" hidden data-done tabindex="-1">
+    <div class="contact-done split-main" hidden data-done tabindex="-1">
       <p class="statement">{c.success.title}</p>
       <p class="mt-4 text-lead">{c.success.body}</p>
     </div>

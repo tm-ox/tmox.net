@@ -1,5 +1,6 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import About from "../components/About.astro";
 import Contact from "../components/Contact.astro";
 import Meta from "../components/Meta.astro";
 import Modal from "../components/Modal.astro";
@@ -28,7 +29,7 @@ const head = at < 0 ? [title, "", ""] : [title.slice(0, at), accent!, title.slic
     </filter>
   </svg>
 
-  <!-- The whole site: one screen. Two buttons open the contact form and the portfolio in modals. -->
+  <!-- The whole site: one screen. Three buttons open the about, portfolio and contact modals. -->
   <section id="top" class="hero">
     <div class="hero-dots" aria-hidden="true"></div>
     <div class="page hero-body">
@@ -40,8 +41,9 @@ const head = at < 0 ? [title, "", ""] : [title.slice(0, at), accent!, title.slic
       </h1>
       <p class="mt-6 text-lead text-text max-w-measure hero-in" style="--i:2">{data.hero.lead}</p>
       <div class="mt-6 flex flex-wrap items-center gap-x-3 gap-y-4 hero-in" style="--i:3">
-        <button type="button" class="btn-primary" data-modal-open="contact">{data.hero.contactCta}</button>
+        <button type="button" class="btn-secondary" data-modal-open="about">{data.hero.aboutCta}</button>
         <a class="btn-secondary" href="/portfolio.pdf" data-modal-open="portfolio">{data.hero.portfolioCta}</a>
+        <button type="button" class="btn-primary" data-modal-open="contact">{data.hero.contactCta}</button>
       </div>
       {
         data.hero.availability && (
@@ -61,7 +63,7 @@ const head = at < 0 ? [title, "", ""] : [title.slice(0, at), accent!, title.slic
     <Viewer />
   </Modal>
 
-  <!-- Contact modal -->
+  <About />
   <Contact />
 </Layout>
 
@@ -69,4 +71,5 @@ const head = at < 0 ? [title, "", ""] : [title.slice(0, at), accent!, title.slic
   import "../scripts/modal.ts";
   import "../scripts/viewer.ts";
   import "../scripts/contact.ts";
+  import "../scripts/tabs.ts";
 </script>

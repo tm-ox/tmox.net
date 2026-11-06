@@ -1,0 +1,64 @@
+---
+import Modal from "./Modal.astro";
+import Tabs from "./Tabs.astro";
+import ToolTile from "./ToolTile.astro";
+import { getSite } from "../lib/site";
+
+// About dialog: the same split as Contact (title and lead left), with the details in tabs on the right so it
+// stays on one screen. All text is in src/content/pages/index.md ("about").
+const { about: a } = await getSite();
+const tabs = [
+  { id: "services", label: a.services.tab },
+  { id: "tools", label: a.tools.tab },
+];
+const panel = (id: string, first = false) => ({
+  role: "tabpanel" as const,
+  id: `about-panel-${id}`,
+  "aria-labelledby": `about-tab-${id}`,
+  class: "tab-panel",
+  hidden: first ? undefined : true,
+});
+---
+
+<Modal id="about" title={a.title} variant="custom-title">
+  <div slot="backdrop" class="hero-dots" aria-hidden="true"></div>
+  <div class="split">
+    <div class="split-intro">
+      <h2 id="about-title" class="sect-title display-title is-tight">{a.title}</h2>
+      <p class="text-lead max-w-measure-narrow">{a.lead}</p>
+      <p class="mt-4 max-w-measure-narrow">{a.more}</p>
+    </div>
+    <div class="split-main">
+      <Tabs prefix="about" label={a.tabsLabel} items={tabs} />
+      <div {...panel("services", true)}>
+        <div class="about-list">
+          {
+            a.services.items.map((s) => (
+              <div>
+                <h3>{s.title}</h3>
+                <p>{s.intro}</p>
+                <p class="about-extras">{s.deliverables.join(" · ")}</p>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+      <div {...panel("tools")}>
+        <div class="about-groups">
+          <section>
+            <h3 class="meta">{a.tools.nowTitle}</h3>
+            <ul class="tools">
+              {a.tools.items.map((t) => <ToolTile {...t} />)}
+            </ul>
+          </section>
+          <section>
+            <h3 class="meta">{a.tools.pastTitle}</h3>
+            <ul class="tools">
+              {a.tools.past.map((t) => <ToolTile {...t} />)}
+            </ul>
+          </section>
+        </div>
+      </div>
+    </div>
+  </div>
+</Modal>

@@ -18,7 +18,7 @@ document.addEventListener("submit", async (e) => {
     });
     if (!res.ok) throw new Error(String(res.status));
     form.hidden = true;
-    form.parentElement?.querySelector<HTMLElement>(".contact-intro")?.setAttribute("hidden", "");
+    form.parentElement?.querySelector<HTMLElement>(".split-intro")?.setAttribute("hidden", "");
     if (done) {
       done.hidden = false;
       done.focus();

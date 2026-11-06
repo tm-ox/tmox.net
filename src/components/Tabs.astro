@@ -1,0 +1,28 @@
+---
+// A tab list (ARIA tabs, behaviour in src/scripts/tabs.ts). The caller renders the panels with
+// role="tabpanel", id "<prefix>-panel-<id>", aria-labelledby "<prefix>-tab-<id>", and `hidden` on all but the first.
+interface Props {
+  prefix: string;
+  label: string;
+  items: { id: string; label: string }[];
+}
+const { prefix, label, items } = Astro.props;
+---
+
+<div class="tabs" role="tablist" aria-label={label}>
+  {
+    items.map((t, i) => (
+      <button
+        type="button"
+        class="tab"
+        role="tab"
+        id={`${prefix}-tab-${t.id}`}
+        aria-controls={`${prefix}-panel-${t.id}`}
+        aria-selected={i === 0 ? "true" : "false"}
+        tabindex={i === 0 ? 0 : -1}
+      >
+        {t.label}
+      </button>
+    ))
+  }
+</div>
