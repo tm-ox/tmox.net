@@ -83,7 +83,7 @@ about:
       - { name: "InDesign", icon: "simple-icons:adobeindesign", url: "https://www.adobe.com/products/indesign.html" }
       - { name: "Illustrator", icon: "simple-icons:adobeillustrator", url: "https://www.adobe.com/products/illustrator.html" }
       - { name: "Photoshop", icon: "simple-icons:adobephotoshop", url: "https://www.adobe.com/products/photoshop.html" }
-      - { name: "Other nonsense" }
+      - { name: "Other proprietary nonsense" }
 contact:
   title: "Hit me up"
   lead: "If there’s something you’d like to make together, tell me what it is and we can work out the rest."
