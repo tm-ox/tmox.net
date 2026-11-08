@@ -53,8 +53,8 @@ if (captions.length !== pages.length) console.warn(`[folio] ${captions.length} c
       <span class="viewer-chip"><Icon name="ion:chevron-forward" class="nav-ico" aria-hidden="true" /></span>
     </button>
     <Menu class="viewer-menu">
-      <IconButton icon="ion:open-outline" label={t.openLabel} tip={t.openTip} side="left" href="/portfolio.pdf" newTab />
-      <IconButton icon="ion:download-outline" label={t.downloadLabel} tip={t.downloadTip} side="left" href="/portfolio.pdf" download={t.downloadName} />
+      <IconButton icon="ion:open-outline" label={t.openLabel} tip={t.openTip} side="left" href="/folio.pdf" newTab />
+      <IconButton icon="ion:download-outline" label={t.downloadLabel} tip={t.downloadTip} side="left" href="/folio.pdf" download={t.downloadName} />
     </Menu>
     <Menu class="viewer-menu viewer-keys" role="list" label={t.keysLabel}>
       {t.keys.map((k) => <IconButton text={k.key} label={k.label} side="right" role="listitem" />)}

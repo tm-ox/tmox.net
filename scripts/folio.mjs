@@ -1,6 +1,6 @@
 // Rebuilds the on-site portfolio preview from the PDF.
 // Usage: npm run folio [path/to/new.pdf] [--single] [--skip=2,29]
-// With a path, that file replaces public/portfolio.pdf first. Then every page is rendered to WebP
+// With a path, that file replaces public/folio.pdf first. Then every page is rendered to WebP
 // (public/folio/NN-800.<hash>.webp and NN-1600.<hash>.webp) and the names go to src/data/folio.json.
 // The PDF is laid out as double-page spreads, so each page is cut into a left and a right half and
 // the viewer shows the halves as separate pages. Pass --single for a PDF with one page per sheet.
@@ -15,7 +15,7 @@ import { join, resolve } from "node:path";
 import sharp from "sharp";
 
 const root = resolve(import.meta.dirname, "..");
-const pdf = join(root, "public", "portfolio.pdf");
+const pdf = join(root, "public", "folio.pdf");
 const out = join(root, "public", "folio");
 const staging = `${out}.tmp`; // images are written here first and swapped in only when the whole run succeeded
 const data = join(root, "src", "data", "folio.json");

@@ -18,10 +18,10 @@
 
 # The PDF keeps its name when replaced: always revalidate (cheap, a 304 when unchanged).
 [[headers]]
-  for = "/portfolio.pdf"
+  for = "/folio.pdf"
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"
-    Content-Disposition = "inline; filename=\"tmox-design-portfolio.pdf\""
+    Content-Disposition = "inline; filename=\"tmox-folio.pdf\""
 
 [[headers]]
   for = "/~partytown/*"
@@ -39,3 +39,9 @@
     Strict-Transport-Security = "max-age=31536000; includeSubDomains"
     # Report-Only first: check the browser console on the live site, then rename to Content-Security-Policy.
     Content-Security-Policy-Report-Only = "default-src 'self'; img-src 'self' data: https://www.google-analytics.com; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; connect-src 'self' https://*.google-analytics.com https://*.googletagmanager.com; worker-src 'self' blob:; form-action 'self'; frame-ancestors 'self'; base-uri 'self'; object-src 'none'"
+
+# the PDF's old address
+[[redirects]]
+  from = "/portfolio.pdf"
+  to = "/folio.pdf"
+  status = 301
