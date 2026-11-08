@@ -462,7 +462,7 @@
   /* Text key (IconButton text="h-l"): not interactive, the keys of a pair sit side by side in one box. */
   .menu-key {
     cursor: default;
-    color: var(--color-muted); /* key letters are text: 4.5:1 or better */
+    color: var(--color-control); /* same as the icon buttons on the other side */
     gap: var(--space-1_5);
     font-size: var(--text-sm);
     font-weight: 600;
@@ -1451,7 +1451,7 @@
     font-size: var(--text-sm);
     line-height: var(--leading-tight);
     font-weight: 500;
-    color: var(--color-hi);
+    color: var(--color-control); /* both states, same as the buttons; selected is shown by the dot and border */
     cursor: pointer;
     transition: color var(--dur-fast) var(--ease-snap), background-color var(--dur-fast) var(--ease-snap),
       border-color var(--dur-fast) var(--ease-snap);
