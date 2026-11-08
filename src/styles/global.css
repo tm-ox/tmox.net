@@ -203,7 +203,6 @@
     --brand-h: 3.5rem; /* height of the logo/nav row */
     --sep-gap: 0.6em; /* space either side of a separator pipe (about double a plain space) */
     --sect-gap: clamp(0.75rem, 0.4rem + 1.2vw, 1.5rem); /* space between a screen title and its content (every page and home section) */
-    --page-end: clamp(4rem, 3rem + 4vw, 6rem); /* space under the last content of a standalone page */
     --hero-ht: 7px; /* hero: dot pitch of the backdrop */
     --hero-dots-o: 0.22; /* hero: backdrop strength */
     --hero-pulse-t: 7s; /* hero: backdrop breath period */
@@ -600,7 +599,7 @@
 
   /* Page and modal title: large accent heading. */
   .sect-title {
-    position: relative; /* standalone pages: scrolls with the page */
+    position: relative;
     z-index: var(--z-sticky);
     isolation: isolate;
     margin: 0;
@@ -610,14 +609,6 @@
     letter-spacing: var(--text-title--letter-spacing);
     font-weight: 800;
     color: var(--color-accent);
-  }
-  .sect-title:not(.modal .sect-title)::before {
-    content: ""; /* the backing is for pages; a modal's ground is its own */
-    position: absolute;
-    inset: 0 calc(-1 * var(--pad));
-    z-index: -1;
-    pointer-events: none;
-    background: var(--color-bg);
   }
   /* Display type: the home headline and the contact title. Colour and spacing stay with the element. */
   .display-title {
@@ -629,14 +620,9 @@
   .display-title.is-tight {
     line-height: var(--hero-leading-tight);
   }
-  /* Standalone pages (404, sent): the title is an h1.sect-title placed first, so it
-     sits exactly where the home section titles do, directly under the logo row. Content that follows
-     it takes .sect-after; the page itself takes .page-body. One tune each: --sect-gap, --page-end. */
+  /* Standalone pages (404, sent) are a hero: the title is an h1.sect-title, the line under it takes .sect-after. */
   .sect-after {
     margin-top: var(--sect-gap);
-  }
-  .page-body {
-    padding-bottom: var(--page-end);
   }
   /* Modals (Modal.astro): padded below the layout header (--header-h), then the title, then the body. */
   .modal {
@@ -1093,6 +1079,13 @@
   .contact-send .btn-primary {
     width: 100%;
   }
+  /* The thank-you replaces intro and form: the same title and lead as the intro, across both columns */
+  .contact-done {
+    grid-column: 1 / -1;
+  }
+  .contact-done .sect-title {
+    margin-bottom: var(--space-4);
+  }
   .contact-error:empty {
     display: none;
   }
@@ -1287,7 +1280,7 @@
   /* Hero backdrop: the same real halftone as the Selected work stage, but of a soft light field
      instead of a photo. ::before is a large glowing blob (the "picture"), ::after the tiled cone
      screen; the container's contrast() thresholds them into dots that swell toward the centre of the
-     glow and vanish at its edges, and #duotone (inline SVG in this page) colours them slate to orange.
+     glow and vanish at its edges, and #duotone (inline SVG, DuotoneFilter.astro) colours them slate to orange.
      The blob breathes (opacity and scale only). Faint by design: text stays on top.
      Tunables: --hero-ht (pitch), --hero-dots-o (overall strength), --hero-pulse-t (breath period). */
   .hero-dots {

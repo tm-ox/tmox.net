@@ -62,9 +62,9 @@ const { contact: c } = await getSite();
       </div>
       <p class="contact-error" role="alert" data-error data-message={c.error}></p>
     </form>
-    <div class="contact-done split-main" hidden data-done tabindex="-1" aria-labelledby="c-done-title">
-      <p id="c-done-title" class="statement">{c.success.title}</p>
-      <p class="mt-4 text-lead">{c.success.body}</p>
+    <div class="contact-done" hidden data-done tabindex="-1" aria-labelledby="c-done-title">
+      <h2 id="c-done-title" class="sect-title display-title">{c.success.title}</h2>
+      <p class="text-lead max-w-measure-narrow">{c.success.body}</p>
     </div>
   </div>
 </Modal>

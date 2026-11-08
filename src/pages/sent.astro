@@ -11,13 +11,16 @@ const { contact } = await getSite();
   description="Thanks for writing. Your message has been sent."
   noindex
 >
-  <section class="page page-body">
-    <h1 class="sect-title">{contact.success.title}</h1>
-    <p class="sect-after text-lead max-w-measure">
-      {contact.success.body}
-    </p>
-    <div class="mt-8">
-      <a class="btn-secondary" href="/#portfolio">{contact.success.back}</a>
+  <section class="hero">
+    <div class="hero-dots" aria-hidden="true"></div>
+    <div class="page hero-body">
+      <h1 class="sect-title display-title">{contact.success.title}</h1>
+      <p class="sect-after text-lead max-w-measure">
+        {contact.success.body}
+      </p>
+      <div class="mt-8">
+        <a class="btn-primary" href="/">{contact.success.back}</a>
+      </div>
     </div>
   </section>
 </Layout>

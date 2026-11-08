@@ -3,6 +3,7 @@ import BaseHead from "../components/BaseHead.astro";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import LogoDefs from "../components/LogoDefs.astro";
+import DuotoneFilter from "../components/DuotoneFilter.astro";
 import folio from "../data/folio.json";
 import { getSite } from "../lib/site";
 
@@ -40,6 +41,7 @@ const rootStyle = `--folio-ratio: ${folio.ratio}`;
       >{site.skip}</a
     >
     <LogoDefs />
+    <DuotoneFilter />
     <Header />
     <main id="main" tabindex="-1">
       <slot />

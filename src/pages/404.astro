@@ -5,16 +5,19 @@ import Layout from "../layouts/Layout.astro";
 <Layout
   title="Page not found · TMOX"
   description="This page does not exist. Go back to the TMOX home page."
+  footer={false}
   noindex
 >
-  <section class="page page-body">
-    <h1 class="sect-title">This page isn’t here.</h1>
-    <p class="sect-after text-lead max-w-measure">
-      The link is broken or the page has moved. Everything that’s live is on the home page.
-    </p>
-    <div class="mt-8 flex flex-wrap gap-4">
-      <a class="btn-primary" href="/">Home</a>
-      <a class="btn-secondary" href="/#portfolio">Portfolio</a>
+  <section class="hero">
+    <div class="hero-dots" aria-hidden="true"></div>
+    <div class="page hero-body">
+      <h1 class="sect-title display-title">This page isn’t here.</h1>
+      <p class="sect-after text-lead max-w-measure">
+        The link is broken or the page has moved. Everything that’s live is on the home page.
+      </p>
+      <div class="mt-8">
+        <a class="btn-primary" href="/">Home</a>
+      </div>
     </div>
   </section>
 </Layout>

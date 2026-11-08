@@ -113,8 +113,8 @@ contact:
   requiredNote: "required"
   success:
     title: "Thanks for writing."
-    body: "I’ll reply to the address you gave."
-    back: "Back to the portfolio"
+    body: "I’ll be in touch."
+    back: "Home"
 footer:
   line: "Freelance design for brand, print and web."
   pagesTitle: "Pages"
