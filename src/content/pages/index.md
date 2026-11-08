@@ -29,6 +29,7 @@ folio:
   openLabel: "Open the PDF in a new tab"
   openTip: "Open PDF in a new tab"
   downloadLabel: "Download the PDF"
+  downloadName: "tmox-design-portfolio.pdf"
   downloadTip: "Download PDF"
   keysLabel: "Keyboard shortcuts"
   keys:

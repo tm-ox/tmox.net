@@ -21,7 +21,7 @@
   for = "/portfolio.pdf"
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"
-    Content-Disposition = "inline; filename=\"tmox-portfolio.pdf\""
+    Content-Disposition = "inline; filename=\"tmox-design-portfolio.pdf\""
 
 [[headers]]
   for = "/~partytown/*"

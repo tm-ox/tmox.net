@@ -10,7 +10,7 @@ interface Props {
   icon?: string; // astro-icon name, e.g. "ion:close"
   text?: string; // shown instead of an icon
   href?: string;
-  download?: boolean;
+  download?: boolean | string; // true, or the file name to save as
   newTab?: boolean; // target="_blank" rel="noopener"
   class?: string;
   [attr: string]: unknown; // passed through, e.g. data-modal-close, role

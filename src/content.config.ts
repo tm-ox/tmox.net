@@ -39,6 +39,7 @@ export const collections = {
         openLabel: z.string(),
         openTip: z.string(),
         downloadLabel: z.string(),
+        downloadName: z.string(), // file name the downloaded PDF is saved as
         downloadTip: z.string(),
         keysLabel: z.string(),
         keys: z.array(z.object({ key: z.string(), label: z.string() })),
