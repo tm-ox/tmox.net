@@ -10,7 +10,7 @@
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
 
-# Portfolio images carry a content hash in their name (npm run folio), so they never change under a name.
+# Folio images carry a content hash in their name (npm run folio), so they never change under a name.
 [[headers]]
   for = "/folio/*"
   [headers.values]

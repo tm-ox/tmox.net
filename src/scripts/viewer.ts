@@ -1,4 +1,4 @@
-// Portfolio viewer: shows one [data-slide] at a time inside [data-viewer]. Controls: prev and next
+// Folio viewer: shows one [data-slide] at a time inside [data-viewer]. Controls: prev and next
 // buttons, a click on the left or right half of the page, a click on a rail segment, ArrowLeft,
 // ArrowRight, Home and End (plus h, l, g, G) while the dialog is open, and a horizontal swipe (touch and pen).
 // Touch and pen can also pinch to zoom the page inside its frame (the controls stay put) and drag it while zoomed.
@@ -20,7 +20,7 @@ const bind = (root: HTMLElement) => {
   let timer = 0;
   let liveTimer = 0;
   const cancel = () => (clearInterval(timer), (timer = 0));
-  // Images are lazy and the dialog is closed (display: none), so nothing downloads until the portfolio
+  // Images are lazy and the dialog is closed (display: none), so nothing downloads until the folio
   // is first opened; then the current page and its neighbours are fetched, and again on every step.
   const promote = () => {
     for (const n of [at - 1, at, at + 1]) slides[n]?.querySelector("img")?.setAttribute("loading", "eager");
@@ -66,7 +66,7 @@ const bind = (root: HTMLElement) => {
       (document.activeElement === prev ? next : prev).focus();
   };
   const show = (i: number) => (cancel(), step(i));
-  // Jumps of more than one page run through every page in between, fast, so the whole portfolio
+  // Jumps of more than one page run through every page in between, fast, so the whole folio
   // scrolls past. Any other navigation stops the run where it is.
   const travel = (to: number) => {
     cancel();

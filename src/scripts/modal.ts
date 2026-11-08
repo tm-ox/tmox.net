@@ -6,8 +6,8 @@
 //
 // Dialogs are non-modal (show(), not showModal()) so the layout header (logo and site menu) stays above them and
 // usable. This script supplies what showModal() would have: Esc, focus return and an inert page behind.
-// syncState() is the one place that reflects which dialog is open: the inert page, html[data-portfolio] (the
-// header folds into the portfolio, see "Site header" in global.css) and the site menu's aria-current.
+// syncState() is the one place that reflects which dialog is open: the inert page, html[data-folio] (the
+// header folds into the folio, see "Site header" in global.css) and the site menu's aria-current.
 const root = document.documentElement;
 const menu = document.querySelector<HTMLElement>(".site-menu");
 const home = menu?.querySelector<HTMLElement>('a[href="/"]');
@@ -27,7 +27,7 @@ const syncState = () => {
   const open = openDialogs();
   // everything in <main> that is not a dialog is inert while one is open (the header is outside <main>)
   document.querySelectorAll<HTMLElement>("main > :not(dialog)").forEach((el) => (el.inert = open.length > 0));
-  root.toggleAttribute("data-portfolio", open.some((d) => d.id === "portfolio"));
+  root.toggleAttribute("data-folio", open.some((d) => d.id === "folio"));
   menu?.querySelectorAll<HTMLElement>("[data-modal-open]").forEach((b) => {
     if (open.some((d) => d.id === b.dataset.modalOpen)) b.setAttribute("aria-current", "true");
     else b.removeAttribute("aria-current");
@@ -110,6 +110,7 @@ document.addEventListener(
 );
 
 const openFromHash = () => {
+  if (location.hash === "#portfolio") history.replaceState(null, "", "#folio"); // the folio's old address
   const d = dialogFor(location.hash.slice(1));
   if (d) openModal(d);
   else if (openDialogs().length) {

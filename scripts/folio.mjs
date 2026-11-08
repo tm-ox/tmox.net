@@ -1,4 +1,4 @@
-// Rebuilds the on-site portfolio preview from the PDF.
+// Rebuilds the on-site folio preview from the PDF.
 // Usage: npm run folio [path/to/new.pdf] [--single] [--skip=2,29]
 // With a path, that file replaces public/folio.pdf first. Then every page is rendered to WebP
 // (public/folio/NN-800.<hash>.webp and NN-1600.<hash>.webp) and the names go to src/data/folio.json.

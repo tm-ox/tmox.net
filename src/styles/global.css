@@ -140,7 +140,7 @@
     --leading-tight: 1.25; /* line height of single-line controls and small UI text */
     /* Layout */
     --page-min: 48rem; /* the content width never goes below this (unless the screen is narrower) */
-    /* Content width, excluding the side padding, the same on every page: exactly the portfolio viewer's width,
+    /* Content width, excluding the side padding, the same on every page: exactly the folio viewer's width,
        which is the PDF page at the largest size the screen height allows plus the arrow and menu column
        either side. So the logo and the site menu sit on the viewer's edges, and the menu collapses to the
        Close box without moving. --folio-ratio is the PDF page ratio (set on <html> by Layout.astro). svh, not dvh:
@@ -159,7 +159,7 @@
     --dur-fast: 150ms; /* hover and focus colour changes */
     --dur: 200ms; /* fades and slides */
     --dur-modal: 280ms; /* modal open (close uses --dur-fast) */
-    --dur-slide: 300ms; /* portfolio page slide (viewer.ts shortens it to 35-90 ms per page when flicking through: the JS side is intentional) */
+    --dur-slide: 300ms; /* folio page slide (viewer.ts shortens it to 35-90 ms per page when flicking through: the JS side is intentional) */
     --dur-delay: 120ms; /* tooltip show delay */
     --stagger: 90ms; /* hero entrance: delay between rows */
     --rise-y: var(--space-3_5); /* hero entrance: how far a row rises */
@@ -176,13 +176,13 @@
     --rise: 700ms; /* hero entrance duration */
     --hero-title-measure: 24ch; /* hero headline line length */
     --modal-dots-o: 0.12; /* halftone strength behind the contact modal */
-    --rail-h: 0.1875rem; /* portfolio viewer: page rail line */
-    --viewer-tick: var(--space-3); /* portfolio viewer: height of a rail tick (its click target) */
-    --viewer-gap: var(--space-2); /* portfolio viewer: gap between the rail and the page */
-    --viewer-foot: calc(var(--viewer-tick) + var(--viewer-gap)); /* portfolio viewer: rail row plus gap above the page */
-    --viewer-edge: 25%; /* portfolio viewer: click zone on each side of the page, a quarter of its width */
-    --viewer-side: calc(var(--ctl-h) * 2); /* portfolio viewer: the arrow, then the menu column beside it */
-    --viewer-pad-y: max(var(--space-3), calc(var(--brand-pt) + (var(--brand-h) - var(--ctl-h)) / 2 - var(--viewer-foot))); /* portfolio viewer: space above and below the page area; the page top (below the rail) then lands level with the header menu top */
+    --rail-h: 0.1875rem; /* folio viewer: page rail line */
+    --viewer-tick: var(--space-3); /* folio viewer: height of a rail tick (its click target) */
+    --viewer-gap: var(--space-2); /* folio viewer: gap between the rail and the page */
+    --viewer-foot: calc(var(--viewer-tick) + var(--viewer-gap)); /* folio viewer: rail row plus gap above the page */
+    --viewer-edge: 25%; /* folio viewer: click zone on each side of the page, a quarter of its width */
+    --viewer-side: calc(var(--ctl-h) * 2); /* folio viewer: the arrow, then the menu column beside it */
+    --viewer-pad-y: max(var(--space-3), calc(var(--brand-pt) + (var(--brand-h) - var(--ctl-h)) / 2 - var(--viewer-foot))); /* folio viewer: space above and below the page area; the page top (below the rail) then lands level with the header menu top */
     --box: calc(var(--ctl-h) - 2px); /* a menu box: one control, less the 1px border either side */
     --menu-gap: 1px; /* a menu: the divider between two boxes */
     --header-h: calc(var(--brand-pt) + var(--brand-h)); /* the layout header row: padding above plus height */
@@ -404,7 +404,7 @@
 
   /* Menu (Menu.astro + IconButton.astro): a bordered box of square boxes, one control wide. The gap (--menu-gap)
      shows the box's own line colour as the dividers, so every box stays an exact square (--box). Used
-     by the site menu, the portfolio menu and its key help; the parent scope only positions it. */
+     by the site menu, the folio menu and its key help; the parent scope only positions it. */
   .menu {
     --menu-r-first: var(--radius-inner) var(--radius-inner) 0 0; /* corners of the first and last box */
     --menu-r-last: 0 0 var(--radius-inner) var(--radius-inner);
@@ -694,7 +694,7 @@
     inset: 0;
     opacity: var(--modal-dots-o);
   }
-  /* Without JavaScript the menu links (/#about, /#portfolio, /#contact) still work: the targeted dialog is shown */
+  /* Without JavaScript the menu links (/#about, /#folio, /#contact) still work: the targeted dialog is shown */
   @media (scripting: none) {
     .modal:target {
       display: flex;
@@ -714,7 +714,7 @@
     flex: none;
     padding-bottom: var(--sect-gap);
   }
-  /* Bare modal (portfolio): no spacer, the body takes the whole viewport. Its width is the site's content
+  /* Bare modal (folio): no spacer, the body takes the whole viewport. Its width is the site's content
      width, the same as the header row and every page (see --site-x). The page itself reaches up to the top padding:
      the header row only occupies the outer columns, beside it. */
   .modal[data-bare] .modal-body {
@@ -730,7 +730,7 @@
     scroll-padding-block: var(--space-4);
   }
 
-  /* Portfolio viewer (index.astro): the page gets all the height there is. A fine progress rail runs
+  /* Folio viewer (index.astro): the page gets all the height there is. A fine progress rail runs
      along its top edge, the arrows stand either side of it (centred on the screen), Close sits in the
      modal's top right corner. The page is as large as the height allows, within the width left by the
      arrows; the rail is exactly as wide as the page. */
@@ -889,7 +889,7 @@
   .viewer-menu {
     position: absolute;
     /* The columns hug the page, one arrow width out, and the header row is as wide as the viewer (see "Header
-       over the portfolio"), so its logo and Close box sit exactly above them: this starts one box and a gap
+       over the folio"), so its logo and Close box sit exactly above them: this starts one box and a gap
        below the header menu's bottom (the viewer itself starts higher, at --viewer-pad-y). */
     top: calc(var(--brand-pt) + (var(--brand-h) - var(--ctl-h)) / 2 + var(--ctl-h) - var(--viewer-pad-y) + var(--viewer-shift) + var(--viewer-lift)); /* touching the Close box: it starts where the Close menu's bottom border (the divider) ends */
     /* beside the right-hand arrow: one arrow width past the page's right edge */
@@ -1492,15 +1492,15 @@
     outline: var(--focus-w) solid var(--color-accent);
     outline-offset: var(--focus-off);
   }
-  /* The portfolio is height-limited on a short, wide window: with the floor (--page-min) the header would be wider than
+  /* The folio is height-limited on a short, wide window: with the floor (--page-min) the header would be wider than
      the viewer and the Close box would drift off its column. Open, the header follows the viewer exactly. */
-  html[data-portfolio] {
+  html[data-folio] {
     --site-x: var(--site-fit);
   }
   /* Site header (Header.astro, SiteNav.astro). Both parts are named for the page-change transition (see the end
      of this file).
 
-     With the portfolio open (html[data-portfolio], set by modal.ts) the header folds into the viewer instead of
+     With the folio open (html[data-folio], set by modal.ts) the header folds into the viewer instead of
      taking a strip: the menu collapses in place (it is right-aligned on the content edge) to its Close box, the
      top box of the viewer's right-hand column, and the logo fades out. Closing reverses it. The boxes keep their
      solid background and only shrink while the icon fades, because fading a whole box lets the menu's divider
@@ -1523,56 +1523,56 @@
   .site-menu .menu-btn:nth-last-child(2) {
     border-radius: var(--menu-r-last);
   }
-  html[data-portfolio] .brand-row {
+  html[data-folio] .brand-row {
     pointer-events: none;
   }
-  html[data-portfolio] .brand-row::before {
+  html[data-folio] .brand-row::before {
     opacity: 0;
   }
-  html[data-portfolio] .brand-row > .menu {
+  html[data-folio] .brand-row > .menu {
     pointer-events: auto;
   }
-  html[data-portfolio] .brand-row > a {
+  html[data-folio] .brand-row > a {
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
   }
-  html[data-portfolio] .site-menu {
+  html[data-folio] .site-menu {
     gap: 0;
     transform: translateY(calc(var(--viewer-shift) + var(--viewer-lift))); /* with the page, when its width limits it (see --viewer-shift) */
   }
-  html[data-portfolio] .site-menu .menu-btn:not([data-menu-close]) {
+  html[data-folio] .site-menu .menu-btn:not([data-menu-close]) {
     width: 0;
     visibility: hidden;
   }
-  html[data-portfolio] .site-menu .menu-btn:not([data-menu-close]) > svg {
+  html[data-folio] .site-menu .menu-btn:not([data-menu-close]) > svg {
     opacity: 0;
   }
-  html[data-portfolio] .site-menu .menu-btn[data-menu-close] {
+  html[data-folio] .site-menu .menu-btn[data-menu-close] {
     width: var(--box);
     margin-inline-start: 0;
     border-radius: var(--radius-inner);
     visibility: visible;
   }
-  html[data-portfolio] .site-menu .menu-btn[data-menu-close] > svg {
+  html[data-folio] .site-menu .menu-btn[data-menu-close] > svg {
     opacity: 1;
   }
   /* With the viewer's menu below it, the Close box is the top of one block (see .viewer-menu) */
   @media (min-width: 640px), (orientation: landscape) {
-    html[data-portfolio] .site-menu {
+    html[data-folio] .site-menu {
       border-bottom-left-radius: 0;
       border-bottom-right-radius: 0;
     }
-    html[data-portfolio] .site-menu .menu-btn[data-menu-close] {
+    html[data-folio] .site-menu .menu-btn[data-menu-close] {
       border-radius: var(--radius-inner) var(--radius-inner) 0 0;
     }
   }
   /* portrait phones: the Close box is the right end of one block with Open and Download */
   @media (max-width: 639.98px) and (orientation: portrait) {
-    html[data-portfolio] .site-menu {
+    html[data-folio] .site-menu {
       border-radius: 0 var(--radius) var(--radius) 0;
     }
-    html[data-portfolio] .site-menu .menu-btn[data-menu-close] {
+    html[data-folio] .site-menu .menu-btn[data-menu-close] {
       border-radius: 0 var(--radius-inner) var(--radius-inner) 0;
     }
   }

@@ -10,7 +10,7 @@ nav:
   label: "Site"
   home: "Home"
   about: "About"
-  work: "Work"
+  folio: "Folio"
   contact: "Contact"
 hero:
   kicker: "Freelance designer"
@@ -20,11 +20,11 @@ hero:
   availability: "Taking new projects"
   contactCta: "Get in touch"
 folio:
-  title: "Portfolio"
+  title: "Folio"
   hint: "Turn your phone sideways for a larger view."
   prev: "Previous page"
   next: "Next page"
-  pageAlt: "Portfolio page {n} of {total}"
+  pageAlt: "Folio page {n} of {total}"
   live: "Page {n} of {total}"
   openLabel: "Open the folio PDF in a new tab"
   openTip: "Open folio in a new tab"
@@ -119,8 +119,8 @@ contact:
 footer:
   line: "Freelance design for brand, print and web."
   pagesTitle: "Pages"
-  portfolio: "Portfolio"
-  portfolioPdf: "Folio (PDF)"
+  folio: "Folio"
+  folioPdf: "Folio (PDF)"
   contact: "Contact"
   colophonTitle: "Colophon"
   colophon: "Set in Plus Jakarta Sans. Built with Astro and Tailwind CSS, hosted on Netlify."

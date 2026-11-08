@@ -33,7 +33,7 @@ const jsonLd = {
 ---
 
 <Layout title={data.title} description={data.description} jsonLd={jsonLd} footer={false}>
-  <!-- The whole site: one screen, plus three dialogs (About, Work/portfolio, Contact) opened from the site menu in the
+  <!-- The whole site: one screen, plus three dialogs (About, Work/folio, Contact) opened from the site menu in the
        header (Header.astro, SiteNav.astro). The hero keeps the one button, Get in touch. -->
   <section id="top" class="hero">
     <div class="hero-dots" aria-hidden="true"></div>
@@ -59,9 +59,9 @@ const jsonLd = {
     </div>
   </section>
 
-  <!-- Portfolio dialog: the viewer (components/Viewer.astro). Without JS the Work link in the menu goes to /#portfolio and
+  <!-- Folio dialog: the viewer (components/Viewer.astro). Without JS the Work link in the menu goes to /#folio and
        nothing opens; the PDF itself stays at /folio.pdf. -->
-  <Modal id="portfolio" title={data.folio.title} variant="bare">
+  <Modal id="folio" title={data.folio.title} variant="bare">
     <Viewer />
   </Modal>
 

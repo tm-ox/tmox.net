@@ -15,10 +15,10 @@ export const collections = {
         brand: z.string(),
         homeLabel: z.string(), // aria-label of the logo link
         skip: z.string(),
-        close: z.string(), // label and tooltip of the site menu's Close box (shown over the portfolio)
+        close: z.string(), // label and tooltip of the site menu's Close box (shown over the folio)
       }),
       // Labels of the site menu (components/Header.astro, SiteNav.astro); `label` names the <nav>.
-      nav: z.object({ label: z.string(), home: z.string(), about: z.string(), work: z.string(), contact: z.string() }),
+      nav: z.object({ label: z.string(), home: z.string(), about: z.string(), folio: z.string(), contact: z.string() }),
       hero: z.object({
         kicker: z.string(), // " | " becomes a spaced pipe separator
         title: z.string(),
@@ -29,7 +29,7 @@ export const collections = {
         contactCta: z.string(),
       }),
       folio: z.object({
-        title: z.string(), // names the portfolio dialog
+        title: z.string(), // names the folio dialog
         hint: z.string(), // phone portrait hint
         prev: z.string(),
         next: z.string(),
@@ -85,8 +85,8 @@ export const collections = {
       footer: z.object({
         line: z.string(),
         pagesTitle: z.string(),
-        portfolio: z.string(),
-        portfolioPdf: z.string(),
+        folio: z.string(),
+        folioPdf: z.string(),
         contact: z.string(),
         colophonTitle: z.string(),
         colophon: z.string(),
