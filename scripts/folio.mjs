@@ -12,6 +12,7 @@ import { execFileSync } from "node:child_process";
 import { copyFileSync, existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, renameSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
+import { PDFDocument, PDFName, PDFString } from "pdf-lib";
 import sharp from "sharp";
 
 const root = resolve(import.meta.dirname, "..");
@@ -26,6 +27,15 @@ const skip = new Set((process.argv.find((a) => a.startsWith("--skip=")) ?? "").s
 const given = process.argv.slice(2).find((a) => !a.startsWith("--"));
 if (given) copyFileSync(resolve(given), pdf);
 if (!existsSync(pdf)) throw new Error(`Missing ${pdf}. Pass the PDF path: npm run folio path/to/file.pdf`);
+
+// The PDF's own metadata is what a browser shows as the tab title when the file is opened (the export's file name
+// would otherwise appear, e.g. TM_Folio_20260711), and what search results and PDF readers show.
+const meta = await PDFDocument.load(readFileSync(pdf), { updateMetadata: false });
+meta.setTitle("TMOX Folio", { showInWindowTitleBar: true });
+meta.setAuthor("TMOX");
+meta.setSubject("Selected work: brand identity, print and web design");
+meta.catalog.set(PDFName.of("Lang"), PDFString.of("en"));
+writeFileSync(pdf, await meta.save());
 
 /** @param {string} cmd @param {string[]} args */
 const run = (cmd, args) => execFileSync(cmd, args, { encoding: "utf8", maxBuffer: 64 * 1024 * 1024 });
