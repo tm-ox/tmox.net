@@ -5,11 +5,12 @@ interface Props {
   direction?: "column" | "row";
   class?: string;
   role?: astroHTML.JSX.AriaRole;
+  as?: "div" | "nav"; // the element; a labelled site menu is a <nav>
   label?: string; // aria-label
 }
-const { direction = "column", class: className, role, label } = Astro.props;
+const { direction = "column", class: className, role, label, as: Tag = "div" } = Astro.props;
 ---
 
-<div class:list={["menu", direction === "row" && "menu-row", className]} role={role} aria-label={label}>
+<Tag class:list={["menu", direction === "row" && "menu-row", className]} role={role} aria-label={label}>
   <slot />
-</div>
+</Tag>

@@ -7,7 +7,7 @@ import { getSite } from "../lib/site";
 interface Props {
   href?: string;
   class?: string;
-  [attr: string]: unknown; // passed to the link, e.g. data-astro-prefetch
+  [attr: string]: unknown; // passed to the link, e.g. data-modal-close
 }
 const { href, class: className, ...rest } = Astro.props;
 const { site } = await getSite();

@@ -7,14 +7,15 @@ document.addEventListener("submit", async (e) => {
   const error = form.querySelector<HTMLElement>("[data-error]");
   const done = form.parentElement?.querySelector<HTMLElement>("[data-done]");
   const button = form.querySelector<HTMLButtonElement>("button[type=submit]");
-  if (error) error.hidden = true;
+  if (error) error.textContent = "";
   if (button) button.disabled = true;
   try {
-    const body = new URLSearchParams(new FormData(form) as unknown as Record<string, string>).toString();
+    const body = new URLSearchParams([...new FormData(form)].map(([k, v]) => [k, String(v)])).toString();
     const res = await fetch("/", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body,
+      signal: AbortSignal.timeout(15000), // a hung request must not leave the button disabled for good
     });
     if (!res.ok) throw new Error(String(res.status));
     form.hidden = true;
@@ -24,7 +25,15 @@ document.addEventListener("submit", async (e) => {
       done.focus();
     }
   } catch {
-    if (error) error.hidden = false;
+    if (error) error.textContent = error.dataset.message ?? "";
     if (button) button.disabled = false;
+  }
+});
+
+// A phone's on-screen keyboard covers the lower fields: bring the focused one into view once the layout has resized.
+document.addEventListener("focusin", (e) => {
+  const el = e.target;
+  if (el instanceof HTMLElement && el.closest("[data-contact]") && el.matches("input,textarea")) {
+    setTimeout(() => el.scrollIntoView({ block: "center", behavior: "smooth" }), 300);
   }
 });

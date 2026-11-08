@@ -6,7 +6,7 @@ import { Icon } from "astro-icon/components";
 interface Props {
   label: string;
   tip?: string;
-  side?: "left" | "right"; // which way the tooltip opens (default: below)
+  side?: "left" | "right" | "bottom"; // which way the tooltip opens (default: below, right-aligned)
   icon?: string; // astro-icon name, e.g. "ion:close"
   text?: string; // shown instead of an icon
   href?: string;
@@ -16,6 +16,8 @@ interface Props {
   [attr: string]: unknown; // passed through, e.g. data-modal-close, role
 }
 const { label, tip, side, icon, text, href, download, newTab, class: className, ...rest } = Astro.props;
+// Arrow glyphs in a key (e.g. "← →") are drawn as icons: the font's arrows are too thin next to the other keys.
+const arrows: Record<string, string> = { "←": "ion:arrow-back", "→": "ion:arrow-forward" };
 const attrs = {
   class: ["menu-btn", text !== undefined && "menu-key", className].filter(Boolean).join(" "),
   "aria-label": label,
@@ -27,7 +29,9 @@ const attrs = {
 
 {
   text !== undefined ? (
-    <span {...attrs}>{text}</span>
+    <span {...attrs}>
+      {[...text].filter((c) => !(c === " " && text.match(/[←→]/))).map((c) => (arrows[c] ? <Icon name={arrows[c]} aria-hidden="true" /> : c))}
+    </span>
   ) : href ? (
     <a {...attrs} href={href} download={download} target={newTab ? "_blank" : undefined} rel={newTab ? "noopener" : undefined}>
       {icon && <Icon name={icon} aria-hidden="true" />}

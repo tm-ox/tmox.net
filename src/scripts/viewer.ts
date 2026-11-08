@@ -1,6 +1,7 @@
 // Portfolio viewer: shows one [data-slide] at a time inside [data-viewer]. Controls: prev and next
 // buttons, a click on the left or right half of the page, a click on a rail segment, ArrowLeft,
 // ArrowRight, Home and End (plus h, l, g, G) while the dialog is open, and a horizontal swipe (touch and pen).
+// Touch and pen can also pinch to zoom the page inside its frame (the controls stay put) and drag it while zoomed.
 // Pages do not wrap: prev is disabled on the first page, next on the last.
 const bind = (root: HTMLElement) => {
   const slides = [...root.querySelectorAll<HTMLElement>("[data-slide]")];
@@ -17,6 +18,7 @@ const bind = (root: HTMLElement) => {
   let ready = false;
   const still = matchMedia("(prefers-reduced-motion: reduce)");
   let timer = 0;
+  let liveTimer = 0;
   const cancel = () => (clearInterval(timer), (timer = 0));
   // Images are lazy and the dialog is closed (display: none), so nothing downloads until the portfolio
   // is first opened; then the current page and its neighbours are fetched, and again on every step.
@@ -29,6 +31,7 @@ const bind = (root: HTMLElement) => {
   const step = (i: number, ms?: number) => {
     const from = at;
     at = Math.max(0, Math.min(last, i));
+    if (from !== at) resetZoom();
     for (const s of slides) {
       s.removeAttribute("data-dir");
       s.hidden = true;
@@ -50,7 +53,14 @@ const bind = (root: HTMLElement) => {
     prev.disabled = at === 0;
     next.disabled = at === last;
     for (const h of halves) h.toggleAttribute("data-off", h.dataset.half === "prev" ? at === 0 : at === last);
-    if (live) live.textContent = liveFormat.replace("{n}", String(at + 1)).replace("{total}", String(slides.length));
+    // announced once the page has settled, not on every page of a fast run (g, G, Home, End, the rail)
+    if (live) {
+      clearTimeout(liveTimer);
+      liveTimer = window.setTimeout(
+        () => (live.textContent = liveFormat.replace("{n}", String(at + 1)).replace("{total}", String(slides.length))),
+        timer ? 400 : 120,
+      );
+    }
     if (ready) promote();
     if (document.activeElement instanceof HTMLButtonElement && document.activeElement.disabled)
       (document.activeElement === prev ? next : prev).focus();
@@ -91,17 +101,97 @@ const bind = (root: HTMLElement) => {
     else if (e.key === "Home" || e.key === "g") (e.preventDefault(), travel(0));
     else if (e.key === "End" || e.key === "G") (e.preventDefault(), travel(last));
   });
+  // Pinch zoom: the pages are scaled inside the stage (which clips them) from the top left corner, so the
+  // pan offset is simply a translation kept between (frame - scaled page) and 0. Mouse pointers do not take part.
+  const stage = root.querySelector<HTMLElement>(".viewer-stage");
+  const MAX_ZOOM = 4;
+  let z = { s: 1, x: 0, y: 0 };
+  const pts = new Map<number, { x: number; y: number }>();
+  let pinch: { d: number; mx: number; my: number; s: number; x: number; y: number } | null = null;
+  let swiped = false; // a swipe that began and ended on an arrow must not also count as a tap on it
+  let gestured = false; // this touch was a pinch or a pan, so it is neither a swipe nor a tap
+  const applyZoom = () => {
+    if (pages) pages.style.transform = z.s > 1 ? `translate(${z.x}px, ${z.y}px) scale(${z.s})` : "";
+    stage?.toggleAttribute("data-zoomed", z.s > 1);
+  };
+  const clampZoom = () => {
+    if (!stage) return;
+    const r = stage.getBoundingClientRect();
+    z.s = Math.min(MAX_ZOOM, Math.max(1, z.s));
+    z.x = Math.min(0, Math.max(r.width * (1 - z.s), z.x));
+    z.y = Math.min(0, Math.max(r.height * (1 - z.s), z.y));
+  };
+  const resetZoom = () => {
+    z = { s: 1, x: 0, y: 0 };
+    pinch = null;
+    applyZoom();
+  };
+  const mid = () => {
+    const [a, b] = [...pts.values()];
+    const r = stage!.getBoundingClientRect();
+    return { d: Math.hypot(a.x - b.x, a.y - b.y), mx: (a.x + b.x) / 2 - r.left, my: (a.y + b.y) / 2 - r.top };
+  };
+  stage?.addEventListener("pointerdown", (e) => {
+    if (e.pointerType === "mouse") return;
+    if (!pts.size) gestured = false;
+    pts.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    if (pts.size === 2) {
+      gestured = true;
+      pinch = { ...mid(), s: z.s, x: z.x, y: z.y };
+    }
+  });
+  stage?.addEventListener("pointermove", (e) => {
+    const prevPt = pts.get(e.pointerId);
+    if (!prevPt) return;
+    const now = { x: e.clientX, y: e.clientY };
+    pts.set(e.pointerId, now);
+    if (pts.size === 2 && pinch) {
+      const m = mid();
+      const s = Math.min(MAX_ZOOM, Math.max(1, (pinch.s * m.d) / pinch.d));
+      // the point of the page that was under the fingers' midpoint stays under it
+      z = { s, x: m.mx - ((pinch.mx - pinch.x) / pinch.s) * s, y: m.my - ((pinch.my - pinch.y) / pinch.s) * s };
+      clampZoom();
+      applyZoom();
+    } else if (pts.size === 1 && z.s > 1) {
+      z.x += now.x - prevPt.x;
+      z.y += now.y - prevPt.y;
+      if (Math.hypot(now.x - prevPt.x, now.y - prevPt.y) > 0) gestured = true;
+      clampZoom();
+      applyZoom();
+    }
+  });
+  const lift = (e: PointerEvent) => {
+    if (!pts.delete(e.pointerId)) return;
+    if (pts.size < 2) pinch = null;
+    if (z.s < 1.05) resetZoom(); // near enough to fit: snap back
+    if (gestured) swiped = true; // the click that follows a pinch or a pan must not turn the page
+  };
+  stage?.addEventListener("pointerup", lift);
+  stage?.addEventListener("pointercancel", lift);
+  dialog?.addEventListener("close", resetZoom);
   let start: { x: number; y: number } | null = null;
   root.addEventListener("pointerdown", (e) => {
+    swiped = false;
     start = e.pointerType !== "mouse" ? { x: e.clientX, y: e.clientY } : null;
   });
   root.addEventListener("pointerup", (e) => {
-    if (start) {
+    if (start && !gestured && z.s === 1) {
       const dx = e.clientX - start.x;
-      if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(e.clientY - start.y)) show(at + (dx < 0 ? 1 : -1));
+      if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(e.clientY - start.y)) {
+        swiped = true;
+        show(at + (dx < 0 ? 1 : -1));
+      }
     }
     start = null;
   });
+  root.addEventListener(
+    "click",
+    (e) => {
+      if (swiped) (e.stopPropagation(), e.preventDefault());
+      swiped = false;
+    },
+    true,
+  );
   step(0);
   ready = true;
 };

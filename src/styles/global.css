@@ -60,6 +60,10 @@
   --radius-ctl: var(--radius); /* rounded-ctl: controls */
 }
 
+@utility z-modal {
+  z-index: var(--z-modal);
+}
+
 @utility z-skip {
   z-index: var(--z-skip);
 }
@@ -112,7 +116,6 @@
   /* Tunables (Revision 2). Edit one number here to adjust. */
   :root {
     /* Spacing scale: 4px steps, named by Tailwind units (--space-3 = 0.75rem) */
-    --space-0_5: 0.125rem;
     --space-1: 0.25rem;
     --space-1_5: 0.375rem;
     --space-2: 0.5rem;
@@ -136,7 +139,21 @@
     --focus-room: calc(var(--focus-w) + var(--focus-off)); /* what a scroll box must leave around its content */
     --leading-tight: 1.25; /* line height of single-line controls and small UI text */
     /* Layout */
-    --page-max: 80rem; /* content width, excluding the side padding */
+    --page-min: 48rem; /* the content width never goes below this (unless the screen is narrower) */
+    /* Content width, excluding the side padding, the same on every page: exactly the portfolio viewer's width,
+       which is the PDF page at the largest size the screen height allows plus the arrow and menu column
+       either side. So the logo and the site menu sit on the viewer's edges, and the menu collapses to the
+       Close box without moving. --folio-ratio is the PDF page ratio (set on <html> by Layout.astro). svh, not dvh:
+       the width must not change as a phone browser's toolbar moves. */
+    --site-fit: calc((100svh - 2 * var(--viewer-pad-y) - var(--viewer-foot)) * var(--folio-ratio) + 2 * var(--viewer-side));
+    --site-x: max(var(--page-min), var(--site-fit));
+    /* How far the viewer's page sits below the top when the width, not the height, limits it (it is then centred): the
+       menus and the Close box follow its top edge. Zero while the height limits it. Mirrors the viewer's own
+       width: the content width less the arrow columns. */
+    /* Small screens have no top padding on the header row, so the Close box naturally sits higher than the page's top
+       (the viewer keeps its minimum padding): the right-hand column is lowered by that difference to line up with it. */
+    --viewer-lift: max(0px, calc(var(--viewer-pad-y) + var(--viewer-foot) - var(--brand-pt) - (var(--brand-h) - var(--ctl-h)) / 2));
+    --viewer-shift: max(0px, calc((100svh - 2 * var(--viewer-pad-y) - var(--viewer-foot) - (min(100vw - 2 * var(--pad), var(--site-fit)) - 2 * var(--viewer-side)) / var(--folio-ratio)) / 2));
     --textarea-h: 10rem; /* minimum height of the message field */
     /* Motion */
     --dur-fast: 150ms; /* hover and focus colour changes */
@@ -152,6 +169,7 @@
     --z-tip: 5; /* tooltip; its pointer sits one above */
     --z-tip-arrow: 6;
     --z-sticky: 20; /* pinned section title */
+    --z-modal: 25; /* dialogs: above the pinned titles (--z-sticky), below the logo row so the header stays on top */
     --z-brand: 30; /* logo row */
     --z-skip: 60; /* skip link, above everything */
     --hero-size: min(clamp(2.75rem, 1.2rem + 6vw, 7rem), 11svh); /* hero headline size */
@@ -164,13 +182,18 @@
     --viewer-foot: calc(var(--viewer-tick) + var(--viewer-gap)); /* portfolio viewer: rail row plus gap above the page */
     --viewer-edge: 25%; /* portfolio viewer: click zone on each side of the page, a quarter of its width */
     --viewer-side: calc(var(--ctl-h) * 2); /* portfolio viewer: the arrow, then the menu column beside it */
-    --viewer-pad: var(--space-3); /* portfolio viewer, phones: padding at the screen edge (arrow zone, menu) */
+    --viewer-pad-y: max(var(--space-3), calc(var(--brand-pt) + (var(--brand-h) - var(--ctl-h)) / 2 - var(--viewer-foot))); /* portfolio viewer: space above and below the page area; the page top (below the rail) then lands level with the header menu top */
     --box: calc(var(--ctl-h) - 2px); /* a menu box: one control, less the 1px border either side */
+    --menu-gap: 1px; /* a menu: the divider between two boxes */
+    --header-h: calc(var(--brand-pt) + var(--brand-h)); /* the layout header row: padding above plus height */
     --radius-inner: calc(var(--radius) - 1px); /* the radius inside a 1px border */
     --half-diag: 0.7071; /* half the diagonal of a unit square, for the tooltip pointer */
     --textarea-h-phone: 6.5rem; /* message field minimum height on phones */
-    --tool-box: 6rem; /* about: a tool tile is an exact square of this size */
-    --tool-icon: var(--space-12); /* about: tool logo box */
+    --tool-box: 6rem; /* about: a tool tile is a square, at least this size; a row stretches its tiles to the full width */
+    --tool-icon-share: 0.5; /* about: tool logo box, as a share of the tile width */
+    --tool-fit: 1.2; /* about: the tallest a tall logo may be, as a multiple of --tool-icon */
+    --tool-large-scale: 1.75; /* about: a name-only tile marked large, as a multiple of the heading size */
+    --tool-border: 1px; /* about: tile border width */
     --tool-label: 0.6875rem; /* about: tool name, smaller than --text-meta so the logo can lead */
     --chip-min: 6.5rem; /* phone chip grid: narrowest chip */
     --chip-dot: var(--space-3_5); /* contact chips: checkbox square */
@@ -194,13 +217,39 @@
       --field-h: var(--ctl-h);
     }
   }
+  /* Touch: controls reach the 44px minimum (a menu box is --ctl-h less its 2px of border) */
+  @media (pointer: coarse) {
+    :root {
+      --ctl-h: 3rem;
+    }
+  }
+  :root {
+    --pad: var(--space-5); /* the side padding of a page, and so the header */
+  }
+  @media (min-width: 640px) {
+    :root {
+      --pad: var(--space-8);
+    }
+  }
+  @media (min-width: 1024px) {
+    :root {
+      --pad: var(--space-12);
+    }
+  }
   @media (min-width: 768px) {
     :root {
       --brand-pt: 2rem;
       --brand-h: 4rem;
     }
   }
-  /* Logo row: sticky, so the logo and the nav pill (fixed on the same centre line) stay put.
+  /* Short screens (landscape phones): the header row would eat a quarter of the height */
+  @media (max-height: 500px) {
+    :root {
+      --brand-pt: 0rem;
+      --brand-h: 3.5rem;
+    }
+  }
+  /* Logo row: sticky, so the logo and the site menu stay put.
      Content fades out under it instead of showing a hard bar. */
   .brand-row {
     position: sticky;
@@ -208,7 +257,7 @@
     z-index: var(--z-brand);
     isolation: isolate;
     padding-top: var(--brand-pt);
-    height: calc(var(--brand-pt) + var(--brand-h));
+    height: var(--header-h);
   }
   .brand-row::before {
     content: "";
@@ -221,8 +270,16 @@
   }
   /* At the very top of the page the backing is transparent (the hero backdrop shows behind the logo);
      the script adds .scrolled on <html> once the page moves. Without JS it stays solid. */
-  html.js:not(.scrolled) .brand-row::before {
-    opacity: 0;
+  @media (scripting: enabled) {
+    html:not(.scrolled) .brand-row::before {
+      opacity: 0;
+    }
+  }
+  main:focus {
+    outline: none; /* the skip link moves focus here (tabindex -1); no ring around the whole page */
+  }
+  html {
+    scrollbar-gutter: stable; /* the page does not shift when a dialog locks scrolling */
   }
   html:has(dialog[open]) {
     overflow: hidden; /* lock page scroll behind the modal */
@@ -253,21 +310,10 @@
 @layer components {
   /* Layout container */
   .page {
-    --pad: var(--space-5);
     width: 100%;
-    max-width: calc(var(--page-max) + 2 * var(--pad));
+    max-width: min(100%, calc(var(--site-x) + 2 * var(--pad)));
     margin-inline: auto;
     padding-inline: max(var(--pad), env(safe-area-inset-left)) max(var(--pad), env(safe-area-inset-right));
-  }
-  @media (min-width: 640px) {
-    .page {
-      --pad: var(--space-8);
-    }
-  }
-  @media (min-width: 1024px) {
-    .page {
-      --pad: var(--space-12);
-    }
   }
 
   /* Separator pipe between inline items (ticket line, deliverables). One tune: --sep-gap. */
@@ -299,9 +345,13 @@
     transition: color var(--dur-fast) var(--ease-snap);
   }
   /* Hover and focus are a colour change only; the resting hairline underline never changes. */
-  .link:hover,
   .link:focus-visible {
     color: var(--color-accent-hi);
+  }
+  @media (hover: hover) {
+    .link:hover {
+      color: var(--color-accent-hi);
+    }
   }
 
   /* Buttons */
@@ -325,8 +375,10 @@
     background: var(--color-accent);
     color: var(--color-on-accent);
   }
-  .btn-primary:hover {
-    background: var(--color-accent-hi);
+  @media (hover: hover) {
+    .btn-primary:hover {
+      background: var(--color-accent-hi);
+    }
   }
   .btn-primary:focus-visible {
     outline-color: var(--color-hi);
@@ -344,20 +396,22 @@
     color: var(--color-hi);
     font-weight: 500;
   }
-  .btn-secondary:hover {
-    background: var(--color-raised);
-    border-color: var(--color-text);
+  @media (hover: hover) {
+    .btn-secondary:hover {
+      background: var(--color-raised);
+      border-color: var(--color-text);
+    }
   }
 
-  /* Menu (Menu.astro + IconButton.astro): a bordered box of square boxes, one control wide. The 1px gap
+  /* Menu (Menu.astro + IconButton.astro): a bordered box of square boxes, one control wide. The gap (--menu-gap)
      shows the box's own line colour as the dividers, so every box stays an exact square (--box). Used
-     by the modal's Close, the portfolio menu and its key help; the parent scope only positions it. */
+     by the site menu, the portfolio menu and its key help; the parent scope only positions it. */
   .menu {
     --menu-r-first: var(--radius-inner) var(--radius-inner) 0 0; /* corners of the first and last box */
     --menu-r-last: 0 0 var(--radius-inner) var(--radius-inner);
     display: flex;
     flex-direction: column;
-    gap: 1px;
+    gap: var(--menu-gap);
     background: var(--color-line);
     border: 1px solid var(--color-line);
     border-radius: var(--radius);
@@ -389,10 +443,18 @@
   .menu-btn:only-child {
     border-radius: var(--radius-inner);
   }
-  .menu-btn:hover,
+  .menu-btn[aria-current],
   .menu-btn:focus-visible {
     color: var(--color-accent);
-    outline: none; /* focus shows as the hover colour, not a ring */
+  }
+  .menu-btn:focus-visible {
+    outline: var(--focus-w) solid var(--color-accent); /* colour change and a ring, inside the box (the menu clips) */
+    outline-offset: calc(-1 * var(--focus-w) - 1px);
+  }
+  @media (hover: hover) {
+    .menu-btn:hover {
+      color: var(--color-accent);
+    }
   }
   .menu-btn > svg {
     width: var(--icon-xl);
@@ -401,13 +463,21 @@
   /* Text key (IconButton text="h-l"): not interactive, the keys of a pair sit side by side in one box. */
   .menu-key {
     cursor: default;
+    color: var(--color-muted); /* key letters are text: 4.5:1 or better */
     gap: var(--space-1_5);
     font-size: var(--text-sm);
     font-weight: 600;
     line-height: var(--leading-tight);
     white-space: nowrap;
   }
-  /* Tooltip for icon buttons: data-tip="Label", data-tip-side="left" to open to the left (default is
+  .menu-key {
+    gap: 0; /* arrow keys touch: they sit as one pair, with room to the box edge */
+  }
+  .menu-key > svg {
+    width: 1rem;
+    height: 1rem;
+  }
+  /* Tooltip for icon buttons: data-tip="Label", data-tip-side="left" | "right" | "bottom" (centred under, with the pointer) (default is
      below, right-aligned). Pointer devices only; shows on hover and keyboard focus after a short delay. */
   [data-tip] {
     --tip-arrow: 0.625rem;
@@ -424,7 +494,7 @@
     background: var(--color-bg); /* the buttons' own resting fill */
     border: 1px solid var(--color-line);
     border-radius: var(--radius);
-    color: var(--color-control); /* the buttons' own resting icon colour */
+    color: var(--color-text); /* text, so 4.5:1 or better (the resting icon colour is 4.1:1) */
     font-size: var(--text-sm);
     line-height: var(--leading-tight);
     font-weight: 500;
@@ -484,7 +554,31 @@
     border-bottom: 1px solid var(--color-line);
     border-left: 1px solid var(--color-line);
   }
+  /* Bottom tips (the header's row menu): centred under the button, the pointer on top touching its lower edge. */
+  [data-tip][data-tip-side="bottom"] {
+    --tip-s: calc(var(--space-1_5) * -1); /* nudged up toward its button */
+  }
+  [data-tip][data-tip-side="bottom"]::after {
+    inset-block: auto;
+    margin-block: 0;
+    top: var(--tip-off);
+    right: auto;
+    left: 50%;
+    transform: translate(-50%, var(--tip-s));
+  }
+  [data-tip][data-tip-side="bottom"]::before {
+    top: calc(var(--tip-off) - var(--tip-arrow) / 2);
+    left: 50%;
+    margin: 0 0 0 calc(var(--tip-arrow) / -2);
+    border-top: 1px solid var(--color-line);
+    border-left: 1px solid var(--color-line);
+    transform: translateY(var(--tip-s)) rotate(45deg);
+  }
   @media (hover: hover) {
+    [data-tip][data-tip-side="bottom"]:hover::after,
+    [data-tip][data-tip-side="bottom"]:focus-visible::after {
+      transform: translateX(-50%);
+    }
     [data-tip]:hover::before,
     [data-tip]:focus-visible::before,
     [data-tip]:hover::after,
@@ -544,45 +638,68 @@
   .page-body {
     padding-bottom: var(--page-end);
   }
-  /* Modals (Modal.astro): a compact head row (logo left, Close menu right), body fills the rest. */
+  /* Modals (Modal.astro): padded below the layout header (--header-h), then the title, then the body. */
   .modal {
     isolation: isolate;
     background: var(--color-bg);
   }
+  .modal:not([data-bare]) {
+    padding-top: var(--header-h); /* clear of the layout header, which sits above the dialog */
+  }
   @media (prefers-reduced-motion: no-preference) {
-    /* Modals fade and rise in, and fade and settle back out on close or Esc. Native <dialog> transitions:
-       display and overlay are discrete so the exit plays before the dialog leaves the top layer. */
+    /* Modals fade and rise in, and fade and settle back out on close or Esc. The layout header (logo
+       and site menu) is not part of the dialog, so it stays put while the backing and the dialog animate. The dialog's own background moves to ::before so it can fade. Native
+       <dialog> transitions: display is discrete so the exit plays before the dialog is hidden. */
     .modal {
       --modal-from: translateY(var(--space-3)) scale(0.985); /* closed pose: lowered and slightly small */
+      background: transparent;
+      transition: display var(--dur-fast) allow-discrete;
+    }
+    .modal::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      background: var(--color-bg);
+      opacity: 0;
+      transition: opacity var(--dur-fast) var(--ease-snap);
+    }
+    .modal > :not(.hero-dots) {
       opacity: 0;
       transform: var(--modal-from);
       transition:
         opacity var(--dur-fast) var(--ease-snap),
-        transform var(--dur-fast) var(--ease-snap),
-        display var(--dur-fast) allow-discrete,
-        overlay var(--dur-fast) allow-discrete;
+        transform var(--dur-fast) var(--ease-snap);
     }
-    .modal[open] {
+    .modal > .hero-dots {
+      transition: opacity var(--dur-fast) var(--ease-snap);
+    }
+    .modal:not([open]) > .hero-dots {
+      opacity: 0;
+    }
+    .modal[open]::before {
+      opacity: 1;
+    }
+    .modal[open] > :not(.hero-dots) {
       opacity: 1;
       transform: none;
+    }
+    .modal[open] > .hero-dots {
+      opacity: var(--modal-dots-o);
+    }
+    .modal[open]::before,
+    .modal[open] > * {
       transition-duration: var(--dur-modal);
     }
     @starting-style {
-      .modal[open] {
+      .modal[open]::before {
+        opacity: 0;
+      }
+      .modal[open] > :not(.hero-dots) {
         opacity: 0;
         transform: var(--modal-from);
       }
-    }
-    .modal::backdrop {
-      opacity: 0;
-      transition: opacity var(--dur-fast) var(--ease-snap), display var(--dur-fast) allow-discrete, overlay var(--dur-fast) allow-discrete;
-    }
-    .modal[open]::backdrop {
-      opacity: 1;
-      transition-duration: var(--dur-modal);
-    }
-    @starting-style {
-      .modal[open]::backdrop {
+      .modal[open] > .hero-dots {
         opacity: 0;
       }
     }
@@ -591,29 +708,40 @@
     inset: 0;
     opacity: var(--modal-dots-o);
   }
-  .modal-head {
-    flex: none;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding-top: var(--brand-pt);
-    height: calc(var(--brand-pt) + var(--brand-h)); /* the same row as the site's logo row */
+  /* Without JavaScript the menu links (/#about, /#portfolio, /#contact) still work: the targeted dialog is shown */
+  @media (scripting: none) {
+    .modal:target {
+      display: flex;
+    }
+    .modal:target::before {
+      opacity: 1;
+    }
+    .modal:target > :not(.hero-dots) {
+      opacity: 1;
+      transform: none;
+    }
+    .modal:target > .hero-dots {
+      opacity: var(--modal-dots-o);
+    }
   }
   .modal-titlebar {
     flex: none;
     padding-bottom: var(--sect-gap);
   }
-  /* Bare modal (portfolio): no header, the body takes the whole viewport and is as wide as it can be. */
+  /* Bare modal (portfolio): no spacer, the body takes the whole viewport. Its width is the site's content
+     width, the same as the header row and every page (see --site-x). The page itself reaches up to the top padding:
+     the header row only occupies the outer columns, beside it. */
   .modal[data-bare] .modal-body {
-    --pad: var(--space-4);
-    max-width: none;
-    padding-block: var(--space-4);
+    padding-block: var(--viewer-pad-y);
+    padding-bottom: max(var(--viewer-pad-y), env(safe-area-inset-bottom));
   }
   .modal-body {
     flex: 1 1 0;
     min-height: 0;
     overflow-y: auto; /* only a fallback, e.g. a phone with the keyboard open */
-    padding-bottom: var(--space-4);
+    overscroll-behavior: contain; /* no scroll chaining to the page behind */
+    padding-bottom: max(var(--space-4), env(safe-area-inset-bottom));
+    scroll-padding-block: var(--space-4);
   }
 
   /* Portfolio viewer (index.astro): the page gets all the height there is. A fine progress rail runs
@@ -656,7 +784,7 @@
   .viewer-stage {
     position: relative;
     aspect-ratio: var(--folio-ratio);
-    touch-action: pan-y pinch-zoom;
+    touch-action: none; /* viewer.ts handles the swipe, pinch and pan itself */
     overflow: hidden; /* pages slide inside the frame */
     border-radius: var(--radius);
     border: 1px solid var(--color-line);
@@ -671,6 +799,13 @@
   }
   .viewer-pages {
     position: relative;
+    transform-origin: 0 0; /* the pinch zoom (viewer.ts) scales from the corner */
+  }
+  .viewer-stage[data-zoomed] .viewer-pages {
+    will-change: transform;
+  }
+  .viewer-stage[data-zoomed] .viewer-half {
+    pointer-events: none; /* a tap while zoomed does not turn the page */
   }
   .viewer-slide {
     position: absolute;
@@ -767,15 +902,36 @@
      right-hand arrow column (the next arrow stays centred below it). */
   .viewer-menu {
     position: absolute;
-    top: 0;
-    /* starts where the next arrow tab ends: one arrow width past the page's right edge */
+    /* The columns hug the page, one arrow width out, and the header row is as wide as the viewer (see "Header
+       over the portfolio"), so its logo and Close box sit exactly above them: this starts one box and a gap
+       below the header menu's bottom (the viewer itself starts higher, at --viewer-pad-y). */
+    top: calc(var(--brand-pt) + (var(--brand-h) - var(--ctl-h)) / 2 + var(--ctl-h) - var(--viewer-pad-y) + var(--viewer-shift) + var(--viewer-lift)); /* touching the Close box: it starts where the Close menu's bottom border (the divider) ends */
+    /* beside the right-hand arrow: one arrow width past the page's right edge */
     left: var(--viewer-reach);
     z-index: var(--z-menu);
   }
-  /* Key help: the same menu, mirrored on the left; hover shows the keys. */
+  /* Under the Close box, one block with it: no rounding where they meet */
+  .viewer-menu:not(.viewer-keys) {
+    --menu-r-first: 0;
+    border-top-width: 0;
+    border-radius: 0 0 var(--radius) var(--radius);
+  }
+  /* Key help: the same menu, mirrored on the left (below the logo); hover shows the keys. */
+  @media (hover: none) {
+    .viewer-keys {
+      display: none; /* no keyboard: no key help (the phone block below hides it in portrait too) */
+    }
+  }
   .viewer-keys {
     left: auto;
     right: var(--viewer-reach);
+    top: calc(var(--viewer-foot) + var(--viewer-shift)); /* level with the top of the page (below the rail), as the right-hand column's Close box is */
+  }
+  @media (min-width: 640px), (orientation: landscape) {
+    /* the menus anchor to .viewer (same width, and a top that does not move with the page), not to the row holding the page and its arrows */
+    .viewer-main {
+      position: static;
+    }
   }
   /* The rail: one fine segment per page along the top of the page, orange for the current one. */
   .viewer-rail {
@@ -800,8 +956,10 @@
     background: var(--color-line);
     transition: background-color var(--dur-fast) var(--ease-snap);
   }
-  .viewer-tick:hover::before {
-    background: var(--color-control);
+  @media (hover: hover) {
+    .viewer-tick:hover::before {
+      background: var(--color-control);
+    }
   }
   .viewer-tick[data-on]::before {
     background: var(--color-accent);
@@ -810,11 +968,17 @@
     display: none;
     position: absolute;
     inset-inline: 0;
-    bottom: 0;
+    bottom: calc(env(safe-area-inset-bottom) + var(--space-8));
+    padding-inline: var(--space-6);
     text-align: center;
-    color: var(--color-muted);
+    color: var(--color-dim);
+    font-size: 0.625rem; /* smaller than --text-meta: an aside, not a label */
+    line-height: 1rem;
+    font-weight: 500;
   }
-  @media (max-width: 639.98px) {
+  /* Portrait phones only: a landscape phone is short, so it keeps the desktop layout (height-fitted page,
+     arrows and menus beside it); the stage here is as wide as the screen and would not fit its height. */
+  @media (max-width: 639.98px) and (orientation: portrait) {
     .viewer {
       margin-inline: calc(-1 * var(--pad)); /* the page runs edge to edge on phones */
     }
@@ -825,12 +989,18 @@
     .viewer-main {
       grid-template-columns: auto;
     }
-    /* No hover on phones: the arrow zones sit over the page edges with their chips always shown */
+    /* The arrows sit below the page, one under each bottom corner, flush with it (square top, rounded bottom outer corner) */
+    :root {
+      --viewer-shift: 0px;
+      --viewer-lift: 0px;
+    }
     .viewer-side {
       position: absolute;
-      inset-block: 0;
+      top: 100%;
+      bottom: auto;
       z-index: var(--z-side);
-      width: calc(var(--ctl-h) + var(--viewer-pad)); /* no menu column beside the page on phones */
+      width: var(--ctl-h);
+      height: var(--ctl-h);
     }
     .viewer-chip {
       color: var(--color-accent); /* no hover on phones, so the arrows stay primary */
@@ -844,14 +1014,14 @@
       justify-content: flex-end;
     }
     .viewer-side[data-prev] .viewer-chip {
+      border-top: 0;
       border-left: 0;
-      border-right: 1px solid var(--color-line);
-      border-radius: 0 var(--radius) var(--radius) 0;
+      border-radius: 0 0 var(--radius) 0;
     }
     .viewer-side[data-next] .viewer-chip {
+      border-top: 0;
       border-right: 0;
-      border-left: 1px solid var(--color-line);
-      border-radius: var(--radius) 0 0 var(--radius);
+      border-radius: 0 0 0 var(--radius);
     }
     .viewer-stage {
       border-radius: 0;
@@ -860,15 +1030,22 @@
     .viewer-keys {
       display: none; /* no keyboard on phones */
     }
-    /* Phones: the menu becomes a row above the page, in the free space over it */
+    /* Phones: Open and Download join the Close box in the header row as one block (the Close box is the right end;
+       its left edge is this menu's right edge). The page is centred in the viewer, so its top is found from the
+       viewer's size; the top here is the Close box's, relative to it. */
     .viewer-menu {
-      top: auto;
+      top: calc(
+        var(--brand-pt) + (var(--brand-h) - var(--ctl-h)) / 2 - var(--viewer-pad-y) -
+          ((100cqh - var(--viewer-foot) - 100cqw / var(--folio-ratio)) / 2 + var(--viewer-foot))
+      );
+      bottom: auto;
       left: auto;
-      right: var(--viewer-pad);
-      bottom: calc(100% + var(--rail-h) + var(--viewer-foot));
+      right: calc(max(var(--pad), env(safe-area-inset-right)) + var(--box) + 1px);
       flex-direction: row;
+      border-right: 0;
+      border-radius: var(--radius) 0 0 var(--radius);
       --menu-r-first: var(--radius-inner) 0 0 var(--radius-inner);
-      --menu-r-last: 0 var(--radius-inner) var(--radius-inner) 0;
+      --menu-r-last: 0;
     }
     .viewer-rail {
       padding-inline: 0; /* square corners on phones */
@@ -889,7 +1066,7 @@
   /* Split modals (contact, about): intro left, main block right, content centred in the viewport. */
   .modal-body:has(.split) {
     display: grid;
-    align-content: center;
+    align-content: safe center; /* "safe": taller than the box (landscape phone, keyboard open) starts at the top, scrollable */
   }
   .split {
     display: grid;
@@ -915,6 +1092,9 @@
   }
   .contact-send .btn-primary {
     width: 100%;
+  }
+  .contact-error:empty {
+    display: none;
   }
   .contact-error {
     color: var(--color-err);
@@ -972,8 +1152,10 @@
     cursor: pointer;
     transition: color var(--dur-fast) var(--ease-snap), border-color var(--dur-fast) var(--ease-snap);
   }
-  .tab:hover {
-    color: var(--color-hi);
+  @media (hover: hover) {
+    .tab:hover {
+      color: var(--color-hi);
+    }
   }
   .tab[aria-selected="true"] {
     color: var(--color-accent);
@@ -991,9 +1173,11 @@
     row-gap: var(--space-5);
   }
   .about-list h3 {
-    font-size: var(--text-base);
-    font-weight: 600;
-    color: var(--color-hi);
+    font-size: var(--text-lead);
+    line-height: var(--text-lead--line-height);
+    letter-spacing: var(--text-lead--letter-spacing);
+    font-weight: 700;
+    color: var(--color-accent);
   }
   .about-list p {
     margin-top: var(--space-1);
@@ -1010,20 +1194,21 @@
   /* Tool tiles (ToolTile.astro): a link, logo over name, muted until hovered */
   .tools {
     display: grid;
-    grid-template-columns: repeat(auto-fill, var(--tool-box));
+    grid-template-columns: repeat(auto-fill, minmax(var(--tool-box), 1fr));
     gap: var(--space-1_5);
   }
   .tool {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-end; /* the name sits on the tile's base, so the names line up across a row */
     gap: var(--space-2);
     box-sizing: border-box;
-    width: var(--tool-box);
-    height: var(--tool-box); /* fixed, so a long name can never stretch the tile */
+    container-type: inline-size; /* the logo scales with the tile (cqw) */
+    aspect-ratio: 1; /* square whatever the width, so a long name can never stretch the tile */
+    min-width: 0;
     padding: var(--space-2);
-    border: 1px solid var(--color-line);
+    border: var(--tool-border) solid var(--color-line);
     border-radius: var(--radius);
     background: var(--color-surface);
     font-size: var(--tool-label);
@@ -1035,10 +1220,15 @@
     color: var(--tool-c);
     transition: color var(--dur-fast) var(--ease-snap), border-color var(--dur-fast) var(--ease-snap);
   }
-  .tool:hover,
   .tool:focus-visible {
     border-color: var(--color-control);
     --tool-c: var(--color-accent);
+  }
+  @media (hover: hover) {
+    .tool:hover {
+      border-color: var(--color-control);
+      --tool-c: var(--color-accent);
+    }
   }
   .about-groups {
     display: grid;
@@ -1049,14 +1239,27 @@
   }
   /* A tile with only a name (no logo or mark): the words fill the square */
   .tool-text {
+    justify-content: center;
     font-size: var(--text-sm);
     white-space: normal;
+  }
+  .tool-large {
+    font-size: calc(var(--text-h2) * var(--tool-large-scale));
+    line-height: 1;
+    padding-bottom: var(--space-2); /* the dots sit on the baseline: lift them toward the middle */
   }
   .tool-mark {
     display: grid;
     place-items: center;
-    width: var(--tool-icon);
-    height: var(--tool-icon);
+    /* Every logo gets the same area (--tool-icon squared) from its own shape (--r, width over height, set by
+       ToolTile): a wide logo such as Go is wider and shorter than a square one, within the tile's inner width
+       and the height left above the name. */
+    --tool-icon: calc(100cqw * var(--tool-icon-share));
+    --tool-max-h: calc(var(--tool-icon) * var(--tool-fit));
+    --tool-max-w: calc(100cqw - 2 * var(--space-2) - 2 * var(--tool-border));
+    margin-block: auto; /* centred in the space above the name, whatever the logo's height */
+    aspect-ratio: var(--r, 1);
+    width: min(var(--tool-max-w), calc(var(--tool-max-h) * var(--r, 1)), calc(var(--tool-icon) * sqrt(var(--r, 1))));
     color: var(--tool-c);
     font-size: var(--text-h2);
     font-weight: 600;
@@ -1076,7 +1279,7 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    min-height: calc(100svh - var(--brand-pt) - var(--brand-h));
+    min-height: calc(100svh - var(--header-h));
     padding-bottom: var(--space-10);
     position: relative;
     isolation: isolate;
@@ -1125,9 +1328,20 @@
     .hero-dots::before {
       animation: hero-breath var(--hero-pulse-t) ease-in-out infinite alternate;
     }
+    html:has(dialog.modal[open]) .hero-dots::before {
+      animation-play-state: paused; /* nothing to see behind a dialog: do not re-rasterise the filtered layer */
+    }
+  }
+  @media (pointer: coarse) {
+    .hero-dots::before {
+      animation: none; /* the filtered full-screen layer is costly on phones */
+    }
   }
   .hero-body .meta {
     color: var(--color-text); /* muted text drops to 4.3:1 over the densest dots */
+  }
+  .hero-body .hero-kicker {
+    color: var(--color-accent); /* after the rule above, which it overrides */
   }
   .hero-body {
     flex: 1;
@@ -1136,6 +1350,7 @@
     justify-content: center;
     padding-block: var(--space-6);
   }
+
   .hero-title {
     color: var(--color-hi);
     max-width: var(--hero-title-measure);
@@ -1284,6 +1499,108 @@
     outline: var(--focus-w) solid var(--color-accent);
     outline-offset: var(--focus-off);
   }
+  /* The portfolio is height-limited on a short, wide window: with the floor (--page-min) the header would be wider than
+     the viewer and the Close box would drift off its column. Open, the header follows the viewer exactly. */
+  html[data-portfolio] {
+    --site-x: var(--site-fit);
+  }
+  /* Site header (Header.astro, SiteNav.astro). Both parts are named for the page-change transition (see the end
+     of this file).
+
+     With the portfolio open (html[data-portfolio], set by modal.ts) the header folds into the viewer instead of
+     taking a strip: the menu collapses in place (it is right-aligned on the content edge) to its Close box, the
+     top box of the viewer's right-hand column, and the logo fades out. Closing reverses it. The boxes keep their
+     solid background and only shrink while the icon fades, because fading a whole box lets the menu's divider
+     colour show through as a lighter box. */
+  .brand-row > a {
+    view-transition-name: site-brand;
+  }
+  .brand-row > .menu {
+    view-transition-name: site-menu;
+  }
+  .site-menu .menu-btn[data-menu-close] {
+    width: 0;
+    margin-inline-start: calc(-1 * var(--menu-gap)); /* takes the divider before it with it */
+    visibility: hidden;
+  }
+  .site-menu .menu-btn[data-menu-close] > svg {
+    opacity: 0;
+  }
+  /* the visible end box keeps the menu's rounded outer corners while the Close box is collapsed */
+  .site-menu .menu-btn:nth-last-child(2) {
+    border-radius: var(--menu-r-last);
+  }
+  html[data-portfolio] .brand-row {
+    pointer-events: none;
+  }
+  html[data-portfolio] .brand-row::before {
+    opacity: 0;
+  }
+  html[data-portfolio] .brand-row > .menu {
+    pointer-events: auto;
+  }
+  html[data-portfolio] .brand-row > a {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+  html[data-portfolio] .site-menu {
+    gap: 0;
+    transform: translateY(calc(var(--viewer-shift) + var(--viewer-lift))); /* with the page, when its width limits it (see --viewer-shift) */
+  }
+  html[data-portfolio] .site-menu .menu-btn:not([data-menu-close]) {
+    width: 0;
+    visibility: hidden;
+  }
+  html[data-portfolio] .site-menu .menu-btn:not([data-menu-close]) > svg {
+    opacity: 0;
+  }
+  html[data-portfolio] .site-menu .menu-btn[data-menu-close] {
+    width: var(--box);
+    margin-inline-start: 0;
+    border-radius: var(--radius-inner);
+    visibility: visible;
+  }
+  html[data-portfolio] .site-menu .menu-btn[data-menu-close] > svg {
+    opacity: 1;
+  }
+  /* With the viewer's menu below it, the Close box is the top of one block (see .viewer-menu) */
+  @media (min-width: 640px), (orientation: landscape) {
+    html[data-portfolio] .site-menu {
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+    html[data-portfolio] .site-menu .menu-btn[data-menu-close] {
+      border-radius: var(--radius-inner) var(--radius-inner) 0 0;
+    }
+  }
+  /* portrait phones: the Close box is the right end of one block with Open and Download */
+  @media (max-width: 639.98px) and (orientation: portrait) {
+    html[data-portfolio] .site-menu {
+      border-radius: 0 var(--radius) var(--radius) 0;
+    }
+    html[data-portfolio] .site-menu .menu-btn[data-menu-close] {
+      border-radius: 0 var(--radius-inner) var(--radius-inner) 0;
+    }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .brand-row > a {
+      transition: opacity var(--dur-fast) var(--ease-snap), visibility var(--dur-fast);
+    }
+    .site-menu {
+      transition: gap var(--dur-modal) var(--ease-snap);
+    }
+    .site-menu .menu-btn {
+      transition:
+        width var(--dur-modal) var(--ease-snap),
+        margin var(--dur-modal) var(--ease-snap),
+        visibility var(--dur-modal), /* visible for the whole shrink or grow, hidden only once it is over */
+        color var(--dur-fast) var(--ease-snap);
+    }
+    .site-menu .menu-btn > svg {
+      transition: opacity var(--dur-fast) var(--ease-snap);
+    }
+  }
 }
 
 @layer utilities {
@@ -1348,4 +1665,35 @@ textarea:-webkit-autofill:focus {
   -webkit-text-fill-color: var(--color-hi);
   -webkit-box-shadow: 0 0 0 1000px var(--color-surface) inset;
   transition: background-color 5000s ease-in-out 0s;
+}
+
+/* Page changes (cross-document view transitions, no script): the page fades, while the logo and the site
+   menu are named (view-transition-name, in "Site header" above) so they are carried across in place instead
+   of fading with it. They sit at the same spot on every page, so the morph between them is a no-op. */
+@view-transition {
+  navigation: auto;
+}
+/* The logo and menu are identical on both pages: show the new one as it is. The default cross-fade blends the
+   old and new snapshots with plus-lighter, which brightens them into a lighter box while it runs. */
+::view-transition-group(site-brand),
+::view-transition-group(site-menu) {
+  animation: none;
+}
+::view-transition-old(site-brand),
+::view-transition-old(site-menu) {
+  display: none;
+}
+::view-transition-new(site-brand),
+::view-transition-new(site-menu) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: var(--dur);
+}
+@media (prefers-reduced-motion: reduce) {
+  @view-transition {
+    navigation: none;
+  }
 }

@@ -14,9 +14,25 @@ const { title, accent } = data.hero;
 const at = accent ? title.indexOf(accent) : -1;
 if (accent && at < 0) throw new Error(`[home] hero.accent "${accent}" is not part of hero.title`);
 const head = at < 0 ? [title, "", ""] : [title.slice(0, at), accent!, title.slice(at + accent!.length)];
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    { "@type": "WebSite", "@id": "https://tmox.net/#site", url: "https://tmox.net/", name: "TMOX", inLanguage: "en" },
+    {
+      "@type": "ProfessionalService",
+      "@id": "https://tmox.net/#service",
+      name: "TMOX",
+      url: "https://tmox.net/",
+      description: data.description,
+      image: "https://tmox.net/og.png",
+      areaServed: "Worldwide",
+      serviceType: ["Brand identity", "Print and document design", "Web and UI design"],
+    },
+  ],
+};
 ---
 
-<Layout title={data.title} description={data.description} footer={false}>
+<Layout title={data.title} description={data.description} jsonLd={jsonLd} footer={false}>
   <!-- Duotone for the hero dots: luminance mapped from slate #1e222e (shadows) to orange #ff9e64 (highlights). -->
   <svg width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute">
     <filter id="duotone" color-interpolation-filters="sRGB">
@@ -29,11 +45,12 @@ const head = at < 0 ? [title, "", ""] : [title.slice(0, at), accent!, title.slic
     </filter>
   </svg>
 
-  <!-- The whole site: one screen. Three buttons open the about, portfolio and contact modals. -->
+  <!-- The whole site: one screen, plus three dialogs (About, Work/portfolio, Contact) opened from the site menu in the
+       header (Header.astro, SiteNav.astro). The hero keeps the one button, Get in touch. -->
   <section id="top" class="hero">
     <div class="hero-dots" aria-hidden="true"></div>
     <div class="page hero-body">
-      <p class="meta hero-in" style="--i:0">
+      <p class="meta hero-kicker hero-in" style="--i:0">
         <Meta text={data.hero.kicker} />
       </p>
       <h1 class="mt-4 display-title hero-title hero-in" style="--i:1">
@@ -41,9 +58,7 @@ const head = at < 0 ? [title, "", ""] : [title.slice(0, at), accent!, title.slic
       </h1>
       <p class="mt-6 text-lead text-text max-w-measure hero-in" style="--i:2">{data.hero.lead}</p>
       <div class="mt-6 flex flex-wrap items-center gap-x-3 gap-y-4 hero-in" style="--i:3">
-        <button type="button" class="btn-secondary" data-modal-open="about">{data.hero.aboutCta}</button>
-        <a class="btn-secondary" href="/portfolio.pdf" data-modal-open="portfolio">{data.hero.portfolioCta}</a>
-        <button type="button" class="btn-primary" data-modal-open="contact">{data.hero.contactCta}</button>
+        <a href="#contact" class="btn-primary" data-modal-open="contact">{data.hero.contactCta}</a>
       </div>
       {
         data.hero.availability && (
@@ -56,10 +71,9 @@ const head = at < 0 ? [title, "", ""] : [title.slice(0, at), accent!, title.slic
     </div>
   </section>
 
-  <!-- Portfolio modal: the viewer (components/Viewer.astro). Without JS the button on the home screen is
-       a plain link to the PDF. -->
+  <!-- Portfolio dialog: the viewer (components/Viewer.astro). Without JS the Work link in the menu goes to /#portfolio and
+       nothing opens; the PDF itself stays at /portfolio.pdf. -->
   <Modal id="portfolio" title={data.folio.title} variant="bare">
-    <div slot="backdrop" class="hero-dots" aria-hidden="true"></div>
     <Viewer />
   </Modal>
 

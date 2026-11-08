@@ -18,7 +18,6 @@ export default defineConfig({
       fallbacks: ["sans-serif"],
     },
   ],
-  prefetch: { prefetchAll: false, defaultStrategy: "hover" },
   integrations: [
     icon(),
     sitemap({

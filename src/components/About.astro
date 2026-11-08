@@ -21,7 +21,6 @@ const panel = (id: string, first = false) => ({
 ---
 
 <Modal id="about" title={a.title} variant="custom-title">
-  <div slot="backdrop" class="hero-dots" aria-hidden="true"></div>
   <div class="split">
     <div class="split-intro">
       <h2 id="about-title" class="sect-title display-title is-tight">{a.title}</h2>
@@ -48,13 +47,13 @@ const panel = (id: string, first = false) => ({
           <section>
             <h3 class="meta">{a.tools.nowTitle}</h3>
             <ul class="tools">
-              {a.tools.items.map((t) => <ToolTile {...t} />)}
+              {a.tools.items.map((t) => <ToolTile {...t} newTab={a.tools.newTab} />)}
             </ul>
           </section>
           <section>
             <h3 class="meta">{a.tools.pastTitle}</h3>
             <ul class="tools">
-              {a.tools.past.map((t) => <ToolTile {...t} />)}
+              {a.tools.past.map((t) => <ToolTile {...t} newTab={a.tools.newTab} />)}
             </ul>
           </section>
         </div>

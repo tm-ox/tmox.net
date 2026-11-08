@@ -6,6 +6,12 @@ site:
   homeLabel: "TMOX, home"
   skip: "Skip to content"
   close: "Close"
+nav:
+  label: "Site"
+  home: "Home"
+  about: "About"
+  work: "Work"
+  contact: "Contact"
 hero:
   kicker: "Freelance designer"
   title: "Brand, print, UI & UX, crafted with care."
@@ -13,18 +19,13 @@ hero:
   lead: "Designing and building identities, documents, interfaces… from first sketch through production to print, build and launch."
   availability: "Taking new projects"
   contactCta: "Get in touch"
-  portfolioCta: "View portfolio"
-  aboutCta: "About"
 folio:
   title: "Portfolio"
   hint: "Turn your phone sideways for a larger view."
   prev: "Previous page"
   next: "Next page"
   pageAlt: "Portfolio page {n} of {total}"
-  pageText: "Page {n}. {text}"
   live: "Page {n} of {total}"
-  closeLabel: "Close portfolio"
-  closeTip: "Close"
   openLabel: "Open the PDF in a new tab"
   openTip: "Open PDF in a new tab"
   downloadLabel: "Download the PDF"
@@ -40,7 +41,7 @@ folio:
 about:
   title: "Print first. Screen now."
   lead: "Starting in print and advertising, moving from graphic design into art direction. The habits stayed: type set with care, files checked before they go out, layouts that survive the trip to the printer."
-  more: "Most work is on screen now: Figma, Penpot and code, with the habits intact. Studios, agencies and independent practice, alongside agencies and development teams, on a single project or over a longer engagement. Agentic tooling is part of the workflow too, speeding up the build and the busywork while the design decisions stay human."
+  more: "Most work is on screen now: Figma, Penpot and code, with the same care for detail. Studios, agencies and independent practice, working alongside development teams, on a single project or over a longer engagement. Agentic tooling is part of the workflow too, speeding up the build and the busywork while the design decisions stay human. Prefer it left out? Say so at the start and the project runs without it."
   tabsLabel: "About sections"
   services:
     tab: "Services"
@@ -57,33 +58,35 @@ about:
   tools:
     tab: "Tools"
     nowTitle: "Now"
+    newTab: "opens in a new tab"
     items:
-      - { name: "Affinity", icon: "simple-icons:affinity", url: "https://www.affinity.studio" }
-      - { name: "Inkscape", icon: "simple-icons:inkscape", url: "https://inkscape.org" }
-      - { name: "Figma", icon: "simple-icons:figma", url: "https://www.figma.com" }
-      - { name: "Penpot", icon: "simple-icons:penpot", url: "https://penpot.app" }
-      - { name: "Astro", icon: "simple-icons:astro", url: "https://astro.build" }
-      - { name: "Svelte", icon: "simple-icons:svelte", url: "https://svelte.dev" }
-      - { name: "Vue", icon: "simple-icons:vuedotjs", url: "https://vuejs.org" }
-      - { name: "Nuxt", icon: "simple-icons:nuxtdotjs", url: "https://nuxt.com" }
-      - { name: "React", icon: "simple-icons:react", url: "https://react.dev" }
-      - { name: "Next", icon: "simple-icons:nextdotjs", url: "https://nextjs.org" }
-      - { name: "Alpine.js", icon: "simple-icons:alpinedotjs", url: "https://alpinejs.dev" }
-      - { name: "Tailwind CSS", icon: "simple-icons:tailwindcss", url: "https://tailwindcss.com" }
-      - { name: "Go", icon: "simple-icons:go", url: "https://go.dev" }
-      - { name: "Datastar", mark: "★", url: "https://data-star.dev" }
-      - { name: "Flutter", icon: "simple-icons:flutter", url: "https://flutter.dev" }
-      - { name: "Dart", icon: "simple-icons:dart", url: "https://dart.dev" }
-      - { name: "Linux", icon: "simple-icons:linux", url: "https://www.linux.org" }
-      - { name: "Vim", icon: "simple-icons:vim", url: "https://www.vim.org" }
-      - { name: "Claude Code", icon: "simple-icons:claudecode", url: "https://claude.com/product/claude-code" }
+      - { name: "Affinity", icon: "affinity", url: "https://www.affinity.studio" }
+      - { name: "Inkscape", icon: "inkscape", url: "https://inkscape.org" }
+      - { name: "Figma", icon: "figma", url: "https://www.figma.com" }
+      - { name: "Penpot", icon: "penpot", url: "https://penpot.app" }
+      - { name: "Astro", icon: "astro", url: "https://astro.build" }
+      - { name: "Svelte", icon: "svelte", url: "https://svelte.dev" }
+      - { name: "Vue", icon: "vuedotjs", url: "https://vuejs.org" }
+      - { name: "Nuxt", icon: "nuxtdotjs", url: "https://nuxt.com" }
+      - { name: "React", icon: "react", url: "https://react.dev" }
+      - { name: "Next", icon: "nextdotjs", url: "https://nextjs.org" }
+      - { name: "Alpine.js", icon: "alpinedotjs", url: "https://alpinejs.dev" }
+      - { name: "Tailwind CSS", icon: "tailwindcss", url: "https://tailwindcss.com" }
+      - { name: "Go", icon: "go", url: "https://go.dev" }
+      - { name: "Datastar", icon: "datastar", url: "https://data-star.dev" }
+      - { name: "Flutter", icon: "flutter", url: "https://flutter.dev" }
+      - { name: "Dart", icon: "dart", url: "https://dart.dev" }
+      - { name: "Linux", icon: "linux", url: "https://www.linux.org" }
+      - { name: "Vim", icon: "vim", url: "https://www.vim.org" }
+      - { name: "Herdr", icon: "herdr", url: "https://herdr.dev" }
+      - { name: "Claude Code", icon: "claudecode", url: "https://claude.com/product/claude-code" }
       - { name: "Pi", mark: "π", url: "https://pi.dev" }
     pastTitle: "Previously"
     past:
-      - { name: "InDesign", icon: "simple-icons:adobeindesign", url: "https://www.adobe.com/products/indesign.html" }
-      - { name: "Illustrator", icon: "simple-icons:adobeillustrator", url: "https://www.adobe.com/products/illustrator.html" }
-      - { name: "Photoshop", icon: "simple-icons:adobephotoshop", url: "https://www.adobe.com/products/photoshop.html" }
-      - { name: "Other proprietary nonsense" }
+      - { name: "InDesign", icon: "adobeindesign", url: "https://www.adobe.com/products/indesign.html" }
+      - { name: "Illustrator", icon: "adobeillustrator", url: "https://www.adobe.com/products/illustrator.html" }
+      - { name: "Photoshop", icon: "adobephotoshop", url: "https://www.adobe.com/products/photoshop.html" }
+      - { name: "…", large: true }
 contact:
   title: "Hit me up"
   lead: "If there’s something you’d like to make together, tell me what it is and we can work out the rest… or"
@@ -107,6 +110,7 @@ contact:
   messageLabel: "Message"
   send: "Send message"
   error: "The message did not go through. Please try again."
+  requiredNote: "required"
   success:
     title: "Thanks for writing."
     body: "I’ll reply to the address you gave."

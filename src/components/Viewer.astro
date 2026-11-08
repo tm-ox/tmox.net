@@ -3,19 +3,22 @@ import { Icon } from "astro-icon/components";
 import IconButton from "./IconButton.astro";
 import Menu from "./Menu.astro";
 import folio from "../data/folio.json";
+import captions from "../data/folio-captions.json";
 import { getSite } from "../lib/site";
 
 // Portfolio viewer: shows one PDF page at a time, contained in the viewport (arrows, keys, swipe, click
 // the page for the next; src/scripts/viewer.ts). "Open" shows the PDF in the browser's own viewer,
-// "Download" saves it. The text of every page follows, hidden visually. Pages come from the PDF:
-// `npm run folio` renders public/folio/NN-{800,1600}.webp and src/data/folio.json.
+// "Download" saves it. Pages come from the PDF: `npm run folio` renders public/folio/NN-{800,1600}.<hash>.webp and
+// src/data/folio.json (names are content-hashed, so they can be cached for good). The alt text of each page is its
+// line in src/data/folio-captions.json, written by hand (the PDF's own text extracts badly).
 const { folio: t } = await getSite();
 const fill = (s: string, v: Record<string, string | number>) => s.replace(/\{(\w+)\}/g, (_, k) => String(v[k]));
 const [small, large] = folio.widths;
-const pages = Array.from({ length: folio.pages }, (_, i) => String(i + 1).padStart(2, "0"));
+const pages = folio.files as Record<string, string>[]; // per image: { [width]: file name }
+if (captions.length !== pages.length) console.warn(`[folio] ${captions.length} captions for ${pages.length} pages: update src/data/folio-captions.json`);
 ---
 
-<div class="viewer" data-viewer data-live-format={t.live} style={`--folio-ratio: ${folio.ratio}`}>
+<div class="viewer" data-viewer data-live-format={t.live}>
   <div class="viewer-rail" aria-hidden="true">
     {pages.map((_, i) => <span class="viewer-tick" data-go={i} />)}
   </div>
@@ -26,15 +29,15 @@ const pages = Array.from({ length: folio.pages }, (_, i) => String(i + 1).padSta
     <div class="viewer-stage">
       <ol class="viewer-pages">
         {
-          pages.map((n, i) => (
+          pages.map((f, i) => (
             <li class="viewer-slide" hidden={i > 0} data-slide>
               <img
-                src={`/folio/${n}-${small}.webp`}
-                srcset={`/folio/${n}-${small}.webp ${small}w, /folio/${n}-${large}.webp ${large}w`}
+                src={`/folio/${f[small]}`}
+                srcset={`/folio/${f[small]} ${small}w, /folio/${f[large]} ${large}w`}
                 sizes="(min-width: 1376px) 1280px, (min-width: 1024px) calc(100vw - 6rem), (min-width: 640px) calc(100vw - 4rem), 100vw"
                 width={large}
                 height={Math.round(large / folio.ratio)}
-                alt={fill(t.pageAlt, { n: i + 1, total: folio.pages })}
+                alt={[captions[i], fill(t.pageAlt, { n: i + 1, total: folio.pages })].filter(Boolean).join(". ")}
                 loading="lazy"
                 decoding="async"
                 draggable="false"
@@ -50,7 +53,6 @@ const pages = Array.from({ length: folio.pages }, (_, i) => String(i + 1).padSta
       <span class="viewer-chip"><Icon name="ion:chevron-forward" class="nav-ico" aria-hidden="true" /></span>
     </button>
     <Menu class="viewer-menu">
-      <IconButton icon="ion:close" label={t.closeLabel} tip={t.closeTip} side="left" data-modal-close />
       <IconButton icon="ion:open-outline" label={t.openLabel} tip={t.openTip} side="left" href="/portfolio.pdf" newTab />
       <IconButton icon="ion:download-outline" label={t.downloadLabel} tip={t.downloadTip} side="left" href="/portfolio.pdf" download />
     </Menu>
@@ -60,7 +62,4 @@ const pages = Array.from({ length: folio.pages }, (_, i) => String(i + 1).padSta
   </div>
   <p class="viewer-hint meta">{t.hint}</p>
   <p class="sr-only" aria-live="polite" data-live></p>
-</div>
-<div class="sr-only">
-  {folio.text.map((text, i) => <p>{fill(t.pageText, { n: i + 1, text })}</p>)}
 </div>

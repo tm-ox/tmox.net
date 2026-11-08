@@ -8,7 +8,6 @@ const { contact: c } = await getSite();
 ---
 
 <Modal id="contact" title={c.title} variant="custom-title">
-  <div slot="backdrop" class="hero-dots" aria-hidden="true"></div>
   <div class="split">
     <div class="split-intro">
       <h2 id="contact-title" class="sect-title display-title">{c.title}</h2>
@@ -46,24 +45,25 @@ const { contact: c } = await getSite();
       <div class="contact-pair">
         <div class="field">
           <label for="c-name">{c.nameLabel} <span class="text-accent" aria-hidden="true">*</span></label>
-          <input id="c-name" name="name" autocomplete="name" required />
+          <input id="c-name" name="name" enterkeyhint="next" autocomplete="name" maxlength="100" required />
         </div>
         <div class="field">
           <label for="c-email">{c.emailLabel} <span class="text-accent" aria-hidden="true">*</span></label>
-          <input id="c-email" name="email" type="email" autocomplete="email" required />
+          <input id="c-email" name="email" enterkeyhint="next" type="email" autocomplete="email" autocapitalize="off" spellcheck="false" maxlength="254" required />
         </div>
       </div>
       <div class="field">
         <label for="c-msg">{c.messageLabel} <span class="text-accent" aria-hidden="true">*</span></label>
-        <textarea id="c-msg" name="message" rows="4" required></textarea>
+        <textarea id="c-msg" name="message" rows="4" maxlength="5000" required></textarea>
       </div>
       <div class="contact-send">
         <button class="btn-primary" type="submit">{c.send}</button>
+        <span class="meta text-dim"><span aria-hidden="true">*</span> {c.requiredNote}</span>
       </div>
-      <p class="contact-error" role="alert" hidden data-error>{c.error}</p>
+      <p class="contact-error" role="alert" data-error data-message={c.error}></p>
     </form>
-    <div class="contact-done split-main" hidden data-done tabindex="-1">
-      <p class="statement">{c.success.title}</p>
+    <div class="contact-done split-main" hidden data-done tabindex="-1" aria-labelledby="c-done-title">
+      <p id="c-done-title" class="statement">{c.success.title}</p>
       <p class="mt-4 text-lead">{c.success.body}</p>
     </div>
   </div>

@@ -1,0 +1,35 @@
+---
+import IconButton from "./IconButton.astro";
+import { getSite } from "../lib/site";
+
+// The site menu: Home, About, Work (the portfolio) and Contact as boxes of a Menu, plus a Close box that is
+// hidden except while the portfolio is open (the others collapse and it is what is left). Home and Close close
+// the open dialog; the others open theirs (src/scripts/modal.ts, which also marks the open one aria-current).
+// The items are links to /#id, so on pages without the dialogs they navigate home and the hash opens the
+// dialog. `current="home"` marks Home as the current page. Put it inside a <Menu>.
+interface Props {
+  current?: "home";
+  side?: "left" | "right" | "bottom";
+}
+const { current, side } = Astro.props;
+const { nav, site } = await getSite();
+const items = [
+  { id: "about", icon: "ion:person-outline", label: nav.about },
+  { id: "portfolio", icon: "ion:albums-outline", label: nav.work },
+  { id: "contact", icon: "ion:chatbubble-ellipses-outline", label: nav.contact },
+];
+---
+
+<IconButton icon="ion:home-outline" label={nav.home} side={side} href="/" aria-current={current === "home" ? "page" : undefined} data-modal-close />
+{
+  items.map((i) => (
+    <IconButton
+      icon={i.icon}
+      label={i.label}
+      side={side}
+      href={`/#${i.id}`}
+      data-modal-open={i.id}
+    />
+  ))
+}
+<IconButton icon="ion:close" label={site.close} side="left" data-modal-close data-menu-close />

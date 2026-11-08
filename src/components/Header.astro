@@ -1,9 +1,16 @@
 ---
 import Brand from "./Brand.astro";
+import Menu from "./Menu.astro";
+import SiteNav from "./SiteNav.astro";
+import { getSite } from "../lib/site";
+
+const home = Astro.url.pathname === "/";
+const { nav } = await getSite();
 ---
 
-<header class="page brand-row flex items-center">
-  <Brand href="/" class="flex items-center gap-3 min-h-11" data-astro-prefetch="hover" />
+<header class="page brand-row flex items-center justify-between">
+  <Brand href="/" class="flex items-center gap-3 min-h-11" data-modal-close />
+  <Menu as="nav" class="site-menu" direction="row" label={nav.label}><SiteNav current={home ? "home" : undefined} side="bottom" /></Menu>
 </header>
 
 <script>

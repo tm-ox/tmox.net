@@ -1,38 +1,118 @@
 {
-  "pages": 28,
-  "ratio": 1.3334,
+  "pages": 27,
+  "ratio": 1.3333,
   "widths": [
     800,
     1600
   ],
-  "text": [
-    "T MOX. N E T SELECTED WORK",
-    "IDENTITY LOG OS Collection of various logo designs.",
-    "IDENTITY OXEN FR EE B A R & K I TC HE N Maximal logo. Visual identity and selected applications for Indonesian Bar & Kitchen Oxen Free. Work involved on-going management and development of the identity for multiple years with designs produced on a weekly basis for the venue's entertainment program and social media accounts. oxenfree.net /oxenfreeyk",
-    "IDENTITY OXEN FR EE B A R & K I TC HE N Logo, typeface & and use of minimal logo on membership cards. MEMBER RA. RACHEL SARASWATI A001 MEMBER BENEFITS - https://oxenfree.net/members XX% discount on selected items XX% discount on selected XX% discount on XX% discount on selected items",
-    "IDENTITY OXEN FR EE B A R & K I TC HE N Social media flyers.",
-    "IDENTITY G EE LON G GA L L E RY Logo and entry signage. Visual identity and selected applications for Australian regional gallery Geelong Gallery. Work involved on-going management of the identy through publications, signage and advertising for the gallery's exhibitions and programs.",
-    "IDENTITY G EE LON G GA L L E RY Flyer, exhibition catalogue and newsletter.",
-    "IDENTITY / UI DE SIGN T RIP L E G OA L Stacked logo. Logo, UI/UX and template design for international leadership development platform Triple Goal. Work involved development of a new brand, application across social media templates, website refresh and extensive UI/UX design for Triple Goal's online leadership development platform. triplegoal.com",
-    "IDENTITY / UI DE SIGN T RIP L E G OA L UI design for leadership development platform.",
-    "IDENTITY / UI DE SIGN T RIP L E G OA L Email and report templates.",
-    "BRANDING K E NJI FO R M A L C LOT H I N G Branding for Myer Department Store Australia's premium mensware line Kenji Formal. Logo & swingtags.",
-    "IDENTITY HAJ DU K Visual identity and selected applications for Australian gentlemen's ware designer. Logo.",
-    "Calling card and placard. IDENTITY HAJ DU K G E N T L E M E N ' S WA R E Level 3 Pacific House, 127 Lonsdale Street, Melbourne, Australia G E N T L E M E N ' S WA R E Level 3 Pacific House 127 Lonsdale Street, Melbourne, Australia ANTON MARIN +61 543 124 678",
-    "PRINT DESI GN NAGS TO R I C H E S Catalogue for Australian professional equine product company Nags to Riches. nagstoriches.com.au Front and back covers.",
-    "PRINT DESI GN NAGS TO R I C H E S Catalogue spreads.",
-    "PRINT DESI GN R E DS K Y Training cards for Australian corporate leadership company Redsky. redsky.com.au Training cards.",
-    "PRINT DESI GN R E DS K Y Training cards.",
-    "WE BSITE G O-DATAS TA R - T E M P L Proof of concept site built in Go, Templ, Datastar and Tailwind. Server driven UI over SSE. No client side Javascript. go.tmox.net Landing screen.",
-    "WE BSITE G O-DATAS TA R - T E M P L Sbop, Dashboard & Shop CMS.",
-    "UI DE SIGN S HAR E -A - J ET UI design for American jet share booking service Share-A-Jet. Landing section and mobile.",
-    "UI DE SIGN S HAR E -A - J ET Mobile & desktop page and style sheet.",
-    "WE BSITE M JO MO RTGAG E S O LU T I O N S Website for Australian mortgage broker MJO Mortgage Solutions. mjomortgagesolutions.com.au Landing section.",
-    "WE BSITE M JO MO RTGAG E S O LU T I O N S Single page, sectioned landing page & sections.",
-    "UI DE SIGN C AR E D I R E C T UI design for Australian medicinal cannabis health provider Care Direct. caredirect.clinic Selected pages & landing screen.",
-    "UI DE SIGN DI SP EN S E D I R E C T UI design for Australian medicinal cannabis dispensary Care Direct. dispensedirect.com.au Selected pages & landing screen.",
-    "IDENTITY, WEBSIT E & APP DE SIGN T I MEDA RT Identity, marketing website and cross platform Dart/Flutter time tracking app. timedart.app Logo and marketing website.",
-    "IDENTITY, WEBSIT E & APP DE SIGN T I MEDA RT Dart/Flutter cross platform app screens/",
-    "-CELES DET K R OW"
+  "files": [
+    {
+      "800": "01-800.a59d7131.webp",
+      "1600": "01-1600.f409140b.webp"
+    },
+    {
+      "800": "02-800.e987bf20.webp",
+      "1600": "02-1600.fde7e933.webp"
+    },
+    {
+      "800": "03-800.6bc67028.webp",
+      "1600": "03-1600.e63e6d61.webp"
+    },
+    {
+      "800": "04-800.34248b55.webp",
+      "1600": "04-1600.4e5d6e4a.webp"
+    },
+    {
+      "800": "05-800.314c9678.webp",
+      "1600": "05-1600.5e22cb8e.webp"
+    },
+    {
+      "800": "06-800.00f0dac9.webp",
+      "1600": "06-1600.750bb871.webp"
+    },
+    {
+      "800": "07-800.7263fffc.webp",
+      "1600": "07-1600.c90309c9.webp"
+    },
+    {
+      "800": "08-800.e876deef.webp",
+      "1600": "08-1600.8ce891ed.webp"
+    },
+    {
+      "800": "09-800.0659696e.webp",
+      "1600": "09-1600.bff4fa48.webp"
+    },
+    {
+      "800": "10-800.a04aaf81.webp",
+      "1600": "10-1600.e8b04fb1.webp"
+    },
+    {
+      "800": "11-800.5bf1867d.webp",
+      "1600": "11-1600.9ac75b7d.webp"
+    },
+    {
+      "800": "12-800.8569a2c9.webp",
+      "1600": "12-1600.9a15d212.webp"
+    },
+    {
+      "800": "13-800.16206e0d.webp",
+      "1600": "13-1600.2ce17f97.webp"
+    },
+    {
+      "800": "14-800.8ddc4b25.webp",
+      "1600": "14-1600.4a82551d.webp"
+    },
+    {
+      "800": "15-800.d698e4b6.webp",
+      "1600": "15-1600.dd5a33b2.webp"
+    },
+    {
+      "800": "16-800.47b7e028.webp",
+      "1600": "16-1600.b5bfe352.webp"
+    },
+    {
+      "800": "17-800.b91a702a.webp",
+      "1600": "17-1600.d17f196e.webp"
+    },
+    {
+      "800": "18-800.f7bbe043.webp",
+      "1600": "18-1600.f75c990c.webp"
+    },
+    {
+      "800": "19-800.b17cbc8f.webp",
+      "1600": "19-1600.8c731aea.webp"
+    },
+    {
+      "800": "20-800.69c76cfb.webp",
+      "1600": "20-1600.944ea846.webp"
+    },
+    {
+      "800": "21-800.0a2867c0.webp",
+      "1600": "21-1600.3becce2c.webp"
+    },
+    {
+      "800": "22-800.b37b1799.webp",
+      "1600": "22-1600.7bf7a055.webp"
+    },
+    {
+      "800": "23-800.9f470542.webp",
+      "1600": "23-1600.473d9e14.webp"
+    },
+    {
+      "800": "24-800.13e0666a.webp",
+      "1600": "24-1600.eac62f3f.webp"
+    },
+    {
+      "800": "25-800.c111c8ea.webp",
+      "1600": "25-1600.74d2bf04.webp"
+    },
+    {
+      "800": "26-800.10ce4890.webp",
+      "1600": "26-1600.73f83085.webp"
+    },
+    {
+      "800": "27-800.5875d7b6.webp",
+      "1600": "27-1600.37786427.webp"
+    }
   ]
 }

@@ -1,30 +1,40 @@
 ---
 import { Icon } from "astro-icon/components";
 
-// One tool in the About dialog: its logo (an astro-icon name, drawn in currentColor so the tile sets the
-// colour) or, for a tool with no logo, a text mark; with neither, just the name, larger. The name is always
-// shown, so the logo is decoration. With a url the tile links to the tool's site, without one it is a <span>.
+// One tool in the About dialog: its logo (a file in src/icons, drawn in currentColor so the tile sets the colour)
+// or, for a tool with no logo, a text mark; with neither, just the name, larger (`large`: larger still). The name
+// is always shown, so the logo is decoration. With a url the tile links to the tool's site, without one it is a
+// <span>.
 interface Props {
   name: string;
   url?: string;
   icon?: string;
   mark?: string;
+  large?: boolean;
+  newTab?: string; // sr-only note after the name of a linked tile
 }
-const { name, url, icon, mark } = Astro.props;
+const { name, url, icon, mark, large, newTab } = Astro.props;
+// Logos are src/icons/*.svg with the viewBox cropped to the drawing (scripts/tool-icon.py), so its width over
+// height is the logo's real shape; the CSS sizes every logo to the same area from it (--r).
+const files = import.meta.glob("../icons/*.svg", { query: "?raw", import: "default", eager: true }) as Record<string, string>;
+const box = icon ? files[`../icons/${icon}.svg`]?.match(/viewBox="[-\d.]+ [-\d.]+ ([\d.]+) ([\d.]+)"/) : null;
+if (icon && !box) throw new Error(`[ToolTile] src/icons/${icon}.svg is missing or has no numeric viewBox (tool "${name}")`);
+const ratio = box ? Number(box[1]) / Number(box[2]) : 1;
 const Tag = url ? "a" : "span";
 const attrs = url ? { href: url, target: "_blank", rel: "noopener" } : {};
 const logo = icon || mark;
 ---
 
 <li>
-  <Tag class:list={["tool", !logo && "tool-text"]} {...attrs}>
+  <Tag class:list={["tool", !logo && "tool-text", !logo && large && "tool-large"]} {...attrs}>
     {
       logo && (
-        <span class="tool-mark" aria-hidden="true">
+        <span class="tool-mark" style={icon ? `--r: ${ratio.toFixed(3)}` : undefined} aria-hidden="true">
           {icon ? <Icon name={icon} size="100%" /> : mark}
         </span>
       )
     }
     {name}
+    {url && newTab && <span class="sr-only"> ({newTab})</span>}
   </Tag>
 </li>
