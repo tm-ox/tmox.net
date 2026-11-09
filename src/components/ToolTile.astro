@@ -29,7 +29,7 @@ const logo = icon || mark;
   <Tag class:list={["tool", !logo && "tool-text", !logo && large && "tool-large"]} {...attrs}>
     {
       logo && (
-        <span class="tool-mark" style={icon ? `--r: ${ratio.toFixed(3)}` : undefined} aria-hidden="true">
+        <span class:list={["tool-mark", !icon && "tool-mark-text"]} style={icon ? `--r: ${ratio.toFixed(3)}` : undefined} aria-hidden="true">
           {icon ? <Icon name={icon} size="100%" /> : mark}
         </span>
       )

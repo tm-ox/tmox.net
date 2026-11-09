@@ -192,7 +192,8 @@
     --tool-box: 6rem; /* about: a tool tile is a square, at least this size; a row stretches its tiles to the full width */
     --tool-icon-share: 0.5; /* about: tool logo box, as a share of the tile width */
     --tool-fit: 1.2; /* about: the tallest a tall logo may be, as a multiple of --tool-icon */
-    --tool-large-scale: 1.75; /* about: a name-only tile marked large, as a multiple of the heading size */
+    --tool-mark-scale: 1.1; /* about: a text mark (π), font size as a multiple of the logo box */
+--tool-large-scale: 1.75; /* about: a name-only tile marked large, as a multiple of the heading size */
     --tool-border: 1px; /* about: tile border width */
     --tool-label: 0.6875rem; /* about: tool name, smaller than --text-meta so the logo can lead */
     --chip-min: 6.5rem; /* phone chip grid: narrowest chip */
@@ -468,6 +469,7 @@
     font-weight: 600;
     line-height: var(--leading-tight);
     white-space: nowrap;
+    word-spacing: -0.125em; /* the space in "← →": about half its width */
   }
   .menu-key {
     gap: 0; /* arrow keys touch: they sit as one pair, with room to the box edge */
@@ -1190,6 +1192,16 @@
     grid-template-columns: repeat(auto-fill, minmax(var(--tool-box), 1fr));
     gap: var(--space-1_5);
   }
+  /* Phones: the tiles sit in a solid box, so the halftone behind the dialog cannot show through the gaps and make
+     them look uneven. The box padding is larger than the gap. */
+  @media (max-width: 639.98px) {
+    .tools {
+      padding: var(--space-3);
+      border: 1px solid var(--color-line);
+      border-radius: calc(var(--radius) + var(--space-3));
+      background: var(--color-bg);
+    }
+  }
   .tool {
     display: flex;
     flex-direction: column;
@@ -1258,6 +1270,10 @@
     font-weight: 600;
     line-height: 1;
     transition: color var(--dur-fast) var(--ease-snap);
+  }
+  /* A text mark (π) scales with the tile like the logos, instead of staying at heading size */
+  .tool-mark-text {
+    font-size: calc(var(--tool-icon) * var(--tool-mark-scale));
   }
   .statement {
     font-size: var(--text-h2);
