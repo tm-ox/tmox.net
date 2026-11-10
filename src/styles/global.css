@@ -196,12 +196,15 @@
 --tool-large-scale: 1.75; /* about: a name-only tile marked large, as a multiple of the heading size */
     --tool-border: 1px; /* about: tile border width */
     --tool-label: 0.6875rem; /* about: tool name, smaller than --text-meta so the logo can lead */
-    --chip-min: 6.5rem; /* phone chip grid: narrowest chip */
     --chip-dot: var(--space-3_5); /* contact chips: checkbox square */
+    --chip-h: calc(var(--field-h) * 0.65); /* contact chips on phones: height, smaller than a field; the invisible tap area reaches past them */
+    --chip-gap: var(--space-2); /* phone chips: gap between chips, in both directions */
+    --viewer-arrow-gap: calc(var(--ctl-h) / 2); /* folio on phones: space between the two arrows */
     --hero-leading: 1.1; /* hero headline line height (unitless; 1 = tight) */
     --hero-leading-tight: 0.95; /* the same for a display title that wraps (about) */
-    --brand-pt: 0rem; /* space above the logo/nav row */
-    --brand-h: 3.5rem; /* height of the logo/nav row */
+    --brand-pt: var(--space-4); /* space above the logo/nav row */
+    --brand-h: 4rem; /* height of the logo/nav row */
+    --header-gap: var(--space-6); /* extra space between the header row and a dialog's content; tablets and phones only */
     --sep-gap: 0.6em; /* space either side of a separator pipe (about double a plain space) */
     --sect-gap: clamp(0.75rem, 0.4rem + 1.2vw, 1.5rem); /* space between a screen title and its content (every page and home section) */
     --hero-ht: 7px; /* hero: dot pitch of the backdrop */
@@ -233,13 +236,13 @@
   }
   @media (min-width: 1024px) {
     :root {
+      --header-gap: 0rem;
       --pad: var(--space-12);
     }
   }
   @media (min-width: 768px) {
     :root {
       --brand-pt: 2rem;
-      --brand-h: 4rem;
     }
   }
   /* Short screens (landscape phones): the header row would eat a quarter of the height */
@@ -247,6 +250,14 @@
     :root {
       --brand-pt: 0rem;
       --brand-h: 3.5rem;
+      --header-gap: 0rem;
+    }
+  }
+  /* Landscape phones and small tablets: more room beside the folio page, since a short screen is height-limited and has
+     width to spare; the menus move out with it. A short desktop window keeps the normal width. */
+  @media (max-height: 500px) and (max-width: 1023.98px) {
+    :root {
+      --viewer-side: calc(var(--ctl-h) * 2 + var(--space-6));
     }
   }
   /* Logo row: sticky, so the logo and the site menu stay put.
@@ -632,7 +643,7 @@
     background: var(--color-bg);
   }
   .modal:not([data-bare]) {
-    padding-top: var(--header-h); /* clear of the layout header, which sits above the dialog */
+    padding-top: calc(var(--header-h) + var(--header-gap)); /* clear of the layout header, which sits above the dialog */
   }
   @media (prefers-reduced-motion: no-preference) {
     /* Modals fade and rise in, and fade and settle back out on close or Esc. The layout header (logo
@@ -755,7 +766,7 @@
   .viewer-main,
   .viewer-stage {
     --viewer-w: min(100cqw - 2 * var(--viewer-side), (100cqh - var(--viewer-foot)) * var(--folio-ratio));
-    --viewer-reach: calc(50% + var(--viewer-w) / 2 + var(--ctl-h)); /* from the page's centre to where the arrow tab ends */
+    --viewer-reach: calc(50% + var(--viewer-w) / 2 + var(--viewer-side) - var(--ctl-h)); /* from the page's centre to the menu column's left edge: the column is one box wide, at the outer end of the side space */
   }
   .viewer-rail,
   .viewer-stage {
@@ -952,18 +963,6 @@
   .viewer-tick[data-on]::before {
     background: var(--color-accent);
   }
-  .viewer-hint {
-    display: none;
-    position: absolute;
-    inset-inline: 0;
-    bottom: calc(env(safe-area-inset-bottom) + var(--space-8));
-    padding-inline: var(--space-6);
-    text-align: center;
-    color: var(--color-dim);
-    font-size: 0.625rem; /* smaller than --text-meta: an aside, not a label */
-    line-height: 1rem;
-    font-weight: 500;
-  }
   /* Portrait phones only: a landscape phone is short, so it keeps the desktop layout (height-fitted page,
      arrows and menus beside it); the stage here is as wide as the screen and would not fit its height. */
   @media (max-width: 639.98px) and (orientation: portrait) {
@@ -977,7 +976,7 @@
     .viewer-main {
       grid-template-columns: auto;
     }
-    /* The arrows sit below the page, one under each bottom corner, flush with it (square top, rounded bottom outer corner) */
+    /* The arrows sit below the page as a centred pair, detached from it */
     :root {
       --viewer-shift: 0px;
       --viewer-lift: 0px;
@@ -993,23 +992,24 @@
     .viewer-chip {
       color: var(--color-accent); /* no hover on phones, so the arrows stay primary */
     }
+    /* a centred pair hanging flush from the page's bottom edge, half an arrow's width apart */
     .viewer-side[data-prev] {
-      left: 0;
+      left: calc(50% - var(--ctl-h) - var(--viewer-arrow-gap) / 2);
       justify-content: flex-start;
     }
     .viewer-side[data-next] {
-      right: 0;
+      right: calc(50% - var(--ctl-h) - var(--viewer-arrow-gap) / 2);
       justify-content: flex-end;
     }
     .viewer-side[data-prev] .viewer-chip {
+      border: 1px solid var(--color-line);
       border-top: 0;
-      border-left: 0;
-      border-radius: 0 0 var(--radius) 0;
+      border-radius: 0 0 var(--radius) var(--radius);
     }
     .viewer-side[data-next] .viewer-chip {
+      border: 1px solid var(--color-line);
       border-top: 0;
-      border-right: 0;
-      border-radius: 0 0 0 var(--radius);
+      border-radius: 0 0 var(--radius) var(--radius);
     }
     .viewer-stage {
       border-radius: 0;
@@ -1019,17 +1019,17 @@
       display: none; /* no keyboard on phones */
     }
     /* Phones: Open and Download join the Close box in the header row as one block (the Close box is the right end;
-       its left edge is this menu's right edge). The page is centred in the viewer, so its top is found from the
-       viewer's size; the top here is the Close box's, relative to it. */
-    .viewer-menu {
-      top: calc(
-        var(--brand-pt) + (var(--brand-h) - var(--ctl-h)) / 2 - var(--viewer-pad-y) -
-          ((100cqh - var(--viewer-foot) - 100cqw / var(--folio-ratio)) / 2 + var(--viewer-foot))
-      );
+       its left edge is this menu's right edge). */
+    /* :not() matches the specificity of the desktop rule (a block under the Close box, no top border), which it undoes */
+    .viewer-menu:not(.viewer-keys) {
+      /* fixed, so it is placed against the screen like the header's Close box, with the same top */
+      position: fixed;
+      top: calc(var(--brand-pt) + (var(--brand-h) - var(--ctl-h)) / 2);
       bottom: auto;
       left: auto;
       right: calc(max(var(--pad), env(safe-area-inset-right)) + var(--box) + 1px);
       flex-direction: row;
+      border-top-width: 1px;
       border-right: 0;
       border-radius: var(--radius) 0 0 var(--radius);
       --menu-r-first: var(--radius-inner) 0 0 var(--radius-inner);
@@ -1043,11 +1043,6 @@
     }
     .viewer-half {
       display: none;
-    }
-  }
-  @media (max-width: 639.98px) and (orientation: portrait) {
-    .viewer-hint {
-      display: block;
     }
   }
 
@@ -1192,16 +1187,6 @@
     grid-template-columns: repeat(auto-fill, minmax(var(--tool-box), 1fr));
     gap: var(--space-1_5);
   }
-  /* Phones: the tiles sit in a solid box, so the halftone behind the dialog cannot show through the gaps and make
-     them look uneven. The box padding is larger than the gap. */
-  @media (max-width: 639.98px) {
-    .tools {
-      padding: var(--space-3);
-      border: 1px solid var(--color-line);
-      border-radius: calc(var(--radius) + var(--space-3));
-      background: var(--color-bg);
-    }
-  }
   .tool {
     display: flex;
     flex-direction: column;
@@ -1224,6 +1209,18 @@
     --tool-c: var(--color-control); /* logo and name share this colour */
     color: var(--tool-c);
     transition: color var(--dur-fast) var(--ease-snap), border-color var(--dur-fast) var(--ease-snap);
+  }
+  /* Phones: four tiles to a row. The tiles are narrow, so a long name (Tailwind CSS) wraps to two lines. */
+  @media (max-width: 639.98px) {
+    .tools {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+    .tool {
+      padding: var(--space-1_5);
+      white-space: normal;
+      text-wrap: balance;
+      overflow-wrap: anywhere;
+    }
   }
   .tool:focus-visible {
     border-color: var(--color-control);
@@ -1323,6 +1320,18 @@
     /* a tall glow on the right, taller than the screen, so the dense part runs off the top and bottom */
     background: radial-gradient(ellipse 58% 85% at 78% 50%, var(--halftone-mid) 0, var(--halftone-lo) 100%);
     transform-origin: 78% 50%;
+  }
+  /* Phones: the glow is wide and centred on the bottom edge, so the dots run off the left edge and the headline
+     sits clear of the densest part. */
+  @media (max-width: 639.98px) {
+    .hero-dots {
+      -webkit-mask-image: none;
+      mask-image: none; /* the glow's centre is on the bottom edge: no fade there */
+    }
+    .hero-dots::before {
+      background: radial-gradient(ellipse 110% 70% at 55% 100%, var(--halftone-mid) 0, var(--halftone-lo) 100%);
+      transform-origin: 55% 100%;
+    }
   }
   .hero-dots::after {
     mix-blend-mode: plus-lighter;
@@ -1489,16 +1498,26 @@
     border-color: var(--color-accent);
     background: radial-gradient(circle closest-side, var(--color-accent) 96%, transparent) center / 55% 55% no-repeat;
   }
-  /* Phones: chips wrap into an even grid (never a sideways scroll). */
+  /* Phones: chips are smaller, three to a row and equal in size; the tap area reaches past each chip. */
   @media (max-width: 639.98px) {
     .chips {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(var(--chip-min), 1fr));
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: var(--chip-gap);
       overflow: visible;
     }
     .chip {
-      justify-content: center;
-      padding-inline: var(--space-2);
+      --chip-dot: var(--space-3);
+      position: relative;
+      min-height: var(--chip-h);
+      padding-left: calc((var(--chip-h) - var(--chip-dot)) / 2 - 1px);
+      padding-right: var(--space-2);
+      font-size: var(--text-meta);
+    }
+    .chip::after {
+      content: "";
+      position: absolute;
+      inset: calc(var(--space-1_5) * -1);
     }
   }
   .chip:has(:checked) {

@@ -30,7 +30,6 @@ export const collections = {
       }),
       folio: z.object({
         title: z.string(), // names the folio dialog
-        hint: z.string(), // phone portrait hint
         prev: z.string(),
         next: z.string(),
         // {n} is the page number, {total} the page count, {text} the page's extracted text.

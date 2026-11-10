@@ -21,7 +21,6 @@ hero:
   contactCta: "Get in touch"
 folio:
   title: "Folio"
-  hint: "Turn your phone sideways for a larger view."
   prev: "Previous page"
   next: "Next page"
   pageAlt: "Folio page {n} of {total}"
@@ -90,7 +89,7 @@ about:
       - { name: "…", large: true }
 contact:
   title: "Hit me up"
-  lead: "If there’s something you’d like to make together, tell me what it is and we can work out the rest… or"
+  lead: "If there’s something you’d like to make together, tell me what it is and we can work out the rest…"
   note: "I usually reply within a working day (UTC+7)."
   honeypot: "Leave this empty"
   nameLabel: "Name"
